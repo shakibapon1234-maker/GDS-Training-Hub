@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDS Training Hub - Amadeus, Galileo & Sabre Simulators</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#F59E0B',
+                            dark: '#0B0F19',
+                            card: '#161F30',
+                            border: '#23334E',
+                            accent: '#2563EB',
+                            sabre: '#E11D48',
+                            amadeus: '#0284C7',
+                            galileo: '#10B981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0B0F19;
+            color: #E2E8F0;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+        }
+    </style>
+</head>
+<body class="selection:bg-amber-500 selection:text-black">
+
+    <!-- Top Notice Bar -->
+    <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 text-center py-2 px-4 text-sm font-bold tracking-wide">
+        🔥 স্পেশাল অফার: ৩টি GDS সিমুলেটর একসাথে নিলে পাচ্ছেন ১,০০০/- টাকা ছাড়! (Windows PC & Android সাপোর্ট)
+    </div>
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/90 border-b border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg">
+                    ✈️
+                </div>
+                <div>
+                    <span class="text-2xl font-black text-white tracking-wider">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
+                    <p class="text-xs text-slate-400 hidden sm:block">Aviation GDS Simulator Software for Windows & Android</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center space-x-8 text-sm font-semibold">
+                <a href="#features" class="hover:text-amber-400 transition">সিমুলেটরসমূহ</a>
+                <a href="#pricing" class="hover:text-amber-400 transition">প্রাইসিং</a>
+                <a href="#benefits" class="hover:text-amber-400 transition">সুবিধাসমূহ</a>
+                <a href="#faq" class="hover:text-amber-400 transition">FAQ</a>
+            </div>
+            <div>
+                <a href="#pricing" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg shadow-md transition flex items-center space-x-2">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>এখনই কিনুন</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-16 pb-24 overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-card border border-amber-500/30 text-amber-400 text-sm font-semibold mb-6">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                উভয় ডিভাইসে ১০০% কার্যকর: Windows PC ও Android Phone
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight max-w-4xl mx-auto">
+                ঘরে বসেই প্র্যাকটিস করুন এয়ার টিকেটিং <br>
+                <span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">GDS ট্রেনিং সিমুলেটর</span>
+            </h1>
+
+            <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                রিয়েল GDS আইডির মতোই টার্মিনাল কম্যান্ড দিয়ে টিকিট বুকিং, ফেয়ার কোটেশন ও PNR তৈরি শিখুন। কোনো মেয়াদ শেষের ঝামেলা ছাড়াই লাইফটাইম প্র্যাকটিস করার সেরা সমাধান!
+            </p>
+
+            <!-- Device Support Badges -->
+            <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm font-bold">
+                <div class="flex items-center gap-2 bg-brand-card border border-brand-border px-5 py-2.5 rounded-xl">
+                    <i class="fa-brands fa-windows text-cyan-400 text-lg"></i>
+                    <span>Windows Desktop (.exe)</span>
+                </div>
+                <div class="flex items-center gap-2 bg-brand-card border border-brand-border px-5 py-2.5 rounded-xl">
+                    <i class="fa-brands fa-android text-emerald-400 text-lg"></i>
+                    <span>Android Phone (.apk)</span>
+                </div>
+                <div class="flex items-center gap-2 bg-brand-card border border-brand-border px-5 py-2.5 rounded-xl">
+                    <i class="fa-solid fa-file-pdf text-amber-400 text-lg"></i>
+                    <span>ফ্রি কম্যান্ড চিটশিট ও গাইড</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#pricing" class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-lg font-bold px-8 py-4 rounded-xl shadow-xl transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>প্যাকেজ বাছাই ও অর্ডার করুন</span>
+                </a>
+                <a href="https://wa.me/8801674091748?text=Hello,%20I%20want%20to%20know%20more%20about%20GDS%20Training%20Simulators" target="_blank" class="bg-brand-card hover:bg-slate-800 border border-brand-border text-white text-lg font-semibold px-8 py-4 rounded-xl transition flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 text-xl"></i>
+                    <span>হোয়াটসঅ্যাপে কথা বলুন (01674091748)</span>
+                </a>
+            </div>
+
+            <!-- Terminal Mockup -->
+            <div class="mt-16 max-w-4xl mx-auto rounded-2xl border border-brand-border bg-slate-950 shadow-2xl overflow-hidden glow-gold">
+                <div class="bg-slate-900 px-4 py-3 border-b border-brand-border flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        <span class="text-xs text-slate-400 ml-2 font-mono">GDS_Terminal_Mode_v2.0</span>
+                    </div>
+                    <div class="flex gap-3 text-xs font-mono text-amber-400">
+                        <span>[AMADEUS]</span>
+                        <span>[GALILEO]</span>
+                        <span>[SABRE]</span>
+                    </div>
+                </div>
+                <div class="p-6 text-left mono-font text-sm text-emerald-400 bg-black space-y-2">
+                    <p><span class="text-blue-400">> AN15OCTDACCXD</span> <span class="text-slate-500"># Check Flight Availability</span></p>
+                    <p class="text-slate-300">15OCT WED DAC/BST DXB/GST-2</p>
+                    <p class="text-emerald-400">1 EK 585 J9 C9 Y9 I0 /DAC DXB 0100 0430 77W 0 /E</p>
+                    <p class="text-emerald-400">2 BG 047 Y9 S8 B7 K4 /DAC DXB 1930 2315 788 0 /E</p>
+                    <p><span class="text-blue-400">> NM1RAHMAN/ANIS MR</span> <span class="text-slate-500"># Add Passenger Name</span></p>
+                    <p class="text-amber-400">> SS1Y1 <span class="text-slate-500"># Sell Seat & Create PNR</span></p>
+                    <p class="text-emerald-300">RP/DAC1A0980/DAC1A0980 25SEP/0415Z 4X7Y9Z - PNR CONFIRMED</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulators Showcase -->
+    <section id="features" class="py-20 bg-brand-dark/50 border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl sm:text-4xl font-black text-white">৩টি প্রধান GDS সিমুলেটর অন্তর্ভুক্ত</h2>
+                <p class="mt-4 text-slate-400">বিশ্বের যে কোনো এয়ারলাইন্স ও ট্রাভেল এজেন্সিতে কাজের জন্য প্রয়োজনীয় সবগুলো সিস্টেম এক জায়গায়</p>
+            </div>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Amadeus -->
+                <div class="bg-brand-card border border-brand-border hover:border-sky-500 rounded-2xl p-8 transition duration-300 relative group">
+                    <div class="w-14 h-14 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl font-black mb-6">
+                        1A
+                    </div>
+                    <h3 class="text-2xl font-bold text-white group-hover:text-sky-400 transition">Amadeus Training Mode</h3>
+                    <p class="mt-3 text-slate-400 text-sm leading-relaxed">
+                        বাংলাদেশ ও মধ্যপ্রাচ্যের ট্রাভেল এজেন্সিতে সবচেয়ে জনপ্রিয়। রিয়েল টার্মিনাল কম্যান্ড, PNR হ্যান্ডলিং ও ফেয়ার রুলস মাস্টারি করুন।
+                    </p>
+                    <ul class="mt-6 space-y-3 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-sky-400"></i> কমপ্লিট PNR ক্রিয়েশন ওয়ার্কফ্লো</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-sky-400"></i> ফেয়ার ডিসপ্লে ও প্রাইসিং এন্ট্রি</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-sky-400"></i> Windows EXE ও Android APK ফাইল</li>
+                    </ul>
+                </div>
+
+                <!-- Galileo / Travelport -->
+                <div class="bg-brand-card border border-brand-border hover:border-emerald-500 rounded-2xl p-8 transition duration-300 relative group">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl font-black mb-6">
+                        1G
+                    </div>
+                    <h3 class="text-2xl font-bold text-white group-hover:text-emerald-400 transition">Galileo Training Mode</h3>
+                    <p class="mt-3 text-slate-400 text-sm leading-relaxed">
+                        ট্রাভেলপোর্ট গ্যালিলিও আন্তর্জাতিক রুটের টিকিট ইস্যু করার অন্যতম প্রধান মাধ্যম। নিখুঁতভাবে কমান্ড মুখস্থ ও প্র্যাকটিস করুন।
+                    </p>
+                    <ul class="mt-6 space-y-3 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> রুট ও সিট অ্যাভেইলেবিলিটি চেক</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> টিকিট কোটেশন ও রিউইস্যু প্র্যাকটিস</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> ফুল কোর্স গাইড ও চিটশিট সহ</li>
+                    </ul>
+                </div>
+
+                <!-- Sabre -->
+                <div class="bg-brand-card border border-brand-border hover:border-rose-500 rounded-2xl p-8 transition duration-300 relative group">
+                    <div class="w-14 h-14 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-2xl font-black mb-6">
+                        1S
+                    </div>
+                    <h3 class="text-2xl font-bold text-white group-hover:text-rose-400 transition">Sabre Training Mode</h3>
+                    <p class="mt-3 text-slate-400 text-sm leading-relaxed">
+                        ইউরোপ এবং আমেরিকার শীর্ষ এয়ারলাইন্সের বুকিং হ্যান্ডেল করতে সেবার সিমুলেটর অপরিহার্য। টার্মিনাল কম্যান্ড সহজে শিখুন।
+                    </p>
+                    <ul class="mt-6 space-y-3 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> সেবার টার্মিনাল শর্টকাট প্র্যাকটিস</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> প্যাসেঞ্জার ডিটেইলস ও ব্যাগেজ ইনফো</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> লাইফটাইম অফলাইন ব্যবহারের সুবিধা</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="text-amber-400 font-bold uppercase tracking-wider text-sm">স্বচ্ছ ও সাশ্রয়ী প্রাইসিং</span>
+                <h2 class="text-4xl font-extrabold text-white mt-2">আপনার পছন্দের প্যাকেজটি নির্বাচন করুন</h2>
+                <p class="mt-3 text-slate-400">একবার কিনলেই আজীবন ব্যবহারের সুবিধা। কোনো মাসিক বা বাৎসরিক ফি নেই।</p>
+            </div>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                
+                <!-- 1 GDS Card -->
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-8 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white">যে কোনো ১টি GDS</h3>
+                        <p class="text-xs text-slate-400 mt-1">Amadeus অথবা Galileo অথবা Sabre</p>
+                        <div class="mt-6 flex items-baseline">
+                            <span class="text-4xl font-black text-white">৳ ২,০০০</span>
+                            <span class="text-slate-400 ml-2">/ লাইফটাইম</span>
+                        </div>
+                        <p class="mt-4 text-sm text-slate-300">যাদের নির্দিষ্ট কোনো একটি সফটওয়্যারে ঘাটতি রয়েছে তাদের জন্য উপযোগী।</p>
+                        <hr class="my-6 border-brand-border">
+                        <ul class="space-y-3 text-sm text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> ১টি নির্দিষ্ট GDS সফটওয়্যার</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Windows PC ভার্সন</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Android APK ভার্সন</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> সংশ্লিষ্ট কম্যান্ড শিট (PDF)</li>
+                        </ul>
+                    </div>
+                    <a href="https://wa.me/8801674091748?text=আমি%20যেকোনো%20১টি%20GDS%20সিমুলেটর%20(৳২০০০)%20নিতে%20চাই।" target="_blank" class="mt-8 block text-center bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl border border-brand-border transition">
+                        অর্ডার করুন (৳ ২,০০০)
+                    </a>
+                </div>
+
+                <!-- 3 GDS Card (FEATURED BEST VALUE) -->
+                <div class="bg-gradient-to-b from-brand-card to-slate-900 border-2 border-amber-500 rounded-2xl p-8 flex flex-col justify-between relative shadow-2xl glow-gold transform md:-translate-y-4">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow">
+                        ⭐ Best Value & Recommended
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-amber-400">কমপ্লিট বান্ডেল (৩টি GDS)</h3>
+                        <p class="text-xs text-slate-300 mt-1">Amadeus + Galileo + Sabre (সবগুলো একসাথে)</p>
+                        <div class="mt-6 flex items-baseline">
+                            <span class="text-5xl font-black text-white">৳ ৫,০০০</span>
+                            <span class="text-slate-400 ml-2">/ লাইফটাইম</span>
+                        </div>
+                        <div class="mt-2 inline-block bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded font-bold">
+                            টাকা সাশ্রয়: ১,০০০/- টাকা ছাড়!
+                        </div>
+                        <hr class="my-6 border-brand-border">
+                        <ul class="space-y-3.5 text-sm text-slate-200">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> <strong>সবগুলো ৩টি GDS সিমুলেটর</strong></li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> Windows PC ও Android Phone উভয় সাপোর্ট</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> সবগুলোর অফিশিয়াল চিটশিট ও বুকিং গাইড</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> ইনস্টলেশন ভিডিও ও সেটআপ সহায়তা</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> প্রায়োরিটি কাস্টমার সাপোর্ট</li>
+                        </ul>
+                    </div>
+                    <a href="https://wa.me/8801674091748?text=আমি%20৩টি%20GDS%20কমপ্লিট%20বান্ডেল%20(৳৫০০০)%20অর্ডার%20করতে%20চাই।" target="_blank" class="mt-8 block text-center bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black py-4 rounded-xl shadow-lg transition">
+                        কমপ্লিট বান্ডেল অর্ডার করুন (৳ ৫,০০০)
+                    </a>
+                </div>
+
+                <!-- 2 GDS Card -->
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-8 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white">যে কোনো ২টি GDS</h3>
+                        <p class="text-xs text-slate-400 mt-1">আপনার পছন্দের যে কোনো ২টি সফটওয়্যার</p>
+                        <div class="mt-6 flex items-baseline">
+                            <span class="text-4xl font-black text-white">৳ ৩,৫০০</span>
+                            <span class="text-slate-400 ml-2">/ লাইফটাইম</span>
+                        </div>
+                        <div class="mt-2 inline-block bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded font-bold">
+                            টাকা সাশ্রয়: ৫০০/- টাকা ছাড়
+                        </div>
+                        <hr class="my-6 border-brand-border">
+                        <ul class="space-y-3 text-sm text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> যে কোনো ২টি GDS সিমুলেটর</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Windows PC ভার্সন</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Android APK ভার্সন</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> নির্বাচিত ২টির কম্যান্ড চিটশিট</li>
+                        </ul>
+                    </div>
+                    <a href="https://wa.me/8801674091748?text=আমি%20যেকোনো%20২টি%20GDS%20সিমুলেটর%20(৳৩৫০০)%20অর্ডার%20করতে%20চাই।" target="_blank" class="mt-8 block text-center bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl border border-brand-border transition">
+                        অর্ডার করুন (৳ ৩,৫০০)
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment & Delivery Info -->
+    <section class="py-16 bg-brand-card border-y border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white">সহজ পেমেন্ট মেথড (বিকাশ ও নগদ)</h4>
+                        <p class="text-sm text-slate-400">বিকাশ ও নগদ পার্সোনাল নম্বর: <strong class="text-amber-400 font-mono text-base">01674091748</strong></p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white">তাত্ক্ষণিক ডেলিভারি</h4>
+                        <p class="text-sm text-slate-400">পেমেন্ট কনফার্মের সাথে সাথেই গুগল ড্রাইভ বা ডিরেক্ট ডাউনলোড লিংক পেয়ে যাবেন।</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white">হোয়াটসঅ্যাপ ও সেটআপ সহায়তা</h4>
+                        <p class="text-sm text-slate-400">সরাসরি কল/হোয়াটসঅ্যাপ: <a href="https://wa.me/8801674091748" class="text-emerald-400 font-mono font-bold hover:underline">01674091748</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Account Details Card -->
+            <div class="mt-10 bg-slate-900/80 border border-brand-border rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex items-center gap-2 bg-pink-900/30 border border-pink-700/50 px-4 py-2 rounded-lg">
+                        <span class="font-bold text-pink-400">bKash Personal</span>
+                        <span class="font-mono text-white font-bold">01674091748</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-amber-900/30 border border-amber-700/50 px-4 py-2 rounded-lg">
+                        <span class="font-bold text-amber-400">Nagad Personal</span>
+                        <span class="font-mono text-white font-bold">01674091748</span>
+                    </div>
+                </div>
+                <div class="text-sm text-slate-300">
+                    💡 সেন্ড মানি (Send Money) করার পর লাস্ট ৩ ডিজিট হোয়াটসঅ্যাপে জানিয়ে দিলেই সাথে সাথে সফটওয়্যার ফাইল পাঠিয়ে দেওয়া হবে।
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-white text-center mb-12">সাধারণ প্রশ্নোত্তর (FAQ)</h2>
+            <div class="space-y-4">
+                <div class="bg-brand-card border border-brand-border rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                        <i class="fa-regular fa-circle-question text-amber-400"></i>
+                        সফটওয়্যার চালানোর জন্য কি ইন্টারনেট সংযোগ জরুরি?
+                    </h3>
+                    <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                        না, আপনি অফলাইনেও কম্যান্ড প্র্যাকটিস করতে পারবেন। তবে কোনো আপডেট নেওয়ার সময় সামান্য ইন্টারনেট প্রয়োজন হতে পারে।
+                    </p>
+                </div>
+
+                <div class="bg-brand-card border border-brand-border rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                        <i class="fa-regular fa-circle-question text-amber-400"></i>
+                        মোবাইলে কি এটি সঠিকভাবে কাজ করবে?
+                    </h3>
+                    <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                        হ্যাঁ! আমাদের প্রতিটি সিমুলেটরের ডেডিকেটেড Android APK ফাইল রয়েছে। যে কোনো স্মার্টফোনে টাচ কিবোর্ড দিয়ে কম্যান্ড টাইপ করে স্বাচ্ছন্দ্যে প্র্যাকটিস করতে পারবেন।
+                    </p>
+                </div>
+
+                <div class="bg-brand-card border border-brand-border rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                        <i class="fa-regular fa-circle-question text-amber-400"></i>
+                        সফটওয়্যারটির মেয়াদ কতদিন থাকবে?
+                    </h3>
+                    <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                        এটি লাইফটাইম অ্যাক্সেস। একবার ডাউনলোড করলে কোনো মাসিক সাবস্ক্রিপশন ছাড়াই আজীবন ব্যবহার করতে পারবেন।
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-brand-border py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+                <span class="text-xl font-black text-white">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
+                <p class="text-xs text-slate-500 mt-1">© 2026 GDS Training Hub. All rights reserved.</p>
+            </div>
+            <div class="flex items-center space-x-6 text-sm">
+                <a href="#features" class="text-slate-400 hover:text-white">ফিচারসমূহ</a>
+                <a href="#pricing" class="text-slate-400 hover:text-white">প্রাইসিং</a>
+                <a href="https://wa.me/8801674091748" target="_blank" class="text-emerald-400 font-semibold flex items-center gap-1">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp (01674091748)
+                </a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
