@@ -133,6 +133,43 @@
             </a>
         </div>
 
+        <!-- Demo Video Button -->
+        <div class="mt-8">
+            <button onclick="openVideo()" class="group inline-flex items-center gap-3 px-6 py-3 rounded-full border-2 border-amber-500/60 hover:border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-base transition duration-300">
+                <span class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                    <i class="fa-solid fa-play text-slate-950 text-sm ml-0.5"></i>
+                </span>
+                <span lang-bn>ডেমো ভিডিও দেখুন</span>
+                <span lang-en>Watch Demo Video</span>
+                <i class="fa-solid fa-circle-play text-xl opacity-60"></i>
+            </button>
+        </div>
+
+        <!-- Video Modal -->
+        <div id="videoModal" class="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm hidden" onclick="closeVideoOnBg(event)">
+            <div class="relative w-full max-w-4xl mx-4 rounded-2xl overflow-hidden border border-brand-border shadow-2xl" onclick="event.stopPropagation()">
+                <!-- Close Button -->
+                <button onclick="closeVideo()" class="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-red-600 text-white flex items-center justify-center transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <!-- Video Header -->
+                <div class="bg-slate-900 px-4 py-3 flex items-center gap-3 border-b border-brand-border">
+                    <div class="flex gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                    </div>
+                    <span class="text-xs text-slate-400 mono-font">GDS Training Hub — Software Demo Preview</span>
+                </div>
+                <!-- Video Player -->
+                <video id="promoVideo" class="w-full bg-black" controls autoplay>
+                    <source src="assets/promo.mp4" type="video/mp4">
+                    <span lang-bn>আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।</span>
+                    <span lang-en>Your browser does not support the video tag.</span>
+                </video>
+            </div>
+        </div>
+
         <!-- Terminal Mockup -->
         <div class="mt-16 max-w-4xl mx-auto rounded-2xl border border-brand-border bg-slate-950 shadow-2xl overflow-hidden glow-gold">
             <div class="bg-slate-900 px-4 py-3 border-b border-brand-border flex items-center justify-between">
@@ -467,6 +504,34 @@
             label.textContent = 'বাং / EN';
         }
     }
+
+    function openVideo() {
+        const modal = document.getElementById('videoModal');
+        const video = document.getElementById('promoVideo');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        video.play();
+    }
+
+    function closeVideo() {
+        const modal = document.getElementById('videoModal');
+        const video = document.getElementById('promoVideo');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        video.pause();
+        video.currentTime = 0;
+    }
+
+    function closeVideoOnBg(event) {
+        if (event.target === document.getElementById('videoModal')) {
+            closeVideo();
+        }
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeVideo();
+    });
 </script>
 </body>
 </html>
