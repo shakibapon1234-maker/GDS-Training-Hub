@@ -94,64 +94,16 @@
         .lang-toggle { transition: all 0.3s ease; }
         .lang-toggle .indicator { transition: transform 0.3s ease; }
 
-        /* Dynamic Animated Background Ambient Blobs */
-        .ambient-blob-1 {
-            position: absolute;
-            top: 5%;
-            left: -8%;
-            width: 580px;
-            height: 580px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0) 70%);
-            border-radius: 50%;
-            filter: blur(60px);
-            animation: floatBlob1 18s ease-in-out infinite alternate;
-            pointer-events: none;
+        /* Canvas Background Animation */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 0;
-        }
-        .ambient-blob-2 {
-            position: absolute;
-            top: 25%;
-            right: -8%;
-            width: 620px;
-            height: 620px;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0) 70%);
-            border-radius: 50%;
-            filter: blur(70px);
-            animation: floatBlob2 22s ease-in-out infinite alternate;
             pointer-events: none;
-            z-index: 0;
-        }
-        .ambient-blob-3 {
-            position: absolute;
-            bottom: 12%;
-            left: 15%;
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0) 70%);
-            border-radius: 50%;
-            filter: blur(70px);
-            animation: floatBlob1 24s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-        @keyframes floatBlob1 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(50px, 70px) scale(1.08); }
-            100% { transform: translate(-30px, 100px) scale(0.96); }
-        }
-        @keyframes floatBlob2 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-70px, 50px) scale(1.12); }
-            100% { transform: translate(40px, -50px) scale(0.92); }
-        }
-
-        /* Subtle Aviation Radar Grid Background */
-        .radar-grid {
-            background-image: 
-                radial-gradient(rgba(245, 158, 11, 0.07) 1px, transparent 1px),
-                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 36px 36px, 72px 72px, 72px 72px;
+            display: block;
         }
 
         /* Terminal Cursor Blink */
@@ -175,11 +127,8 @@
     </style>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">
-<!-- Ambient Dynamic Lighting Blobs -->
-<div class="ambient-blob-1"></div>
-<div class="ambient-blob-2"></div>
-<div class="ambient-blob-3"></div>
-<div class="absolute inset-0 radar-grid pointer-events-none opacity-40 z-0"></div>
+<!-- Animated Canvas Background -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
 
 
 <!-- Language Toggle + Notice Bar -->
@@ -842,6 +791,125 @@
         setTimeout(typeTerminal, isDeleting ? 30 : 65);
     }
     document.addEventListener('DOMContentLoaded', typeTerminal);
+</script>
+
+<!-- Canvas Background Animation Engine (ported from Wings Fly Academy) -->
+<script>
+(function () {
+  'use strict';
+  var canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W, H, cells = [];
+  var animFrameId = null;
+  var isVisible = !document.hidden;
+  var BG = '#080c14';
+  var MAX_CELLS = 20;
+  var COLORS = [
+    { r: 0,   g: 217, b: 255 },
+    { r: 245, g: 158, b: 11  },
+    { r: 255, g: 255, b: 255 },
+    { r: 59,  g: 130, b: 246 },
+  ];
+
+  var resizeTimer = null, pendingResize = false;
+  function resize() {
+    pendingResize = false;
+    var w = window.innerWidth || 1, h = window.innerHeight || 1;
+    if (w === W && h === H) return;
+    W = Math.max(1, w); H = Math.max(1, h);
+    canvas.width = W; canvas.height = H;
+  }
+  function debouncedResize() {
+    if (pendingResize) return;
+    pendingResize = true;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 150);
+  }
+
+  function makeCell() {
+    var col = COLORS[Math.floor(Math.random() * COLORS.length)];
+    return {
+      x: Number.isFinite(W) ? Math.random() * W : 0,
+      y: Number.isFinite(H) ? Math.random() * H : 0,
+      r: Math.random() * 3 + 1,
+      maxR: Math.random() * 200 + 70,
+      speed: Math.random() * 0.4 + 0.18,
+      col: col, alpha: 0,
+      maxAlpha: Math.random() * 0.18 + 0.1,
+      growing: true,
+      delay: (Math.random() * 250) | 0,
+    };
+  }
+
+  for (var i = 0; i < MAX_CELLS; i++) cells.push(makeCell());
+
+  function draw() {
+    if (!isVisible) { animFrameId = null; return; }
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = 'rgba(0,217,255,0.05)';
+    var G = 45;
+    for (var x = G; x < W; x += G) {
+      for (var y = G; y < H; y += G) {
+        ctx.beginPath(); ctx.arc(x, y, 1, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    for (var idx = 0; idx < cells.length; idx++) {
+      var c = cells[idx];
+      if (c.delay > 0) { c.delay--; continue; }
+      if (c.growing) {
+        c.r += c.speed;
+        c.alpha = Math.min(c.maxAlpha, c.alpha + 0.004);
+        if (c.r >= c.maxR) c.growing = false;
+      } else {
+        c.r += c.speed * 0.3;
+        c.alpha -= 0.003;
+        if (c.alpha <= 0) { cells[idx] = makeCell(); continue; }
+      }
+      if (!Number.isFinite(c.x) || !Number.isFinite(c.y) ||
+          !Number.isFinite(c.r) || c.r <= 0) {
+        cells[idx] = makeCell(); continue;
+      }
+      var cr = c.col.r, cg = c.col.g, cb = c.col.b;
+      var grad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
+      grad.addColorStop(0,    'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
+      grad.addColorStop(0.55, 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (c.alpha * 0.35).toFixed(3) + ')');
+      grad.addColorStop(0.85, 'rgba(' + cr + ',' + cg + ',' + cb + ',' + c.alpha.toFixed(3) + ')');
+      grad.addColorStop(1,    'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
+      ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.fillStyle = grad; ctx.fill();
+      ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + Math.min(c.alpha * 2.2, 0.55).toFixed(3) + ')';
+      ctx.lineWidth = 1.5; ctx.stroke();
+      if (c.growing) {
+        ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,' + Math.min(c.alpha * 1.5, 0.25).toFixed(3) + ')';
+        ctx.lineWidth = 0.6; ctx.stroke();
+      }
+    }
+    animFrameId = requestAnimationFrame(draw);
+  }
+
+  function startAnimation() {
+    resize();
+    window.addEventListener('resize', debouncedResize);
+    document.addEventListener('visibilitychange', function () {
+      isVisible = !document.hidden;
+      if (isVisible && !animFrameId) animFrameId = requestAnimationFrame(draw);
+    });
+    draw();
+  }
+
+  if (typeof requestIdleCallback === 'function')
+    requestIdleCallback(startAnimation, { timeout: 2000 });
+  else
+    setTimeout(startAnimation, 300);
+})();
 </script>
 </body>
 </html>
