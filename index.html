@@ -124,6 +124,83 @@
             70% { transform: scale(1.04); box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
             100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
+
+        /* Neon Pricing Cards */
+        .neon-card-cyan {
+            background: linear-gradient(145deg, #0a1628 0%, #0d1f38 100%);
+            border: 1.5px solid rgba(0, 217, 255, 0.45);
+            box-shadow: 0 0 18px rgba(0, 217, 255, 0.12), inset 0 0 20px rgba(0, 217, 255, 0.04);
+            transition: all 0.4s ease;
+            animation: floatCard1 6s ease-in-out infinite;
+        }
+        .neon-card-cyan:hover {
+            border-color: rgba(0, 217, 255, 0.85);
+            box-shadow: 0 0 35px rgba(0, 217, 255, 0.3), 0 0 80px rgba(0, 217, 255, 0.1), inset 0 0 25px rgba(0, 217, 255, 0.08);
+            transform: translateY(-6px);
+        }
+        .neon-card-amber {
+            background: linear-gradient(145deg, #1a1000 0%, #1f1400 100%);
+            border: 2px solid rgba(245, 158, 11, 0.7);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2), inset 0 0 25px rgba(245, 158, 11, 0.06);
+            transition: all 0.4s ease;
+            animation: floatCard2 7s ease-in-out infinite;
+        }
+        .neon-card-amber:hover {
+            border-color: rgba(245, 158, 11, 1);
+            box-shadow: 0 0 45px rgba(245, 158, 11, 0.4), 0 0 90px rgba(245, 158, 11, 0.15), inset 0 0 30px rgba(245, 158, 11, 0.1);
+            transform: translateY(-8px);
+        }
+        .neon-card-green {
+            background: linear-gradient(145deg, #001a10 0%, #001f14 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.45);
+            box-shadow: 0 0 18px rgba(16, 185, 129, 0.12), inset 0 0 20px rgba(16, 185, 129, 0.04);
+            transition: all 0.4s ease;
+            animation: floatCard3 8s ease-in-out infinite;
+        }
+        .neon-card-green:hover {
+            border-color: rgba(16, 185, 129, 0.85);
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.3), 0 0 80px rgba(16, 185, 129, 0.1), inset 0 0 25px rgba(16, 185, 129, 0.08);
+            transform: translateY(-6px);
+        }
+        .neon-price-cyan  { color: #00d9ff; text-shadow: 0 0 12px rgba(0,217,255,0.6); }
+        .neon-price-amber { color: #f59e0b; text-shadow: 0 0 12px rgba(245,158,11,0.7); }
+        .neon-price-green { color: #10b981; text-shadow: 0 0 12px rgba(16,185,129,0.6); }
+        .neon-badge-cyan  { background: rgba(0,217,255,0.12); border:1px solid rgba(0,217,255,0.35); color:#00d9ff; }
+        .neon-badge-amber { background: rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.5); color:#f59e0b; }
+        .neon-badge-green { background: rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); color:#10b981; }
+        .neon-btn-cyan {
+            background: linear-gradient(135deg, rgba(0,217,255,0.15) 0%, rgba(0,217,255,0.05) 100%);
+            border: 1.5px solid rgba(0,217,255,0.5); color: #00d9ff; font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .neon-btn-cyan:hover { background: rgba(0,217,255,0.25); box-shadow: 0 0 20px rgba(0,217,255,0.3); }
+        .neon-btn-amber {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: none; color: #000; font-weight: 900;
+            transition: all 0.3s ease;
+        }
+        .neon-btn-amber:hover { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+        .neon-btn-green {
+            background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 100%);
+            border: 1.5px solid rgba(16,185,129,0.5); color: #10b981; font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .neon-btn-green:hover { background: rgba(16,185,129,0.25); box-shadow: 0 0 20px rgba(16,185,129,0.3); }
+        .neon-divider-cyan  { border-color: rgba(0,217,255,0.2); }
+        .neon-divider-amber { border-color: rgba(245,158,11,0.3); }
+        .neon-divider-green { border-color: rgba(16,185,129,0.2); }
+        @keyframes floatCard1 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-7px); }
+        }
+        @keyframes floatCard2 {
+            0%, 100% { transform: translateY(-4px); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes floatCard3 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-9px); }
+        }
     </style>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">
@@ -427,7 +504,7 @@
 </section>
 
 <!-- Pricing -->
-<section id="pricing" class="py-24 relative">
+<section id="pricing" class="py-10 relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-3xl mx-auto">
             <span class="text-amber-400 font-bold uppercase tracking-wider text-sm">
@@ -444,49 +521,59 @@
             </p>
         </div>
 
-        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            <!-- 1 GDS -->
-            <div class="bg-brand-card border border-brand-border rounded-2xl p-8 flex flex-col justify-between">
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            <!-- 1 GDS – Neon Cyan -->
+            <div class="neon-card-cyan rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 rounded-full" style="background:radial-gradient(circle,rgba(0,217,255,0.08) 0%,transparent 70%);pointer-events:none;"></div>
                 <div>
-                    <h3 class="text-xl font-bold text-white">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fa-solid fa-satellite-dish neon-price-cyan text-lg"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider" style="color:rgba(0,217,255,0.7);">Starter</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mt-1">
                         <span lang-bn>যে কোনো ১টি GDS</span><span lang-en>Any 1 GDS System</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-1">Amadeus / Galileo / Sabre</p>
-                    <div class="mt-6 flex items-baseline">
-                        <span class="text-4xl font-black text-white">৳ ২,০০০</span>
-                        <span class="text-slate-400 ml-2">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
+                    <p class="text-xs mt-1" style="color:rgba(0,217,255,0.6);">Amadeus / Galileo / Sabre</p>
+                    <div class="mt-5 flex items-baseline">
+                        <span class="text-5xl font-black neon-price-cyan">৳ ২,০০০</span>
+                        <span class="text-slate-400 ml-2 text-sm">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
                     </div>
-                    <hr class="my-6 border-brand-border">
+                    <hr class="my-5 neon-divider-cyan">
                     <ul class="space-y-3 text-sm text-slate-300">
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>১টি GDS সফটওয়্যার</span><span lang-en>1 GDS Software</span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Windows PC <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Android APK <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>কম্যান্ড চিটশিট (PDF)</span><span lang-en>Command Cheatsheet PDF</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-cyan text-xs"></i> <span lang-bn>১টি GDS সফটওয়্যার</span><span lang-en>1 GDS Software</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-cyan text-xs"></i> Windows PC <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-cyan text-xs"></i> Android APK <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-cyan text-xs"></i> <span lang-bn>কম্যান্ড চিটশিট (PDF)</span><span lang-en>Command Cheatsheet PDF</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%201%20GDS%20Simulator%20(%E2%82%B32000)" target="_blank" class="mt-8 block text-center bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl border border-brand-border transition">
+                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%201%20GDS%20Simulator%20(%E2%82%B32000)" target="_blank" class="mt-7 block text-center neon-btn-cyan py-3.5 rounded-xl transition">
                     <span lang-bn>অর্ডার করুন (৳ ২,০০০)</span><span lang-en>Order Now (৳ 2,000)</span>
                 </a>
             </div>
 
-            <!-- 3 GDS BEST VALUE -->
-            <div class="bg-gradient-to-b from-brand-card to-slate-900 border-2 border-amber-500 rounded-2xl p-8 flex flex-col justify-between relative shadow-2xl glow-gold transform md:-translate-y-4">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow">
+            <!-- 3 GDS BEST VALUE – Neon Amber -->
+            <div class="neon-card-amber rounded-2xl p-8 flex flex-col justify-between relative shadow-2xl overflow-hidden" style="z-index:2;">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 rounded-full" style="background:radial-gradient(ellipse,rgba(245,158,11,0.15) 0%,transparent 70%);pointer-events:none;"></div>
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 neon-badge-amber text-xs font-black px-5 py-1.5 rounded-full uppercase tracking-wider shadow-lg z-10">
                     ⭐ <span lang-bn>সেরা ডিল</span><span lang-en>Best Value</span>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-black text-amber-400">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-fire neon-price-amber text-lg"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider" style="color:rgba(245,158,11,0.8);">Best Value</span>
+                    </div>
+                    <h3 class="text-2xl font-black neon-price-amber">
                         <span lang-bn>কমপ্লিট বান্ডেল (৩টি GDS)</span><span lang-en>Complete Bundle (3 GDS)</span>
                     </h3>
                     <p class="text-xs text-slate-300 mt-1">Amadeus + Galileo + Sabre</p>
                     <div class="mt-6 flex items-baseline">
-                        <span class="text-5xl font-black text-white">৳ ৫,০০০</span>
+                        <span class="text-5xl font-black neon-price-amber">৳ ৫,০০০</span>
                         <span class="text-slate-400 ml-2">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
                     </div>
-                    <div class="mt-2 inline-block bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded font-bold">
-                        <span lang-bn>৳১,০০০ টাকা সাশ্রয়!</span><span lang-en>Save ৳1,000!</span>
+                    <div class="mt-2 inline-block neon-badge-amber text-xs px-3 py-1 rounded-full font-bold">
+                        <span lang-bn>🔥 ৳১,০০০ টাকা সাশ্রয়!</span><span lang-en>🔥 Save ৳1,000!</span>
                     </div>
-                    <hr class="my-6 border-brand-border">
+                    <hr class="my-5 neon-divider-amber">
                     <ul class="space-y-3.5 text-sm text-slate-200">
                         <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> <strong><span lang-bn>৩টি GDS সিমুলেটর</span><span lang-en>All 3 GDS Simulators</span></strong></li>
                         <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> Windows PC & Android APK</li>
@@ -495,34 +582,39 @@
                         <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> <span lang-bn>প্রায়োরিটি সাপোর্ট</span><span lang-en>Priority WhatsApp Support</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%20Complete%20Bundle%20(All%203%20GDS)%20(%E2%82%B35000)" target="_blank" class="mt-8 block text-center bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black py-4 rounded-xl shadow-lg transition">
+                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%20Complete%20Bundle%20(All%203%20GDS)%20(%E2%82%B35000)" target="_blank" class="mt-7 block text-center neon-btn-amber py-4 rounded-xl shadow-lg transition">
                     <span lang-bn>কমপ্লিট বান্ডেল অর্ডার করুন (৳ ৫,০০০)</span><span lang-en>Order Complete Bundle (৳ 5,000)</span>
                 </a>
             </div>
 
-            <!-- 2 GDS -->
-            <div class="bg-brand-card border border-brand-border rounded-2xl p-8 flex flex-col justify-between">
+            <!-- 2 GDS – Neon Green -->
+            <div class="neon-card-green rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute bottom-0 right-0 w-32 h-32 rounded-full" style="background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);pointer-events:none;"></div>
                 <div>
-                    <h3 class="text-xl font-bold text-white">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fa-solid fa-layer-group neon-price-green text-lg"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider" style="color:rgba(16,185,129,0.7);">Duo Pack</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mt-1">
                         <span lang-bn>যে কোনো ২টি GDS</span><span lang-en>Any 2 GDS Systems</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-1"><span lang-bn>পছন্দের যে কোনো ২টি</span><span lang-en>Your choice of any 2</span></p>
-                    <div class="mt-6 flex items-baseline">
-                        <span class="text-4xl font-black text-white">৳ ৩,৫০০</span>
-                        <span class="text-slate-400 ml-2">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
+                    <p class="text-xs mt-1" style="color:rgba(16,185,129,0.6);"><span lang-bn>পছন্দের যে কোনো ২টি</span><span lang-en>Your choice of any 2</span></p>
+                    <div class="mt-5 flex items-baseline">
+                        <span class="text-5xl font-black neon-price-green">৳ ৩,৫০০</span>
+                        <span class="text-slate-400 ml-2 text-sm">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
                     </div>
-                    <div class="mt-2 inline-block bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded font-bold">
+                    <div class="mt-2 inline-block neon-badge-green text-xs px-2.5 py-1 rounded-full font-bold">
                         <span lang-bn>৳৫০০ ছাড়</span><span lang-en>Save ৳500</span>
                     </div>
-                    <hr class="my-6 border-brand-border">
+                    <hr class="my-5 neon-divider-green">
                     <ul class="space-y-3 text-sm text-slate-300">
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>২টি GDS সিমুলেটর</span><span lang-en>2 GDS Simulators</span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Windows PC <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Android APK <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>নির্বাচিত ২টির চিটশিট</span><span lang-en>Cheatsheets for both GDS</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-green text-xs"></i> <span lang-bn>২টি GDS সিমুলেটর</span><span lang-en>2 GDS Simulators</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-green text-xs"></i> Windows PC <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-green text-xs"></i> Android APK <span lang-bn>ভার্সন</span><span lang-en>Version</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check neon-price-green text-xs"></i> <span lang-bn>নির্বাচিত ২টির চিটশিট</span><span lang-en>Cheatsheets for both GDS</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%202%20GDS%20Simulators%20(%E2%82%B33500)" target="_blank" class="mt-8 block text-center bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl border border-brand-border transition">
+                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%202%20GDS%20Simulators%20(%E2%82%B33500)" target="_blank" class="mt-7 block text-center neon-btn-green py-3.5 rounded-xl transition">
                     <span lang-bn>অর্ডার করুন (৳ ৩,৫০০)</span><span lang-en>Order Now (৳ 3,500)</span>
                 </a>
             </div>
