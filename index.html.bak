@@ -3,55 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Primary SEO Meta Tags -->
-    <title>GDS Training Hub — ঘরে বসেই শিখুন এয়ার টিকেটিং | Amadeus, Sabre & Galileo Simulators</title>
-    <meta name="title" content="GDS Training Hub — ঘরে বসেই শিখুন এয়ার টিকেটিং | Amadeus, Sabre & Galileo Simulators">
-    <meta name="description" content="ঘরে বসেই প্র্যাকটিস করুন প্রফেশনাল এয়ার টিকেটিং GDS সিস্টেম (Amadeus, Galileo, Sabre)। Windows PC ও Android Phone সাপোর্ট। নো মান্থলি ফি, লাইফটাইম অ্যাক্সেস।">
-    <meta name="keywords" content="GDS Training Hub, Air Ticketing Training, Amadeus Simulator, Sabre Training Bangladesh, Galileo Ticketing, Aviation Course BD, Travel Agency Software">
-    <meta name="author" content="GDS Training Hub">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://gds-training-hub.vercel.app/">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
-
-    <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://gds-training-hub.vercel.app/">
-    <meta property="og:title" content="GDS Training Hub — ঘরে বসেই শিখুন এয়ার টিকেটিং GDS সিমুলেটর">
-    <meta property="og:description" content="Amadeus, Sabre ও Travelport Galileo সিমুলেটরে প্র্যাকটিস করুন আপনার পিসি বা মোবাইলে। নো মান্থলি ফি, লাইফটাইম অ্যাক্সেস!">
-    <meta property="og:image" content="https://gds-training-hub.vercel.app/assets/og-cover.jpg">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://gds-training-hub.vercel.app/">
-    <meta property="twitter:title" content="GDS Training Hub — Amadeus, Sabre & Galileo Simulators">
-    <meta property="twitter:description" content="Aviation GDS Ticketing Simulator Software for Windows PC & Android Phone.">
-    <meta property="twitter:image" content="https://gds-training-hub.vercel.app/assets/og-cover.jpg">
-
-    <!-- Schema.org JSON-LD Structured Data for Google -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "GDS Training Hub",
-      "operatingSystem": "Windows 10/11, Android",
-      "applicationCategory": "EducationalApplication",
-      "offers": {
-        "@type": "AggregateOffer",
-        "priceCurrency": "BDT",
-        "lowPrice": "2000",
-        "highPrice": "5000",
-        "offerCount": "3"
-      },
-      "description": "Professional Aviation GDS Ticketing Simulators for Amadeus, Sabre, and Galileo.",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "52"
-      }
-    }
-    </script>
-
+    <title>GDS Training Hub - Amadeus, Galileo & Sabre Simulators</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -59,11 +11,9 @@
                 extend: {
                     colors: {
                         brand: {
-                            dark: '#080C14',
-                            card: '#111827',
-                            border: '#1E293B',
-                            accent: '#F59E0B',
-                            cyan: '#06B6D4'
+                            dark: '#0B0F19',
+                            card: '#161F30',
+                            border: '#23334E',
                         }
                     }
                 }
@@ -72,115 +22,20 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <style>
-        body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #080C14; color: #E2E8F0; overflow-x: hidden; position: relative; }
+        body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #0B0F19; color: #E2E8F0; }
         [lang-en] { display: none; }
         [lang-bn] { display: block; }
         body.english [lang-en] { display: block; }
         body.english [lang-bn] { display: none; }
         body.english { font-family: 'Inter', 'Hind Siliguri', sans-serif; }
         .mono-font { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Modern Glassmorphism & Glow */
-        .glass-panel {
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(245, 158, 11, 0.18);
-        }
-        .glow-gold { box-shadow: 0 0 35px rgba(245, 158, 11, 0.22); }
-        .glow-cyan { box-shadow: 0 0 35px rgba(6, 182, 212, 0.22); }
+        .glow-gold { box-shadow: 0 0 30px rgba(245,158,11,0.25); }
         .lang-toggle { transition: all 0.3s ease; }
         .lang-toggle .indicator { transition: transform 0.3s ease; }
-
-        /* Dynamic Animated Background Ambient Blobs */
-        .ambient-blob-1 {
-            position: absolute;
-            top: 5%;
-            left: -8%;
-            width: 580px;
-            height: 580px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0) 70%);
-            border-radius: 50%;
-            filter: blur(60px);
-            animation: floatBlob1 18s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .ambient-blob-2 {
-            position: absolute;
-            top: 25%;
-            right: -8%;
-            width: 620px;
-            height: 620px;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0) 70%);
-            border-radius: 50%;
-            filter: blur(70px);
-            animation: floatBlob2 22s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .ambient-blob-3 {
-            position: absolute;
-            bottom: 12%;
-            left: 15%;
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0) 70%);
-            border-radius: 50%;
-            filter: blur(70px);
-            animation: floatBlob1 24s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-        @keyframes floatBlob1 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(50px, 70px) scale(1.08); }
-            100% { transform: translate(-30px, 100px) scale(0.96); }
-        }
-        @keyframes floatBlob2 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-70px, 50px) scale(1.12); }
-            100% { transform: translate(40px, -50px) scale(0.92); }
-        }
-
-        /* Subtle Aviation Radar Grid Background */
-        .radar-grid {
-            background-image: 
-                radial-gradient(rgba(245, 158, 11, 0.07) 1px, transparent 1px),
-                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 36px 36px, 72px 72px, 72px 72px;
-        }
-
-        /* Terminal Cursor Blink */
-        .cursor-blink {
-            animation: blink 0.9s step-end infinite;
-        }
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        /* Floating WhatsApp Button Animation */
-        .whatsapp-pulse {
-            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-            animation: pulse-green 2.2s infinite;
-        }
-        @keyframes pulse-green {
-            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { transform: scale(1.04); box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
-            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
     </style>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">
-<!-- Ambient Dynamic Lighting Blobs -->
-<div class="ambient-blob-1"></div>
-<div class="ambient-blob-2"></div>
-<div class="ambient-blob-3"></div>
-<div class="absolute inset-0 radar-grid pointer-events-none opacity-40 z-0"></div>
-
 
 <!-- Language Toggle + Notice Bar -->
 <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 py-2 px-4">
@@ -317,38 +172,16 @@
                         </span>
                     </div>
                     <!-- The Video (autoplay, muted, loop — like an ad) -->
-                    <!-- Video Mode Switcher Tabs -->
-                    <div class="flex items-center justify-between bg-slate-900/90 px-3 py-2 border-b border-brand-border text-xs font-semibold">
-                        <div class="flex items-center gap-1.5">
-                            <button id="tabPromoBtn" onclick="switchVideo('promo')" class="px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition flex items-center gap-1">
-                                <i class="fa-solid fa-play text-[10px]"></i>
-                                <span lang-bn>প্রমো প্রিভিউ</span><span lang-en>Promo Teaser</span>
-                            </button>
-                            <button id="tabOverviewBtn" onclick="switchVideo('overview')" class="px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
-                                <i class="fa-solid fa-film text-[10px]"></i>
-                                <span lang-bn>সম্পূর্ণ ভিডিও ওভারভিউ</span><span lang-en>Full Overview</span>
-                            </button>
-                        </div>
-                        <button onclick="toggleVideoSound()" id="soundToggleBtn" class="text-slate-400 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
-                            <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
-                            <span id="soundLabel">Sound Off</span>
-                        </button>
-                    </div>
-
-                    <!-- Video Element with Dynamic Source -->
-                    <div class="relative bg-black aspect-video flex items-center justify-center overflow-hidden">
-                        <video
-                            id="heroActiveVideo"
-                            class="w-full h-full object-cover"
-                            autoplay
-                            muted
-                            loop
-                            playsinline
-                            preload="auto"
-                        >
-                            <source id="videoSource" src="assets/promo.mp4" type="video/mp4">
-                        </video>
-                    </div>
+                    <video
+                        class="w-full block"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                        preload="auto"
+                    >
+                        <source src="assets/promo.mp4" type="video/mp4">
+                    </video>
                     <!-- Bottom Info Bar -->
                     <div class="bg-gradient-to-r from-slate-950 to-brand-card px-4 py-3 flex items-center justify-between border-t border-brand-border">
                         <div class="flex items-center gap-2">
@@ -379,22 +212,14 @@
                     <span>[AMADEUS]</span><span>[GALILEO]</span><span>[SABRE]</span>
                 </div>
             </div>
-            <!-- Interactive Terminal with Real Simulation -->
-            <div class="p-6 text-left mono-font text-sm text-emerald-400 bg-black/95 min-h-[220px] flex flex-col justify-start space-y-2">
-                <div id="terminalOutput" class="space-y-1.5 leading-relaxed">
-                    <p><span class="text-sky-400">> AN15OCTDACCXD</span> <span class="text-slate-500"># Check Flight Availability</span></p>
-                    <p class="text-slate-300">15OCT WED DAC/BST DXB/GST-2</p>
-                    <p class="text-emerald-400">1 EK 585 J9 C9 Y9 I0 /DAC DXB 0100 0430 77W 0 /E</p>
-                    <p class="text-emerald-400">2 BG 047 Y9 S8 B7 K4 /DAC DXB 1930 2315 788 0 /E</p>
-                    <p><span class="text-sky-400">> NM1RAHMAN/ANIS MR</span> <span class="text-slate-500"># Add Passenger Name</span></p>
-                    <p class="text-amber-400">> SS1Y1 <span class="text-slate-500"># Sell Seat & Create PNR</span></p>
-                    <p class="text-emerald-300 font-bold">RP/DAC1A0980/DAC1A0980 25SEP/0415Z 4X7Y9Z — PNR CONFIRMED ✓</p>
-                </div>
-                <div class="pt-2 flex items-center gap-2 text-sky-400 border-t border-slate-900">
-                    <span class="text-amber-400 font-bold">></span>
-                    <span id="typingSimulation" class="text-white font-bold"></span>
-                    <span class="w-2.5 h-4 bg-amber-400 cursor-blink inline-block"></span>
-                </div>
+            <div class="p-6 text-left mono-font text-sm text-emerald-400 bg-black space-y-2">
+                <p><span class="text-blue-400">> AN15OCTDACCXD</span> <span class="text-slate-500"># Check Flight Availability</span></p>
+                <p class="text-slate-300">15OCT WED DAC/BST DXB/GST-2</p>
+                <p class="text-emerald-400">1 EK 585 J9 C9 Y9 I0 /DAC DXB 0100 0430 77W 0 /E</p>
+                <p class="text-emerald-400">2 BG 047 Y9 S8 B7 K4 /DAC DXB 1930 2315 788 0 /E</p>
+                <p><span class="text-blue-400">> NM1RAHMAN/ANIS MR</span> <span class="text-slate-500"># Add Passenger Name</span></p>
+                <p class="text-amber-400">> SS1Y1 <span class="text-slate-500"># Sell Seat & Create PNR</span></p>
+                <p class="text-emerald-300">RP/DAC1A0980/DAC1A0980 25SEP/0415Z 4X7Y9Z — PNR CONFIRMED ✓</p>
             </div>
         </div>
     </div>
@@ -737,96 +562,6 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeVideo();
     });
-</script>
-
-<!-- Floating Instant WhatsApp Contact Button -->
-<a href="https://wa.me/8801674091748?text=Hello,%20I%20am%20interested%20in%20GDS%20Training%20Simulators" target="_blank" class="fixed bottom-6 right-6 z-50 whatsapp-pulse bg-[#25D366] hover:bg-[#20ba59] text-white p-4 rounded-full shadow-2xl transition flex items-center gap-3 group">
-    <i class="fa-brands fa-whatsapp text-3xl"></i>
-    <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-sm font-bold pr-1">
-        <span lang-bn>কথা বলুন (01674091748)</span>
-        <span lang-en>Chat on WhatsApp</span>
-    </span>
-</a>
-
-<script>
-    // Video Switcher & Audio Controls
-    function switchVideo(mode) {
-        const video = document.getElementById('heroActiveVideo');
-        const source = document.getElementById('videoSource');
-        const tabPromo = document.getElementById('tabPromoBtn');
-        const tabOverview = document.getElementById('tabOverviewBtn');
-        
-        if (mode === 'overview') {
-            source.src = 'assets/overview.mp4';
-            tabOverview.className = 'px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition flex items-center gap-1';
-            tabPromo.className = 'px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1';
-            // Unmute overview video by default so user can listen to voice
-            video.muted = false;
-            updateSoundIcon(false);
-        } else {
-            source.src = 'assets/promo.mp4';
-            tabPromo.className = 'px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition flex items-center gap-1';
-            tabOverview.className = 'px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1';
-            video.muted = true;
-            updateSoundIcon(true);
-        }
-        video.load();
-        video.play().catch(e => console.log('Autoplay handled:', e));
-    }
-
-    function toggleVideoSound() {
-        const video = document.getElementById('heroActiveVideo');
-        video.muted = !video.muted;
-        updateSoundIcon(video.muted);
-    }
-
-    function updateSoundIcon(isMuted) {
-        const icon = document.getElementById('soundIcon');
-        const label = document.getElementById('soundLabel');
-        if (isMuted) {
-            icon.className = 'fa-solid fa-volume-xmark';
-            label.textContent = 'Sound Off';
-        } else {
-            icon.className = 'fa-solid fa-volume-high text-amber-400';
-            label.textContent = 'Sound On';
-        }
-    }
-
-    // Terminal Dynamic Typing Animation
-    const commandsList = [
-        "FXP/R,UP — Price lowest available fare",
-        "NM1CHOWDHURY/KAMAL MR — Passenger name input",
-        "AP 01674091748-M — Contact element verified",
-        "TKOK — Ticket issuance OK confirmed",
-        "RT4X7Y9Z — Retrieve confirmed reservation"
-    ];
-    let cmdIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
-    const typingElem = document.getElementById('typingSimulation');
-
-    function typeTerminal() {
-        if (!typingElem) return;
-        const currentCmd = commandsList[cmdIdx];
-        if (isDeleting) {
-            typingElem.textContent = currentCmd.substring(0, charIdx--);
-            if (charIdx < 0) {
-                isDeleting = false;
-                cmdIdx = (cmdIdx + 1) % commandsList.length;
-                setTimeout(typeTerminal, 500);
-                return;
-            }
-        } else {
-            typingElem.textContent = currentCmd.substring(0, charIdx++);
-            if (charIdx > currentCmd.length) {
-                isDeleting = true;
-                setTimeout(typeTerminal, 2500);
-                return;
-            }
-        }
-        setTimeout(typeTerminal, isDeleting ? 30 : 65);
-    }
-    document.addEventListener('DOMContentLoaded', typeTerminal);
 </script>
 </body>
 </html>
