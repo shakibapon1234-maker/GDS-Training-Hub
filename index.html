@@ -135,15 +135,15 @@
             50% { opacity: 0; }
         }
 
-        /* Floating WhatsApp Button Animation */
+        /* Floating WhatsApp Button Animation - compositor-only (no box-shadow) to avoid CLS/non-composited warning */
         .whatsapp-pulse {
-            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
             animation: pulse-green 2.2s infinite;
+            will-change: transform;
         }
         @keyframes pulse-green {
-            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { transform: scale(1.04); box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
-            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            0%   { transform: scale(0.98); }
+            70%  { transform: scale(1.07); }
+            100% { transform: scale(0.98); }
         }
 
         /* Neon Pricing Cards */
@@ -323,7 +323,6 @@
 <!-- Animated Canvas Background -->
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-
 <!-- Language Toggle + Notice Bar -->
 <div class="relative z-20 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 py-2 px-4">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
@@ -386,6 +385,8 @@
         </a>
     </div>
 </nav>
+
+<main id="main-content">
 
 <!-- Hero -->
 <section class="relative z-10 pt-8 pb-12 overflow-hidden">
@@ -490,8 +491,8 @@
                 <div class="relative rounded-2xl overflow-hidden border border-amber-500/40 shadow-2xl glow-gold">
                     <!-- Video Header Cleaned -->
 
-                    <!-- Video Mode Switcher Tabs -->
-                    <div class="flex items-center justify-between bg-slate-900/90 px-3 py-2 border-b border-brand-border text-xs font-semibold">
+                    <!-- Video Mode Switcher Tabs - fixed height prevents font-swap layout shift (CLS fix) -->
+                    <div style="min-height:42px" class="flex items-center justify-between bg-slate-900/90 px-3 py-2 border-b border-brand-border text-xs font-semibold">
                         <div class="flex items-center gap-1.5">
                             <button id="tabPromoBtn" onclick="switchVideo('promo')" aria-label="প্রমো ভিডিও" class="px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition flex items-center gap-1">
                                 <i class="fa-solid fa-play text-[10px]"></i>
@@ -523,9 +524,10 @@
                             muted
                             loop
                             playsinline
-                            preload="auto"
+                            preload="metadata"
                         >
                             <source id="videoSource" src="assets/promo.mp4" type="video/mp4">
+                            <track kind="captions" label="No captions">
                         </video>
                     </div>
                     <!-- Bottom Info Bar -->
@@ -561,12 +563,12 @@
             <!-- Interactive Terminal with Real Simulation -->
             <div class="p-6 text-left mono-font text-sm text-emerald-400 bg-black/95 min-h-[220px] flex flex-col justify-start space-y-2">
                 <div id="terminalOutput" class="space-y-1.5 leading-relaxed">
-                    <p><span class="text-sky-400">> AN15OCTDACCXD</span> <span class="text-slate-500"># Check Flight Availability</span></p>
+                    <p><span class="text-sky-400">> AN15OCTDACCXD</span> <span class="text-slate-400"># Check Flight Availability</span></p>
                     <p class="text-slate-300">15OCT WED DAC/BST DXB/GST-2</p>
                     <p class="text-emerald-400">1 EK 585 J9 C9 Y9 I0 /DAC DXB 0100 0430 77W 0 /E</p>
                     <p class="text-emerald-400">2 BG 047 Y9 S8 B7 K4 /DAC DXB 1930 2315 788 0 /E</p>
-                    <p><span class="text-sky-400">> NM1RAHMAN/ANIS MR</span> <span class="text-slate-500"># Add Passenger Name</span></p>
-                    <p class="text-amber-400">> SS1Y1 <span class="text-slate-500"># Sell Seat & Create PNR</span></p>
+                    <p><span class="text-sky-400">> NM1RAHMAN/ANIS MR</span> <span class="text-slate-400"># Add Passenger Name</span></p>
+                    <p class="text-amber-400">> SS1Y1 <span class="text-slate-400"># Sell Seat & Create PNR</span></p>
                     <p class="text-emerald-300 font-bold">RP/DAC1A0980/DAC1A0980 25SEP/0415Z 4X7Y9Z — PNR CONFIRMED ✓</p>
                 </div>
                 <div class="pt-2 flex items-center gap-2 text-sky-400 border-t border-slate-900">
@@ -1000,7 +1002,7 @@
                 <div>
                     <!-- Badge & Icon -->
                     <div class="flex items-start justify-between gap-4 mb-5">
-                        <a href="https://antigravity-pdf.vercel.app" target="_blank" rel="noopener noreferrer" class="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-400 flex items-center justify-center text-2xl shadow-lg shadow-purple-500/10 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                        <a href="https://antigravity-pdf.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Antigravity PDF Pro ওয়েবসাইট" class="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-400 flex items-center justify-center text-2xl shadow-lg shadow-purple-500/10 shrink-0 group-hover:scale-105 transition-transform duration-300">
                             <i class="fa-solid fa-file-pdf"></i>
                         </a>
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-500/15 border border-purple-500/40 text-purple-300">
@@ -1064,7 +1066,7 @@
                 <div>
                     <!-- Badge & Icon -->
                     <div class="flex items-start justify-between gap-4 mb-5">
-                        <a href="https://acade-flow.vercel.app" target="_blank" rel="noopener noreferrer" class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/10 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                        <a href="https://acade-flow.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="AcadeFlow ERP ওয়েবসাইট" class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/10 shrink-0 group-hover:scale-105 transition-transform duration-300">
                             <i class="fa-solid fa-school"></i>
                         </a>
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-cyan-500/15 border border-cyan-500/40 text-cyan-300">
@@ -1272,13 +1274,14 @@
 
     </div>
 </section>
+</main>
 
 <!-- Footer -->
 <footer class="relative z-10 bg-slate-950 border-t border-brand-border py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
             <span class="text-xl font-black text-white">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
-            <p class="text-xs text-slate-500 mt-1">© 2026 GDS Training Hub & Antigravity Suite. All rights reserved.</p>
+            <p class="text-xs text-slate-400 mt-1">© 2026 GDS Training Hub & Antigravity Suite. All rights reserved.</p>
             <p class="text-xs text-slate-400 mt-2 flex items-center gap-2">
                 <i class="fa-solid fa-envelope text-amber-400"></i>
                 <a href="mailto:gdstraininghub@gmail.com" class="hover:text-amber-400 transition">gdstraininghub@gmail.com</a>
@@ -1357,7 +1360,7 @@
 </script>
 
 <!-- Floating Instant WhatsApp Contact Button -->
-<a href="https://wa.me/8801674091748?text=Hello,%20I%20am%20interested%20in%20GDS%20Training%20Simulators" target="_blank" class="fixed bottom-6 right-6 z-50 whatsapp-pulse bg-[#25D366] hover:bg-[#20ba59] text-white p-4 rounded-full shadow-2xl transition flex items-center gap-3 group">
+<a href="https://wa.me/8801674091748?text=Hello,%20I%20am%20interested%20in%20GDS%20Training%20Simulators" target="_blank" aria-label="হোয়াটসঅ্যাপে সরাসরি চ্যাট করুন" class="fixed bottom-6 right-6 z-50 whatsapp-pulse bg-[#25D366] hover:bg-[#20ba59] text-white p-4 rounded-full shadow-2xl transition flex items-center gap-3 group">
     <i class="fa-brands fa-whatsapp text-3xl"></i>
     <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-sm font-bold pr-1">
         <span lang-bn>কথা বলুন (01674091748)</span>
