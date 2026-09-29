@@ -207,6 +207,55 @@
         .neon-divider-cyan  { border-color: rgba(0,217,255,0.2); }
         .neon-divider-amber { border-color: rgba(245,158,11,0.3); }
         .neon-divider-green { border-color: rgba(16,185,129,0.2); }
+        /* Neon Simulator Cards */
+        .sim-card-sky {
+            background: linear-gradient(145deg, #071526 0%, #0d1e38 100%);
+            border: 1.5px solid rgba(14, 165, 233, 0.45);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.12), inset 0 0 22px rgba(14, 165, 233, 0.04);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: floatSim1 6.5s ease-in-out infinite;
+        }
+        .sim-card-sky:hover {
+            border-color: rgba(14, 165, 233, 0.95);
+            box-shadow: 0 0 35px rgba(14, 165, 233, 0.35), 0 0 80px rgba(14, 165, 233, 0.15), inset 0 0 25px rgba(14, 165, 233, 0.08);
+            transform: translateY(-8px);
+        }
+        .sim-card-emerald {
+            background: linear-gradient(145deg, #031c14 0%, #06281e 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.45);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.12), inset 0 0 22px rgba(16, 185, 129, 0.04);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: floatSim2 7.5s ease-in-out infinite;
+        }
+        .sim-card-emerald:hover {
+            border-color: rgba(16, 185, 129, 0.95);
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.35), 0 0 80px rgba(16, 185, 129, 0.15), inset 0 0 25px rgba(16, 185, 129, 0.08);
+            transform: translateY(-8px);
+        }
+        .sim-card-rose {
+            background: linear-gradient(145deg, #200814 0%, #2a0b1b 100%);
+            border: 1.5px solid rgba(244, 63, 94, 0.45);
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.12), inset 0 0 22px rgba(244, 63, 94, 0.04);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: floatSim3 8.5s ease-in-out infinite;
+        }
+        .sim-card-rose:hover {
+            border-color: rgba(244, 63, 94, 0.95);
+            box-shadow: 0 0 35px rgba(244, 63, 94, 0.35), 0 0 80px rgba(244, 63, 94, 0.15), inset 0 0 25px rgba(244, 63, 94, 0.08);
+            transform: translateY(-8px);
+        }
+        @keyframes floatSim1 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-7px); }
+        }
+        @keyframes floatSim2 {
+            0%, 100% { transform: translateY(-3px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes floatSim3 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
         @keyframes floatCard1 {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-7px); }
@@ -475,47 +524,148 @@
         </div>
 
         <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Amadeus -->
-            <div class="bg-brand-card border border-brand-border hover:border-sky-500 rounded-2xl p-8 transition duration-300 group">
-                <div class="w-14 h-14 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl font-black mb-6">1A</div>
-                <h3 class="text-2xl font-bold text-white group-hover:text-sky-400 transition">Amadeus Training Mode</h3>
-                <p class="mt-3 text-slate-400 text-sm leading-relaxed">
-                    <span lang-bn>বাংলাদেশ ও মধ্যপ্রাচ্যের ট্রাভেল এজেন্সিতে সবচেয়ে জনপ্রিয়। রিয়েল কম্যান্ড, PNR হ্যান্ডলিং ও ফেয়ার রুলস শিখুন।</span>
-                    <span lang-en>Most popular in Bangladesh and the Middle East. Master real terminal commands, PNR handling and fare rules.</span>
-                </p>
-                <ul class="mt-6 space-y-3 text-sm text-slate-300">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-sky-400"></i> <span lang-bn>কমপ্লিট PNR ক্রিয়েশন</span><span lang-en>Complete PNR Creation</span></li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-sky-400"></i> <span lang-bn>ফেয়ার ডিসপ্লে ও প্রাইসিং</span><span lang-en>Fare Display & Pricing</span></li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-sky-400"></i> Windows EXE & Android APK</li>
-                </ul>
+            <!-- Amadeus – Neon Sky -->
+            <div class="sim-card-sky rounded-2xl p-7 flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-36 h-36 rounded-full" style="background:radial-gradient(circle,rgba(14,165,233,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-13 h-13 px-3 py-2 rounded-xl bg-sky-500/20 border border-sky-400/40 text-sky-300 flex items-center justify-center text-xl font-black shadow-lg">
+                            ✈️ 1A
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/15 border border-sky-400/35 text-sky-300 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+                            <span lang-bn>সবচেয়ে জনপ্রিয়</span><span lang-en>Most Popular</span>
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-black text-white group-hover:text-sky-300 transition duration-300">Amadeus Training Mode</h3>
+                    <p class="mt-2 text-xs font-semibold text-sky-400/80">
+                        <span lang-bn>বাংলাদেশ ও মিডল ইস্ট এভিয়েশন স্ট্যান্ডার্ড</span>
+                        <span lang-en>BD & Middle East Aviation Standard</span>
+                    </p>
+                    <p class="mt-3 text-slate-300 text-sm leading-relaxed">
+                        <span lang-bn>বাংলাদেশ ও মধ্যপ্রাচ্যের ট্রাভেল এজেন্সিতে সবচেয়ে জনপ্রিয়। রিয়েল টার্মিনাল কম্যান্ড, PNR হ্যান্ডলিং ও ফেয়ার রুলস শিখুন।</span>
+                        <span lang-en>Most popular in Bangladesh and the Middle East. Master real terminal commands, PNR handling and fare rules.</span>
+                    </p>
+                    <hr class="my-5 border-sky-500/25">
+                    <ul class="space-y-3 text-sm text-slate-200">
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-sky-400 text-sm"></i>
+                            <span lang-bn>কমপ্লিট PNR ক্রিয়েশন ও টিকিট বুকিং</span><span lang-en>Complete PNR Creation & Booking</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-sky-400 text-sm"></i>
+                            <span lang-bn>ফেয়ার ডিসপ্লে, টার্মিনাল কোটেশন ও প্রাইসিং</span><span lang-en>Fare Display & Pricing</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-sky-400 text-sm"></i>
+                            <span lang-bn>Windows PC ও Android APK উভয় সাপোর্ট</span><span lang-en>Windows PC & Android APK Support</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-sky-400 text-sm"></i>
+                            <span lang-bn>ফুল অফিশিয়াল কম্যান্ড চিটশিট গাইড</span><span lang-en>Official Command Cheatsheet</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#pricing" class="mt-7 block text-center py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-sky-500/20 to-sky-600/10 hover:from-sky-500/30 hover:to-sky-600/25 border border-sky-400/50 text-sky-300 hover:text-white transition duration-300 shadow-md flex items-center justify-center gap-2">
+                    <span lang-bn>অর্ডার প্যাকেজ দেখুন</span><span lang-en>View Packages</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
             </div>
-            <!-- Galileo -->
-            <div class="bg-brand-card border border-brand-border hover:border-emerald-500 rounded-2xl p-8 transition duration-300 group">
-                <div class="w-14 h-14 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl font-black mb-6">1G</div>
-                <h3 class="text-2xl font-bold text-white group-hover:text-emerald-400 transition">Galileo Training Mode</h3>
-                <p class="mt-3 text-slate-400 text-sm leading-relaxed">
-                    <span lang-bn>ট্রাভেলপোর্ট গ্যালিলিও আন্তর্জাতিক রুটের টিকিট ইস্যু করার অন্যতম প্রধান মাধ্যম।</span>
-                    <span lang-en>Travelport Galileo is a primary system for issuing international airline tickets worldwide.</span>
-                </p>
-                <ul class="mt-6 space-y-3 text-sm text-slate-300">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>সিট অ্যাভেইলেবিলিটি চেক</span><span lang-en>Seat Availability Check</span></li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>টিকিট কোটেশন ও রিইস্যু</span><span lang-en>Ticket Quotation & Reissue</span></li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>ফুল কোর্স গাইড সহ</span><span lang-en>Full Course Guide Included</span></li>
-                </ul>
+
+            <!-- Galileo – Neon Emerald -->
+            <div class="sim-card-emerald rounded-2xl p-7 flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-36 h-36 rounded-full" style="background:radial-gradient(circle,rgba(16,185,129,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-13 h-13 px-3 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center justify-center text-xl font-black shadow-lg">
+                            🌐 1G
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-400/35 text-emerald-300 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span lang-bn>গ্লোবাল রুটের জন্য সেরা</span><span lang-en>Best For Global Routes</span>
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-black text-white group-hover:text-emerald-300 transition duration-300">Galileo Training Mode</h3>
+                    <p class="mt-2 text-xs font-semibold text-emerald-400/80">
+                        <span lang-bn>ট্রাভেলপোর্ট গ্যালিলিও ইন্টারন্যাশনাল রুট</span>
+                        <span lang-en>Travelport Galileo International Routes</span>
+                    </p>
+                    <p class="mt-3 text-slate-300 text-sm leading-relaxed">
+                        <span lang-bn>ট্রাভেলপোর্ট গ্যালিলিও আন্তর্জাতিক রুটের টিকিট ইস্যু করার অন্যতম প্রধান মাধ্যম। গ্লোবাল ক্যারিয়ারের পুরো ওয়ার্কফ্লো শিখুন।</span>
+                        <span lang-en>Travelport Galileo is a primary system for issuing international airline tickets worldwide.</span>
+                    </p>
+                    <hr class="my-5 border-emerald-500/25">
+                    <ul class="space-y-3 text-sm text-slate-200">
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                            <span lang-bn>সিট অ্যাভেইলেবিলিটি ও রিয়েল-টাইম চেক</span><span lang-en>Seat Availability & Real-Time Check</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                            <span lang-bn>টিকিট কোটেশন, রিইস্যু ও রিফান্ড ক্যালকুলেশন</span><span lang-en>Ticket Quotation, Reissue & Refund</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                            <span lang-bn>Windows PC ও Android APK উভয় সাপোর্ট</span><span lang-en>Windows PC & Android APK Support</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                            <span lang-bn>ফুল কোর্স প্র্যাকটিস গাইড অন্তর্ভুক্ত</span><span lang-en>Full Course Practice Guide Included</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#pricing" class="mt-7 block text-center py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-500/20 to-emerald-600/10 hover:from-emerald-500/30 hover:to-emerald-600/25 border border-emerald-400/50 text-emerald-300 hover:text-white transition duration-300 shadow-md flex items-center justify-center gap-2">
+                    <span lang-bn>অর্ডার প্যাকেজ দেখুন</span><span lang-en>View Packages</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
             </div>
-            <!-- Sabre -->
-            <div class="bg-brand-card border border-brand-border hover:border-rose-500 rounded-2xl p-8 transition duration-300 group">
-                <div class="w-14 h-14 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-2xl font-black mb-6">1S</div>
-                <h3 class="text-2xl font-bold text-white group-hover:text-rose-400 transition">Sabre Training Mode</h3>
-                <p class="mt-3 text-slate-400 text-sm leading-relaxed">
-                    <span lang-bn>ইউরোপ ও আমেরিকার শীর্ষ এয়ারলাইন্সের বুকিং হ্যান্ডেলে সেবার সিমুলেটর অপরিহার্য।</span>
-                    <span lang-en>Sabre is essential for handling bookings with top European and American airlines.</span>
-                </p>
-                <ul class="mt-6 space-y-3 text-sm text-slate-300">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> <span lang-bn>টার্মিনাল শর্টকাট প্র্যাকটিস</span><span lang-en>Terminal Shortcut Practice</span></li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> <span lang-bn>ব্যাগেজ ও প্যাসেঞ্জার ইনফো</span><span lang-en>Baggage & Passenger Info</span></li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span lang-bn>লাইফটাইম ক্লাউড অ্যাক্সেস</span><span lang-en>Lifetime Cloud Access</span></li>
-                </ul>
+
+            <!-- Sabre – Neon Rose -->
+            <div class="sim-card-rose rounded-2xl p-7 flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-36 h-36 rounded-full" style="background:radial-gradient(circle,rgba(244,63,94,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-13 h-13 px-3 py-2 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 flex items-center justify-center text-xl font-black shadow-lg">
+                            ⚡ 1S
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/15 border border-rose-400/35 text-rose-300 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping"></span>
+                            <span lang-bn>টপ ইন্টারন্যাশনাল সিস্টেম</span><span lang-en>Top International System</span>
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-black text-white group-hover:text-rose-300 transition duration-300">Sabre Training Mode</h3>
+                    <p class="mt-2 text-xs font-semibold text-rose-400/80">
+                        <span lang-bn>ইউরোপ ও আমেরিকা এয়ারলাইন্সের শীর্ষ মাধ্যম</span>
+                        <span lang-en>Top Airlines in US & Europe</span>
+                    </p>
+                    <p class="mt-3 text-slate-300 text-sm leading-relaxed">
+                        <span lang-bn>ইউরোপ ও আমেরিকার শীর্ষ এয়ারলাইন্সের বুকিং হ্যান্ডেলে সেবার সিমুলেটর অপরিহার্য। আধুনিক শর্টকাট ও কম্যান্ডে পারদর্শী হন।</span>
+                        <span lang-en>Sabre is essential for handling bookings with top European and American airlines.</span>
+                    </p>
+                    <hr class="my-5 border-rose-500/25">
+                    <ul class="space-y-3 text-sm text-slate-200">
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-rose-400 text-sm"></i>
+                            <span lang-bn>টার্মিনাল শর্টকাট ও ফাস্ট কম্যান্ড প্র্যাকটিস</span><span lang-en>Terminal Shortcut & Fast Commands</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-rose-400 text-sm"></i>
+                            <span lang-bn>ব্যাগেজ পলিসি ও প্যাসেঞ্জার ইনফো হ্যান্ডলিং</span><span lang-en>Baggage Policy & Passenger Info</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-rose-400 text-sm"></i>
+                            <span lang-bn>Windows PC ও Android APK উভয় সাপোর্ট</span><span lang-en>Windows PC & Android APK Support</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-rose-400 text-sm"></i>
+                            <span lang-bn>লাইফটাইম ক্লাউড প্র্যাকটিস সুবিধা</span><span lang-en>Lifetime Cloud Practice Access</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#pricing" class="mt-7 block text-center py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-rose-500/20 to-rose-600/10 hover:from-rose-500/30 hover:to-rose-600/25 border border-rose-400/50 text-rose-300 hover:text-white transition duration-300 shadow-md flex items-center justify-center gap-2">
+                    <span lang-bn>অর্ডার প্যাকেজ দেখুন</span><span lang-en>View Packages</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
             </div>
         </div>
     </div>
