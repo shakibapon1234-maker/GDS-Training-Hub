@@ -70,29 +70,11 @@
     }
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#080C14',
-                            card: '#111827',
-                            border: '#1E293B',
-                            accent: '#F59E0B',
-                            cyan: '#06B6D4'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="assets/css/tailwind.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.gstatic.com/s/hindsiliguri/v14/ijwTs5juQtsyLLR5jN4cxBEoTI7ax9k0.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
     <style>
         body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #080C14; color: #E2E8F0; overflow-x: hidden; position: relative; }
@@ -516,19 +498,23 @@
                     </div>
 
                     <!-- Video Element with Dynamic Source -->
-                    <div class="relative bg-black aspect-video flex items-center justify-center overflow-hidden">
+                    <div id="videoContainer" class="relative bg-black aspect-video flex items-center justify-center overflow-hidden cursor-pointer group">
                         <video
                             id="heroActiveVideo"
                             class="w-full h-full object-cover"
-                            autoplay
                             muted
                             loop
                             playsinline
-                            preload="metadata"
+                            preload="none"
                         >
-                            <source id="videoSource" src="assets/promo.mp4" type="video/mp4">
+                            <source id="videoSource" data-src="assets/promo.mp4" type="video/mp4">
                             <track kind="captions" label="No captions">
                         </video>
+                        <div id="videoPlayOverlay" class="absolute inset-0 flex md:hidden items-center justify-center bg-black/40 group-hover:bg-black/20 transition pointer-events-none">
+                            <div class="w-14 h-14 rounded-full bg-amber-500/90 text-slate-950 flex items-center justify-center text-xl shadow-lg transition transform group-hover:scale-110">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </div>
+                        </div>
                     </div>
                     <!-- Bottom Info Bar -->
                     <div class="bg-gradient-to-r from-slate-950 to-brand-card px-4 py-3 flex items-center justify-between border-t border-brand-border">
@@ -1412,6 +1398,41 @@
         }
     }
 
+    // Lazy load hero video on desktop after critical render (mobile loads on user tap to save 5.2MB bandwidth)
+    function initHeroVideo() {
+        if (window.innerWidth < 768) return;
+        var v = document.getElementById('heroActiveVideo');
+        var s = document.getElementById('videoSource');
+        if (v && s && s.dataset.src && !s.getAttribute('src')) {
+            s.src = s.dataset.src;
+            v.load();
+            v.play().catch(function(){});
+        }
+    }
+    if (document.readyState === 'complete') {
+        setTimeout(initHeroVideo, 600);
+    } else {
+        window.addEventListener('load', function() {
+            setTimeout(initHeroVideo, 600);
+        });
+    }
+
+    // Video click to play/pause (especially for mobile tap)
+    document.getElementById('videoContainer')?.addEventListener('click', function() {
+        var v = document.getElementById('heroActiveVideo');
+        var s = document.getElementById('videoSource');
+        var overlay = document.getElementById('videoPlayOverlay');
+        if (overlay) overlay.style.display = 'none';
+        if (v && s && s.dataset.src && !s.getAttribute('src')) {
+            s.src = s.dataset.src;
+            v.load();
+        }
+        if (v) {
+            if (v.paused) v.play().catch(function(){});
+            else v.pause();
+        }
+    });
+
     // Terminal Dynamic Typing Animation
     const commandsList = [
         "FXP/R,UP — Price lowest available fare",
@@ -1453,6 +1474,11 @@
 <script>
 (function () {
   'use strict';
+  if (window.innerWidth < 768) {
+    var cEl = document.getElementById('bg-canvas');
+    if (cEl) cEl.style.display = 'none';
+    return;
+  }
   var canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
