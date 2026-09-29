@@ -88,6 +88,9 @@
             }
         }
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -329,18 +332,18 @@
             <span lang-en>🔥 Special Offer: Save ৳1,000 when you buy all 3 GDS together!</span>
         </p>
         <div class="flex items-center gap-2 sm:gap-3 ml-auto">
-            <a href="mailto:gdstraininghub@gmail.com" class="text-xs font-bold text-slate-950 hover:text-white transition flex items-center gap-1.5 bg-slate-950/20 hover:bg-slate-950/50 px-2.5 sm:px-3 py-1 rounded-full border border-slate-950/20">
+            <a href="mailto:gdstraininghub@gmail.com" aria-label="GDS Training Hub ইমেইল" class="text-xs font-bold text-slate-950 hover:text-white transition flex items-center gap-1.5 bg-slate-950/20 hover:bg-slate-950/50 px-2.5 sm:px-3 py-1 rounded-full border border-slate-950/20">
                 <i class="fa-solid fa-envelope"></i>
                 <span class="hidden sm:inline">gdstraininghub@gmail.com</span>
                 <span class="sm:hidden">Email</span>
             </a>
-            <a href="https://www.youtube.com/@gdstraininghubbd" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-white transition flex items-center gap-1.5 bg-red-600 hover:bg-red-700 px-2.5 sm:px-3 py-1 rounded-full shadow-sm hover:scale-105">
+            <a href="https://www.youtube.com/@gdstraininghubbd" target="_blank" rel="noopener noreferrer" aria-label="GDS Training Hub YouTube চ্যানেল" class="text-xs font-bold text-white transition flex items-center gap-1.5 bg-red-600 hover:bg-red-700 px-2.5 sm:px-3 py-1 rounded-full shadow-sm hover:scale-105">
                 <i class="fa-brands fa-youtube"></i>
                 <span class="hidden sm:inline">YouTube</span>
                 <span class="sm:hidden">YT</span>
             </a>
             <!-- Language Toggle Switch -->
-            <button onclick="toggleLanguage()" id="langToggleBtn" class="lang-toggle flex items-center gap-1.5 sm:gap-2 bg-slate-950/30 hover:bg-slate-950/50 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold border border-slate-950/20">
+            <button onclick="toggleLanguage()" id="langToggleBtn" aria-label="ভাষা পরিবর্তন করুন" class="lang-toggle flex items-center gap-1.5 sm:gap-2 bg-slate-950/30 hover:bg-slate-950/50 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold border border-slate-950/20">
                 <span class="text-xs" id="langIcon">🇧🇩</span>
                 <span id="langLabel">বাং / EN</span>
                 <div class="w-9 sm:w-10 h-4 sm:h-5 bg-slate-950/40 rounded-full relative">
@@ -490,11 +493,11 @@
                     <!-- Video Mode Switcher Tabs -->
                     <div class="flex items-center justify-between bg-slate-900/90 px-3 py-2 border-b border-brand-border text-xs font-semibold">
                         <div class="flex items-center gap-1.5">
-                            <button id="tabPromoBtn" onclick="switchVideo('promo')" class="px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition flex items-center gap-1">
+                            <button id="tabPromoBtn" onclick="switchVideo('promo')" aria-label="প্রমো ভিডিও" class="px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition flex items-center gap-1">
                                 <i class="fa-solid fa-play text-[10px]"></i>
                                 <span lang-bn>প্রমো প্রিভিউ</span><span lang-en>Promo Teaser</span>
                             </button>
-                            <button id="tabOverviewBtn" onclick="switchVideo('overview')" class="px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
+                            <button id="tabOverviewBtn" onclick="switchVideo('overview')" aria-label="ফুল ওভারভিউ ভিডিও" class="px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
                                 <i class="fa-solid fa-film text-[10px]"></i>
                                 <span lang-bn>সম্পূর্ণ ভিডিও ওভারভিউ</span><span lang-en>Full Overview</span>
                             </button>
@@ -504,7 +507,7 @@
                                 <i class="fa-brands fa-youtube"></i>
                                 <span lang-bn>ইউটিউবে দেখুন</span><span lang-en>YouTube</span>
                             </a>
-                            <button onclick="toggleVideoSound()" id="soundToggleBtn" class="text-slate-400 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
+                            <button onclick="toggleVideoSound()" id="soundToggleBtn" aria-label="ভিডিও সাউন্ড" class="text-slate-400 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
                                 <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
                                 <span id="soundLabel">Sound Off</span>
                             </button>
