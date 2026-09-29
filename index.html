@@ -323,19 +323,31 @@
 
 <!-- Language Toggle + Notice Bar -->
 <div class="relative z-20 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 py-2 px-4">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <p class="text-sm font-bold hidden sm:block">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        <p class="text-sm font-bold hidden lg:block">
             <span lang-bn>🔥 স্পেশাল অফার: ৩টি GDS একসাথে নিলে ১,০০০/- টাকা ছাড়!</span>
             <span lang-en>🔥 Special Offer: Save ৳1,000 when you buy all 3 GDS together!</span>
         </p>
-        <!-- Language Toggle Switch -->
-        <button onclick="toggleLanguage()" id="langToggleBtn" class="lang-toggle flex items-center gap-2 bg-slate-950/30 hover:bg-slate-950/50 px-3 py-1.5 rounded-full text-sm font-bold border border-slate-950/20 ml-auto">
-            <span class="text-xs" id="langIcon">🇧🇩</span>
-            <span id="langLabel">বাং / EN</span>
-            <div class="w-10 h-5 bg-slate-950/40 rounded-full relative">
-                <div class="indicator absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full" id="langDot"></div>
-            </div>
-        </button>
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+            <a href="mailto:gdstraininghub@gmail.com" class="text-xs font-bold text-slate-950 hover:text-white transition flex items-center gap-1.5 bg-slate-950/20 hover:bg-slate-950/50 px-2.5 sm:px-3 py-1 rounded-full border border-slate-950/20">
+                <i class="fa-solid fa-envelope"></i>
+                <span class="hidden sm:inline">gdstraininghub@gmail.com</span>
+                <span class="sm:hidden">Email</span>
+            </a>
+            <a href="https://www.youtube.com/@gdstraininghubbd" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-white transition flex items-center gap-1.5 bg-red-600 hover:bg-red-700 px-2.5 sm:px-3 py-1 rounded-full shadow-sm hover:scale-105">
+                <i class="fa-brands fa-youtube"></i>
+                <span class="hidden sm:inline">YouTube</span>
+                <span class="sm:hidden">YT</span>
+            </a>
+            <!-- Language Toggle Switch -->
+            <button onclick="toggleLanguage()" id="langToggleBtn" class="lang-toggle flex items-center gap-1.5 sm:gap-2 bg-slate-950/30 hover:bg-slate-950/50 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold border border-slate-950/20">
+                <span class="text-xs" id="langIcon">🇧🇩</span>
+                <span id="langLabel">বাং / EN</span>
+                <div class="w-9 sm:w-10 h-4 sm:h-5 bg-slate-950/40 rounded-full relative">
+                    <div class="indicator absolute top-0.5 left-0.5 w-3 sm:w-4 h-3 sm:h-4 bg-white rounded-full" id="langDot"></div>
+                </div>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -487,10 +499,16 @@
                                 <span lang-bn>সম্পূর্ণ ভিডিও ওভারভিউ</span><span lang-en>Full Overview</span>
                             </button>
                         </div>
-                        <button onclick="toggleVideoSound()" id="soundToggleBtn" class="text-slate-400 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
-                            <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
-                            <span id="soundLabel">Sound Off</span>
-                        </button>
+                        <div class="flex items-center gap-1.5 ml-auto">
+                            <a href="https://youtu.be/2285sz6sBtU" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-red-600 hover:bg-red-500 text-white font-bold transition flex items-center gap-1 text-[11px] shadow-sm hover:scale-105">
+                                <i class="fa-brands fa-youtube"></i>
+                                <span lang-bn>ইউটিউবে দেখুন</span><span lang-en>YouTube</span>
+                            </a>
+                            <button onclick="toggleVideoSound()" id="soundToggleBtn" class="text-slate-400 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
+                                <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
+                                <span id="soundLabel">Sound Off</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Video Element with Dynamic Source -->
@@ -843,26 +861,33 @@
 <!-- Payment Info -->
 <section class="relative z-10 py-12 bg-brand-card/90 border-y border-brand-border backdrop-blur-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="flex items-center space-x-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="flex items-center space-x-4 bg-slate-900/60 p-4 rounded-xl border border-brand-border/60">
                 <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-wallet"></i></div>
                 <div>
                     <h4 class="font-bold text-white"><span lang-bn>পেমেন্ট মেথড</span><span lang-en>Payment Method</span></h4>
-                    <p class="text-sm text-slate-400">bKash / Nagad: <strong class="text-amber-400 mono-font">01674091748</strong></p>
+                    <p class="text-sm text-slate-400">bKash/Nagad: <strong class="text-amber-400 mono-font">01674091748</strong></p>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-4 bg-slate-900/60 p-4 rounded-xl border border-brand-border/60">
                 <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-cloud-arrow-down"></i></div>
                 <div>
                     <h4 class="font-bold text-white"><span lang-bn>তাৎক্ষণিক ডেলিভারি</span><span lang-en>Instant Delivery</span></h4>
-                    <p class="text-sm text-slate-400"><span lang-bn>পেমেন্টের সাথে সাথে গুগল ড্রাইভ লিংক পাবেন।</span><span lang-en>Receive Google Drive download link immediately after payment.</span></p>
+                    <p class="text-xs sm:text-sm text-slate-400"><span lang-bn>পেমেন্টের সাথে সাথে ড্রাইভ লিংক।</span><span lang-en>Instant Drive download link.</span></p>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-4 bg-slate-900/60 p-4 rounded-xl border border-brand-border/60">
                 <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-headset"></i></div>
                 <div>
                     <h4 class="font-bold text-white"><span lang-bn>সেটআপ সহায়তা</span><span lang-en>Setup Support</span></h4>
                     <p class="text-sm text-slate-400">WhatsApp: <a href="https://wa.me/8801674091748" class="text-emerald-400 mono-font hover:underline">01674091748</a></p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 bg-slate-900/60 p-4 rounded-xl border border-brand-border/60">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-envelope"></i></div>
+                <div>
+                    <h4 class="font-bold text-white"><span lang-bn>অফিসিয়াল ইমেইল</span><span lang-en>Official Email</span></h4>
+                    <p class="text-xs text-slate-400 break-all"><a href="mailto:gdstraininghub@gmail.com" class="text-amber-400 hover:underline">gdstraininghub@gmail.com</a></p>
                 </div>
             </div>
         </div>
@@ -1246,13 +1271,17 @@
 </section>
 
 <!-- Footer -->
-<footer class="relative z-10 bg-slate-950 border-t border-brand-border py-10">
+<footer class="relative z-10 bg-slate-950 border-t border-brand-border py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
             <span class="text-xl font-black text-white">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
             <p class="text-xs text-slate-500 mt-1">© 2026 GDS Training Hub & Antigravity Suite. All rights reserved.</p>
+            <p class="text-xs text-slate-400 mt-2 flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-amber-400"></i>
+                <a href="mailto:gdstraininghub@gmail.com" class="hover:text-amber-400 transition">gdstraininghub@gmail.com</a>
+            </p>
         </div>
-        <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+        <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6 text-sm">
             <a href="#features" class="text-slate-400 hover:text-white"><span lang-bn>ফিচার</span><span lang-en>Features</span></a>
             <a href="#pricing" class="text-slate-400 hover:text-white"><span lang-bn>প্রাইসিং</span><span lang-en>Pricing</span></a>
             <a href="#faq" class="text-slate-400 hover:text-white">FAQ</a>
@@ -1260,8 +1289,11 @@
                 <i class="fa-solid fa-layer-group text-xs"></i>
                 <span lang-bn>অন্যান্য সফটওয়্যার</span><span lang-en>Other Software</span>
             </a>
-            <a href="https://wa.me/8801674091748" target="_blank" class="text-emerald-400 font-semibold flex items-center gap-1">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp (01674091748)
+            <a href="https://www.youtube.com/@gdstraininghubbd" target="_blank" rel="noopener noreferrer" class="text-red-500 hover:text-red-400 font-semibold flex items-center gap-1.5 transition">
+                <i class="fa-brands fa-youtube text-base"></i> YouTube
+            </a>
+            <a href="https://wa.me/8801674091748" target="_blank" class="text-emerald-400 font-semibold flex items-center gap-1.5">
+                <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp (01674091748)
             </a>
         </div>
     </div>
