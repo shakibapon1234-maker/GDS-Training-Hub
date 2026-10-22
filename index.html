@@ -393,12 +393,12 @@
             <a href="#features" class="hover:text-amber-400 transition">
                 <span lang-bn>সিমুলেটর</span><span lang-en>Simulators</span>
             </a>
-            <div class="relative group">
-                <button class="hover:text-sky-400 transition flex items-center gap-1 text-slate-300">
+            <div class="relative" id="gdsPagesDropdown">
+                <button id="gdsPagesButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="gdsPagesMenu" class="hover:text-sky-400 transition flex items-center gap-1 text-slate-300">
                     <i class="fa-solid fa-terminal text-xs text-sky-400"></i> GDS পেজ
                     <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
                 </button>
-                <div class="absolute top-full left-0 mt-2 w-40 bg-[#0d1422] border border-slate-700 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div id="gdsPagesMenu" role="menu" aria-labelledby="gdsPagesButton" class="absolute top-full left-0 mt-2 w-40 bg-[#0d1422] border border-slate-700 rounded-xl shadow-2xl z-50 hidden">
                     <a href="amadeus.html" class="flex items-center gap-2 px-4 py-2.5 text-sky-400 hover:bg-sky-500/10 rounded-t-xl text-xs font-bold transition">
                         <i class="fa-solid fa-terminal text-[10px]"></i> Amadeus
                     </a>
@@ -1623,6 +1623,34 @@
 </a>
 
 <script>
+    // GDS pages dropdown: click to open, and reliably close on a second click,
+    // outside click, or Escape (including on touch devices where :hover can stick).
+    (function () {
+        var dropdown = document.getElementById('gdsPagesDropdown');
+        var button = document.getElementById('gdsPagesButton');
+        var menu = document.getElementById('gdsPagesMenu');
+        if (!dropdown || !button || !menu) return;
+
+        function closeGdsPagesMenu() {
+            menu.classList.add('hidden');
+            button.setAttribute('aria-expanded', 'false');
+        }
+
+        button.addEventListener('click', function () {
+            var isOpen = !menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', isOpen);
+            button.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!dropdown.contains(event.target)) closeGdsPagesMenu();
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeGdsPagesMenu();
+        });
+    })();
+
     // Video Switcher & Audio Controls
     function switchVideo(mode) {
         const video = document.getElementById('heroActiveVideo');
