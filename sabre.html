@@ -44,6 +44,38 @@
         .cmd-line{animation:fadeUp .4s ease both}
         @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     </style>
+    <!-- Meta Pixel Code (GDS Training Hub) -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '881905844712860');
+    fbq('track', 'PageView');
+
+    // WhatsApp link clicks: order buttons -> InitiateCheckout (with price), others -> Contact
+    document.addEventListener('click', function (e) {
+        try {
+            var a = e.target && e.target.closest ? e.target.closest('a') : null;
+            if (!a || !a.href) return;
+            if (!/wa\.me|whatsapp\.com|api\.whatsapp/i.test(a.href)) return;
+            var txt = a.href;
+            try { txt = decodeURIComponent(a.href); } catch (x) {}
+            if (/order/i.test(txt)) {
+                var m = txt.match(/[\u20B3\u09F3]\s?([\d,]+)/);
+                fbq('track', 'InitiateCheckout', m ? { value: parseFloat(m[1].replace(/,/g, '')), currency: 'BDT' } : {});
+            } else {
+                fbq('track', 'Contact');
+            }
+        } catch (err) {}
+    });
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=881905844712860&ev=PageView&noscript=1"/></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 <body class="selection:bg-rose-500 selection:text-white">
 
