@@ -373,6 +373,35 @@
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=881905844712860&ev=PageView&noscript=1"/></noscript>
     <!-- End Meta Pixel Code -->
+    <!-- WhatsApp message tagging: adds page + traffic source to every wa.me message -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            var p = new URLSearchParams(location.search);
+            var s = p.get('src') || p.get('utm_campaign') || p.get('utm_source') || '';
+            if (!s && p.get('fbclid')) s = 'facebook';
+            try {
+                if (s) sessionStorage.setItem('gds_src', s);
+                else s = sessionStorage.getItem('gds_src') || '';
+            } catch (e) {}
+            if (!s) {
+                try {
+                    var h = document.referrer ? new URL(document.referrer).hostname : '';
+                    s = (h && h.indexOf(location.hostname) < 0) ? h : 'direct';
+                } catch (e) { s = 'direct'; }
+            }
+            var page = (location.pathname.split('/').pop() || 'index').replace('.html', '') || 'index';
+            document.querySelectorAll('a[href*="wa.me"]').forEach(function (a) {
+                try {
+                    var base = a.href.split('?')[0];
+                    var q = new URL(a.href).searchParams.get('text') || '';
+                    q += (q ? '\n\n' : '') + '(Page: ' + page + ' | Source: ' + s + ')';
+                    a.href = base + '?text=' + encodeURIComponent(q);
+                } catch (e) {}
+            });
+        } catch (err) {}
+    });
+    </script>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">
 <!-- Animated Canvas Background -->
@@ -1068,7 +1097,7 @@
                         <li class="flex items-center gap-2 text-amber-400 font-bold bg-amber-500/10 px-2 py-1.5 rounded-lg border border-amber-500/25"><i class="fa-solid fa-gift text-amber-400 text-xs"></i> <span lang-bn>🎁 ফ্রি: ৩-ইন-১ GDS Master Ebook</span><span lang-en>🎁 Free: 3-in-1 GDS Master Ebook</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%201%20GDS%20Simulator%20(%E2%82%B32000)" target="_blank" class="mt-7 block text-center neon-btn-cyan py-3.5 rounded-xl transition">
+                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%201%20GDS%20Simulator%20(%E0%A7%B32000).%20Which%20one%3F%20Amadeus%20%2F%20Galileo%20%2F%20Sabre%3A%20" target="_blank" class="mt-7 block text-center neon-btn-cyan py-3.5 rounded-xl transition">
                     <span lang-bn>অর্ডার করুন (৳ ২,০০০)</span><span lang-en>Order Now (৳ 2,000)</span>
                 </a>
             </div>
@@ -1105,7 +1134,7 @@
                         <li class="flex items-center gap-2 text-amber-300 font-black bg-amber-500/20 px-2.5 py-1.5 rounded-lg border border-amber-500/40"><i class="fa-solid fa-gift text-amber-400"></i> <span lang-bn>🎁 বিশেষ গিফট: ৩-ইন-১ GDS Master Ebook</span><span lang-en>🎁 Free: 3-in-1 GDS Master Ebook Included</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%20Complete%20Bundle%20(All%203%20GDS)%20(%E2%82%B35000)" target="_blank" class="mt-7 block text-center neon-btn-amber py-4 rounded-xl shadow-lg transition">
+                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%20Complete%20Bundle%20(All%203%20GDS)%20(%E0%A7%B35000)" target="_blank" class="mt-7 block text-center neon-btn-amber py-4 rounded-xl shadow-lg transition">
                     <span lang-bn>কমপ্লিট বান্ডেল অর্ডার করুন (৳ ৫,০০০)</span><span lang-en>Order Complete Bundle (৳ 5,000)</span>
                 </a>
             </div>
@@ -1138,7 +1167,7 @@
                         <li class="flex items-center gap-2 text-emerald-300 font-bold bg-emerald-500/10 px-2 py-1.5 rounded-lg border border-emerald-500/25"><i class="fa-solid fa-gift text-emerald-400 text-xs"></i> <span lang-bn>🎁 ফ্রি: ৩-ইন-১ GDS Master Ebook</span><span lang-en>🎁 Free: 3-in-1 GDS Master Ebook</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%202%20GDS%20Simulators%20(%E2%82%B33500)" target="_blank" class="mt-7 block text-center neon-btn-green py-3.5 rounded-xl transition">
+                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%202%20GDS%20Simulators%20(%E0%A7%B33500).%20Which%20two%3F%20Amadeus%20%2F%20Galileo%20%2F%20Sabre%3A%20" target="_blank" class="mt-7 block text-center neon-btn-green py-3.5 rounded-xl transition">
                     <span lang-bn>অর্ডার করুন (৳ ৩,৫০০)</span><span lang-en>Order Now (৳ 3,500)</span>
                 </a>
             </div>

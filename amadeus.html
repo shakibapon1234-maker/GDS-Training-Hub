@@ -76,6 +76,35 @@
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=881905844712860&ev=PageView&noscript=1"/></noscript>
     <!-- End Meta Pixel Code -->
+    <!-- WhatsApp message tagging: adds page + traffic source to every wa.me message -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            var p = new URLSearchParams(location.search);
+            var s = p.get('src') || p.get('utm_campaign') || p.get('utm_source') || '';
+            if (!s && p.get('fbclid')) s = 'facebook';
+            try {
+                if (s) sessionStorage.setItem('gds_src', s);
+                else s = sessionStorage.getItem('gds_src') || '';
+            } catch (e) {}
+            if (!s) {
+                try {
+                    var h = document.referrer ? new URL(document.referrer).hostname : '';
+                    s = (h && h.indexOf(location.hostname) < 0) ? h : 'direct';
+                } catch (e) { s = 'direct'; }
+            }
+            var page = (location.pathname.split('/').pop() || 'index').replace('.html', '') || 'index';
+            document.querySelectorAll('a[href*="wa.me"]').forEach(function (a) {
+                try {
+                    var base = a.href.split('?')[0];
+                    var q = new URL(a.href).searchParams.get('text') || '';
+                    q += (q ? '\n\n' : '') + '(Page: ' + page + ' | Source: ' + s + ')';
+                    a.href = base + '?text=' + encodeURIComponent(q);
+                } catch (e) {}
+            });
+        } catch (err) {}
+    });
+    </script>
 </head>
 <body class="selection:bg-sky-500 selection:text-white">
 
