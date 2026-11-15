@@ -1950,5 +1950,585 @@
     setTimeout(startAnimation, 300);
 })();
 </script>
+
+<!-- ========================================== -->
+<!-- GDS Lead Capture Modal & WhatsApp Connector -->
+<!-- ========================================== -->
+<div id="gdsLeadModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md hidden transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle" style="display:none;">
+    <div class="relative w-full max-w-lg bg-[#0d1424] border border-amber-500/35 rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto text-slate-200">
+        <!-- Golden Top Line -->
+        <div class="h-1.5 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600"></div>
+
+        <!-- Modal Header -->
+        <div class="p-5 sm:p-6 pb-3 border-b border-slate-800 flex items-start justify-between">
+            <div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-2">
+                    <i class="fa-solid fa-plane-departure text-[11px]"></i>
+                    <span lang-bn>GDS ট্রেনিং হাব • অফিশিয়াল অর্ডার</span>
+                    <span lang-en>GDS Training Hub • Official Order</span>
+                </div>
+                <h3 id="leadModalTitle" class="text-xl sm:text-2xl font-black text-white">
+                    <span lang-bn>সিমুলেটর নিতে তথ্য দিন</span>
+                    <span lang-en>Order GDS Simulator</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    <span lang-bn>তথ্য জমা দিলে সরাসরি অফিশিয়াল WhatsApp-এ বিস্তারিত চ্যাট শুরু হবে</span>
+                    <span lang-en>Submit to connect directly with our WhatsApp helpline</span>
+                </p>
+            </div>
+            <button id="closeLeadModalBtn" type="button" aria-label="ফর্ম বন্ধ করুন" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div class="p-5 sm:p-6 overflow-y-auto space-y-4">
+            <form id="gdsLeadForm" onsubmit="handleLeadSubmit(event)" class="space-y-4">
+                
+                <!-- Quick Country Selector -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-location-dot text-amber-400 mr-1"></i>
+                        <span lang-bn>আপনার দেশ নির্বাচন করুন:</span>
+                        <span lang-en>Select Your Country:</span>
+                    </label>
+                    <div class="flex flex-wrap gap-1.5 sm:gap-2" id="countryChipsContainer">
+                        <button type="button" onclick="selectCountryChip('সৌদি আরব', '+966 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 border border-amber-400 text-amber-400 transition cursor-pointer">
+                            🇸🇦 সৌদি আরব
+                        </button>
+                        <button type="button" onclick="selectCountryChip('কাতার', '+974 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
+                            🇶🇦 কাতার
+                        </button>
+                        <button type="button" onclick="selectCountryChip('ইউএই (দুবাই)', '+971 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
+                            🇦🇪 দুবাই / ইউএই
+                        </button>
+                        <button type="button" onclick="selectCountryChip('বাংলাদেশ', '+880 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
+                            🇧🇩 বাংলাদেশ
+                        </button>
+                        <button type="button" onclick="selectCountryChip('অন্যান্য দেশ', '+', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
+                            🌐 অন্যান্য
+                        </button>
+                    </div>
+                    <input type="hidden" id="selectedCountryInput" name="country" value="সৌদি আরব">
+                </div>
+
+                <!-- Name & Phone -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="leadFullName" class="block text-xs font-bold text-slate-300 mb-1">
+                            <span lang-bn>আপনার নাম <span class="text-amber-400">*</span></span>
+                            <span lang-en>Full Name <span class="text-amber-400">*</span></span>
+                        </label>
+                        <input type="text" id="leadFullName" required placeholder="যেমন: শাকিল আহমেদ" class="w-full bg-slate-900/90 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label for="leadPhoneNumber" class="block text-xs font-bold text-slate-300 mb-1">
+                            <span lang-bn>WhatsApp নম্বর <span class="text-amber-400">*</span></span>
+                            <span lang-en>WhatsApp Number <span class="text-amber-400">*</span></span>
+                        </label>
+                        <input type="tel" id="leadPhoneNumber" required value="+966 " placeholder="+966 50 123 4567" class="w-full bg-slate-900/90 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition mono-font">
+                    </div>
+                </div>
+
+                <!-- Package Choice -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-boxes-stacked text-amber-400 mr-1"></i>
+                        <span lang-bn>কোন প্যাকেজটি নিতে চান?</span>
+                        <span lang-en>Select Package:</span>
+                    </label>
+                    <div class="space-y-2" id="packageOptionsList">
+                        <!-- Option 1: 3 GDS Complete Bundle -->
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-amber-500/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-transparent cursor-pointer hover:border-amber-400 transition group">
+                            <div class="flex items-center gap-2.5">
+                                <input type="radio" name="gdsPackage" value="৩টি জিডিএস কমপ্লিট বান্ডেল (৳৫,০০০)" checked class="w-4 h-4 text-amber-500 focus:ring-0 bg-slate-900 border-slate-700">
+                                <div>
+                                    <div class="text-xs sm:text-sm font-black text-amber-300 flex items-center gap-1.5">
+                                        <span>৩টি জিডিএস কমপ্লিট বান্ডেল</span>
+                                        <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded">বেস্ট ভ্যালু</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400">Amadeus + Galileo + Sabre + ফ্রি ইবুক</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs sm:text-sm font-black text-white">৳ ৫,০০০</div>
+                                <div class="text-[10px] text-amber-400/80">~১৭০ রিয়াল</div>
+                            </div>
+                        </label>
+
+                        <!-- Option 2: Any 2 GDS -->
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-900/60 cursor-pointer hover:border-emerald-500/50 transition group">
+                            <div class="flex items-center gap-2.5">
+                                <input type="radio" name="gdsPackage" value="যেকোনো ২টি জিডিএস (৳৩,৫০০)" class="w-4 h-4 text-emerald-500 focus:ring-0 bg-slate-900 border-slate-700">
+                                <div>
+                                    <div class="text-xs sm:text-sm font-bold text-slate-200">যেকোনো ২টি GDS সিস্টেম</div>
+                                    <p class="text-[11px] text-slate-400">পছন্দের ২টি সিমুলেটর + ফ্রি ইবুক</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs sm:text-sm font-bold text-slate-200">৳ ৩,৫০০</div>
+                                <div class="text-[10px] text-emerald-400/80">~১২০ রিয়াল</div>
+                            </div>
+                        </label>
+
+                        <!-- Option 3: Any 1 GDS -->
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-900/60 cursor-pointer hover:border-sky-500/50 transition group">
+                            <div class="flex items-center gap-2.5">
+                                <input type="radio" name="gdsPackage" value="যেকোনো ১টি জিডিএস (৳২,০০০)" class="w-4 h-4 text-sky-500 focus:ring-0 bg-slate-900 border-slate-700">
+                                <div>
+                                    <div class="text-xs sm:text-sm font-bold text-slate-200">যেকোনো ১টি GDS সিস্টেম</div>
+                                    <p class="text-[11px] text-slate-400">Amadeus / Galileo / Sabre (যেকোনো ১টি)</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs sm:text-sm font-bold text-slate-200">৳ ২,০০০</div>
+                                <div class="text-[10px] text-sky-400/80">~৭০ রিয়াল</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Notes / Special Comments -->
+                <div>
+                    <label for="leadNotesInput" class="block text-xs font-bold text-slate-300 mb-1">
+                        <span lang-bn>কোনো প্রশ্ন বা ঠিকানা (ঐচ্ছিক):</span>
+                        <span lang-en>City / Special Notes (Optional):</span>
+                    </label>
+                    <input type="text" id="leadNotesInput" placeholder="যেমন: রিয়াদ থেকে নিতে চাই, বিস্তারিত জানতে চাই" class="w-full bg-slate-900/90 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 outline-none transition">
+                </div>
+
+                <!-- Overseas Reassurance Box -->
+                <div class="rounded-xl p-3 bg-slate-900/80 border border-amber-500/20 text-[11px] text-slate-300 space-y-1">
+                    <div class="flex items-center gap-1.5 text-amber-400 font-bold">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span lang-bn>প্রবাসী ভাইদের জন্য বিশেষ নিশ্চয়তা:</span>
+                        <span lang-en>Overseas Order Guarantee:</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">
+                        • <strong>পেমেন্ট:</strong> Al Rajhi, STC Pay, Urpay, Ooredoo Money বা বাংলাদেশের বিকাশ/ব্যাংক সাপোর্ট।<br>
+                        • <strong>ডেলিভারি:</strong> অর্ডার কনফার্ম হওয়ামাত্রই ৩ মিনিটে WhatsApp ও Google Drive লিংকে সফটওয়্যার ইনস্ট্যান্ট প্রদান।
+                    </p>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitLeadBtn" class="w-full py-3.5 px-4 rounded-xl font-black bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 hover:brightness-110 shadow-lg text-sm sm:text-base transition flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span lang-bn>জমা দিয়ে WhatsApp-এ মেসেজ দিন 📲</span>
+                    <span lang-en>Submit & Chat on WhatsApp 📲</span>
+                </button>
+            </form>
+
+            <!-- Direct WhatsApp Bypass Link -->
+            <div class="text-center pt-1">
+                <a id="directWaBypassLink" href="https://wa.me/8801674091748" target="_blank" class="text-[11px] text-slate-400 hover:text-amber-400 underline transition">
+                    <span lang-bn>সরাসরি ফর্ম ছাড়া হোয়াটসঅ্যাপে যেতে চান? এখানে ক্লিক করুন</span>
+                    <span lang-en>Want to chat directly without form? Click here</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- Admin Leads Viewer (Ctrl+Shift+L or #leads) -->
+<!-- ========================================== -->
+<div id="gdsAdminLeadsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/90 backdrop-blur-md hidden" role="dialog" aria-modal="true" style="display:none;">
+    <div class="relative w-full max-w-4xl bg-[#0d1424] border border-amber-500/40 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col text-slate-200">
+        <div class="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+            <div>
+                <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-users text-amber-400"></i>
+                    <span>GDS ট্রেনিং হাব — সংগৃহীত লিড ড্যাশবোর্ড</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    মোট লিড: <strong id="adminTotalLeadsCount" class="text-amber-400">0</strong> টি
+                </p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="exportLeadsToCsv()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-file-excel"></i> এক্সেল/CSV ডাউনলোড
+                </button>
+                <button id="closeAdminModalBtn" type="button" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-3 sm:p-4 bg-slate-900/40 border-b border-slate-800 flex flex-wrap items-center gap-2" id="adminCountrySummary">
+            <!-- Country badges will appear here -->
+        </div>
+        <!-- Google Sheet Webhook Sync Setting -->
+        <div class="px-3 py-2 bg-slate-900/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 flex-1 min-w-[280px]">
+                <i class="fa-solid fa-table text-emerald-400 text-sm"></i>
+                <span class="text-slate-300 font-semibold whitespace-nowrap">Google Sheets URL:</span>
+                <input type="url" id="adminSheetWebhookUrl" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-950 border border-slate-700 px-2.5 py-1.5 rounded-lg text-white text-xs outline-none focus:border-amber-400">
+                <button type="button" onclick="saveSheetWebhookUrl()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition">???</button>
+            </div>
+            <span class="text-[11px] text-slate-400">???? ???? ???????? ????? ??? ??? ???? ????-????? ???? ??? (??????)</span>
+        </div>
+        <div class="p-3 sm:p-4 overflow-y-auto flex-1">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                            <th class="py-2.5 px-3">তারিখ</th>
+                            <th class="py-2.5 px-3">নাম</th>
+                            <th class="py-2.5 px-3">দেশ/শহর</th>
+                            <th class="py-2.5 px-3">হোয়াটসঅ্যাপ</th>
+                            <th class="py-2.5 px-3">প্যাকেজ</th>
+                            <th class="py-2.5 px-3">নোট</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminLeadsTableBody" class="divide-y divide-slate-800/60">
+                        <tr><td colspan="6" class="text-center py-6 text-slate-500">লোডিং...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="p-3 border-t border-slate-800 bg-slate-900/50 flex items-center justify-between text-[11px] text-slate-400">
+            <span>কিবোর্ড শর্টকাট: <kbd class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">Ctrl + Shift + L</kbd></span>
+            <button type="button" onclick="clearAllLeads()" class="text-red-400 hover:underline">সব ডাটা মুছুন</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- GDS Lead Modal JavaScript Engine -->
+<!-- ========================================== -->
+<script>
+(function() {
+    var MODAL_ID = 'gdsLeadModal';
+    var ADMIN_MODAL_ID = 'gdsAdminLeadsModal';
+    var STORAGE_KEY = 'gds_leads_v1';
+    window.GDS_GOOGLE_SHEET_URL = window.GDS_GOOGLE_SHEET_URL || '';
+
+    function getLeads() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) { return []; }
+    }
+
+    function saveLead(item) {
+        try {
+            var list = getLeads();
+            list.unshift(item);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch (e) {}
+    }
+
+    window.selectCountryChip = function(country, code, btn) {
+        var input = document.getElementById('selectedCountryInput');
+        if (input) input.value = country;
+        var phone = document.getElementById('leadPhoneNumber');
+        if (phone) {
+            var val = phone.value.trim();
+            if (!val || /^\+\d{1,4}\s?$/.test(val)) {
+                phone.value = code;
+            } else if (!val.startsWith('+')) {
+                phone.value = code + val;
+            }
+            phone.focus();
+        }
+        document.querySelectorAll('#countryChipsContainer .country-chip').forEach(function(c) {
+            c.className = 'country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer';
+        });
+        if (btn) {
+            btn.className = 'country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 border border-amber-400 text-amber-400 transition cursor-pointer';
+        }
+    };
+
+    window.openGdsLeadModal = function(presetPkg, fallbackUrl) {
+        var modal = document.getElementById(MODAL_ID);
+        if (!modal) return;
+
+        if (presetPkg) {
+            var radios = document.querySelectorAll('input[name="gdsPackage"]');
+            radios.forEach(function(r) {
+                if (presetPkg === 'single1' && /১টি/i.test(r.value)) r.checked = true;
+                else if (presetPkg === 'duo2' && /২টি/i.test(r.value)) r.checked = true;
+                else if (presetPkg === 'bundle3' && /৩টি|কমপ্লিট/i.test(r.value)) r.checked = true;
+            });
+        }
+
+        var bypass = document.getElementById('directWaBypassLink');
+        if (bypass && fallbackUrl) {
+            bypass.href = fallbackUrl;
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(function() {
+            var nameInp = document.getElementById('leadFullName');
+            if (nameInp) nameInp.focus();
+        }, 80);
+    };
+
+    window.closeGdsLeadModal = function() {
+        var modal = document.getElementById(MODAL_ID);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    };
+
+    window.handleLeadSubmit = function(e) {
+        if (e && e.preventDefault) e.preventDefault();
+
+        var name = (document.getElementById('leadFullName').value || '').trim();
+        var phone = (document.getElementById('leadPhoneNumber').value || '').trim();
+        var country = (document.getElementById('selectedCountryInput').value || 'সৌদি আরব').trim();
+        var notes = (document.getElementById('leadNotesInput').value || '').trim();
+
+        var selectedPkg = '৩টি জিডিএস কমপ্লিট বান্ডেল (৳৫,০০০)';
+        var pkgRadio = document.querySelector('input[name="gdsPackage"]:checked');
+        if (pkgRadio) selectedPkg = pkgRadio.value;
+
+        if (!name || !phone) {
+            alert('দয়া করে আপনার নাম এবং হোয়াটসঅ্যাপ নম্বরটি দিন।');
+            return;
+        }
+
+        var src = '';
+        try {
+            src = sessionStorage.getItem('gds_src') || '';
+            if (!src) {
+                var p = new URLSearchParams(location.search);
+                src = p.get('src') || p.get('utm_source') || (p.get('fbclid') ? 'facebook_boost' : 'direct');
+            }
+        } catch (x) {}
+
+        var now = new Date();
+        var leadData = {
+            id: 'lead_' + Date.now(),
+            date: now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }),
+            time: now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
+            isoDate: now.toISOString(),
+            name: name,
+            phone: phone,
+            country: country,
+            package: selectedPkg,
+            notes: notes,
+            source: src || 'Website'
+        };
+
+        // 1. Save locally
+        saveLead(leadData);
+
+        // 2. Trigger Meta Pixel Lead event
+        try {
+            if (typeof fbq === 'function') {
+                var estVal = 5000;
+                if (/২টি/i.test(selectedPkg)) estVal = 3500;
+                else if (/১টি/i.test(selectedPkg)) estVal = 2000;
+                fbq('track', 'Lead', {
+                    content_name: selectedPkg,
+                    content_category: 'GDS Simulator',
+                    value: estVal,
+                    currency: 'BDT'
+                });
+            }
+        } catch (err) {}
+
+        // 3. Optional Google Sheet Sync
+        var sheetUrl = localStorage.getItem('gds_sheet_webhook_url') || window.GDS_GOOGLE_SHEET_URL;
+        if (sheetUrl && sheetUrl.startsWith('http')) {
+            try {
+                fetch(sheetUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(leadData)
+                });
+            } catch (err) {}
+        }
+
+        // 4. Build WhatsApp message
+        var waMsg = [
+            'আসসালামু আলাইকুম।',
+            'আমি GDS Training Hub ওয়েবসাইট থেকে অর্ডার করতে চাই:',
+            '',
+            '👤 নাম: ' + name,
+            '🌍 দেশ/শহর: ' + country,
+            '📱 হোয়াটসঅ্যাপ: ' + phone,
+            '📦 প্যাকেজ: ' + selectedPkg,
+            notes ? ('💬 নোট/প্রশ্ন: ' + notes) : '',
+            '',
+            '(Source: ' + (leadData.source || 'Website') + ')'
+        ].filter(Boolean).join('\n');
+
+        var targetWaUrl = "https://wa.me/8801674091748?text=" + encodeURIComponent(waMsg);
+
+        closeGdsLeadModal();
+
+        setTimeout(function() {
+            window.open(targetWaUrl, '_blank');
+        }, 120);
+    };
+
+    // Close on backdrop click
+    document.addEventListener('click', function(e) {
+        var modal = document.getElementById(MODAL_ID);
+        if (modal && modal.style.display !== 'none' && !modal.classList.contains('hidden')) {
+            if (e.target === modal) closeGdsLeadModal();
+        }
+        var adminModal = document.getElementById(ADMIN_MODAL_ID);
+        if (adminModal && adminModal.style.display !== 'none' && !adminModal.classList.contains('hidden')) {
+            if (e.target === adminModal) closeAdminLeadsModal();
+        }
+    });
+
+    // Close on Escape & Ctrl+Shift+L
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeGdsLeadModal();
+            closeAdminLeadsModal();
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'L' || e.key === 'l')) {
+            e.preventDefault();
+            openAdminLeadsModal();
+        }
+    });
+
+    function checkHash() {
+        if (location.hash === '#leads') openAdminLeadsModal();
+    }
+    window.addEventListener('hashchange', checkHash);
+    document.addEventListener('DOMContentLoaded', checkHash);
+
+    // Global Click Interceptor for WhatsApp links
+    document.addEventListener('click', function(e) {
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (!a || !a.href) return;
+        if (a.id === 'directWaBypassLink') return;
+        if (!/wa.me|whatsapp.com|api.whatsapp/i.test(a.href)) return;
+
+        e.preventDefault();
+
+        var hrefTxt = decodeURIComponent(a.href || '');
+        var preset = 'bundle3';
+        if (/1s*GDS/i.test(hrefTxt)) preset = 'single1';
+        else if (/2s*GDS/i.test(hrefTxt)) preset = 'duo2';
+        else if (/Completes*Bundle|3s*GDS/i.test(hrefTxt)) preset = 'bundle3';
+        else preset = 'inquiry';
+
+        openGdsLeadModal(preset, a.href);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('closeLeadModalBtn');
+        if (btn) btn.addEventListener('click', closeGdsLeadModal);
+        var adminBtn = document.getElementById('closeAdminModalBtn');
+        if (adminBtn) adminBtn.addEventListener('click', closeAdminLeadsModal);
+    });
+
+    // Admin Modal Logic
+    window.saveSheetWebhookUrl = function() {
+        var url = (document.getElementById('adminSheetWebhookUrl').value || '').trim();
+        localStorage.setItem('gds_sheet_webhook_url', url);
+        alert('Google Sheets Webhook URL ??????? ??? ?????!');
+    };
+
+    window.openAdminLeadsModal = function() {
+        var inp = document.getElementById('adminSheetWebhookUrl');
+        if (inp) inp.value = localStorage.getItem('gds_sheet_webhook_url') || window.GDS_GOOGLE_SHEET_URL || '';
+        var modal = document.getElementById(ADMIN_MODAL_ID);
+        if (!modal) return;
+        renderAdminLeadsTable();
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeAdminLeadsModal = function() {
+        var modal = document.getElementById(ADMIN_MODAL_ID);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            if (location.hash === '#leads') {
+                try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+            }
+        }
+    };
+
+    function renderAdminLeadsTable() {
+        var leads = getLeads();
+        var tbody = document.getElementById('adminLeadsTableBody');
+        var countEl = document.getElementById('adminTotalLeadsCount');
+        var summaryEl = document.getElementById('adminCountrySummary');
+        if (countEl) countEl.textContent = leads.length;
+
+        var countryMap = {};
+        leads.forEach(function(l) {
+            var c = l.country || 'Unknown';
+            countryMap[c] = (countryMap[c] || 0) + 1;
+        });
+        if (summaryEl) {
+            var html = '';
+            for (var c in countryMap) {
+                html += '<span class="inline-block bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold text-amber-300 mr-2 mb-1">' + c + ': ' + countryMap[c] + ' জন</span>';
+            }
+            summaryEl.innerHTML = html || '<span class="text-xs text-slate-500">এখনো কোনো লিড জমা হয়নি। নতুন কাস্টমার ফর্ম ফিলাপ করলেই এখানে লাইভ দেখতে পাবেন।</span>';
+        }
+
+        if (!tbody) return;
+        if (leads.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 text-xs">এখনো কোনো লিড জমা হয়নি।</td></tr>';
+            return;
+        }
+
+        var rows = '';
+        leads.forEach(function(l) {
+            rows += '<tr class="border-b border-slate-800 hover:bg-slate-800/40 text-xs">' +
+                '<td class="py-2.5 px-3 text-slate-400">' + (l.date || '') + ' ' + (l.time || '') + '</td>' +
+                '<td class="py-2.5 px-3 font-bold text-white">' + (l.name || '') + '</td>' +
+                '<td class="py-2.5 px-3 text-amber-300 font-semibold">' + (l.country || '') + '</td>' +
+                '<td class="py-2.5 px-3 mono-font text-emerald-400"><a href="https://wa.me/' + (l.phone || '').replace(/[^0-9]/g, '') + '" target="_blank" class="hover:underline">' + (l.phone || '') + '</a></td>' +
+                '<td class="py-2.5 px-3 text-slate-300">' + (l.package || '') + '</td>' +
+                '<td class="py-2.5 px-3 text-slate-400 max-w-xs truncate" title="' + (l.notes || '') + '">' + (l.notes || '-') + '</td>' +
+            '</tr>';
+        });
+        tbody.innerHTML = rows;
+    }
+
+    window.exportLeadsToCsv = function() {
+        var leads = getLeads();
+        if (leads.length === 0) {
+            alert('ডাউনলোড করার মতো কোনো লিড ডাটা নেই!');
+            return;
+        }
+        var csv = '\uFEFF????? ? ???,???,???/???,??????????? ?????,???????,???,?????\n';
+        leads.forEach(function(l) {
+            csv += '"' + (l.date || '') + ' ' + (l.time || '') + '",' +
+                   '"' + (l.name || '').replace(/"/g, '""') + '",' +
+                   '"' + (l.country || '').replace(/"/g, '""') + '",' +
+                   '"' + (l.phone || '').replace(/"/g, '""') + '",' +
+                   '"' + (l.package || '').replace(/"/g, '""') + '",' +
+                   '"' + (l.notes || '').replace(/"/g, '""') + '",' +
+                   '"' + (l.source || '').replace(/"/g, '""') + '"\n';
+        });
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'gds_leads_' + new Date().toISOString().slice(0, 10) + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    window.clearAllLeads = function() {
+        if (confirm('আপনি কি নিশ্চিত যে সংরক্ষিত সব লিড মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না!')) {
+            localStorage.removeItem(STORAGE_KEY);
+            renderAdminLeadsTable();
+        }
+    };
+})();
+</script>
+
 </body>
 </html>
