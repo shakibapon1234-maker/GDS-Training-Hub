@@ -1954,178 +1954,145 @@
 <!-- ========================================== -->
 <!-- GDS Lead Capture Modal & WhatsApp Connector -->
 <!-- ========================================== -->
-<div id="gdsLeadModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md hidden transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle" style="display:none;">
-    <div class="relative w-full max-w-lg bg-[#0d1424] border border-amber-500/35 rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto text-slate-200">
+<div id="gdsLeadModal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md hidden transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle" style="display:none;">
+    <div class="relative w-full max-w-lg bg-[#0d1424] border border-amber-500/40 rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col text-slate-200">
         <!-- Golden Top Line -->
-        <div class="h-1.5 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600"></div>
+        <div class="h-1.5 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 shrink-0"></div>
 
-        <!-- Modal Header -->
-        <div class="p-5 sm:p-6 pb-3 border-b border-slate-800 flex items-start justify-between">
+        <!-- Modal Header (Compact & Sticky Top) -->
+        <div class="px-4 py-3 sm:px-5 border-b border-slate-800 flex items-center justify-between shrink-0 bg-[#0f172a]">
             <div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-2">
-                    <i class="fa-solid fa-plane-departure text-[11px]"></i>
-                    <span lang-bn>GDS ট্রেনিং হাব • অফিশিয়াল অর্ডার</span>
-                    <span lang-en>GDS Training Hub • Official Order</span>
-                </div>
-                <h3 id="leadModalTitle" class="text-xl sm:text-2xl font-black text-white">
-                    <span lang-bn>সিমুলেটর নিতে তথ্য দিন</span>
+                <h3 id="leadModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-plane-departure text-amber-400 text-xs"></i>
+                    <span lang-bn>GDS সিমুলেটর অর্ডার ও বিস্তারিত</span>
                     <span lang-en>Order GDS Simulator</span>
                 </h3>
-                <p class="text-xs text-slate-400 mt-1">
-                    <span lang-bn>তথ্য জমা দিলে সরাসরি অফিশিয়াল WhatsApp-এ বিস্তারিত চ্যাট শুরু হবে</span>
-                    <span lang-en>Submit to connect directly with our WhatsApp helpline</span>
+                <p class="text-[11px] text-slate-400 mt-0.5">
+                    <span lang-bn>তথ্য দিলে তাৎক্ষণিক WhatsApp হেল্পলাইনে সরাসরি যুক্ত হবেন</span>
+                    <span lang-en>Submit to connect directly with official WhatsApp</span>
                 </p>
             </div>
-            <button id="closeLeadModalBtn" type="button" aria-label="ফর্ম বন্ধ করুন" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition">
+            <button id="closeLeadModalBtn" type="button" aria-label="ফর্ম বন্ধ করুন" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
 
-        <!-- Modal Body (Scrollable) -->
-        <div class="p-5 sm:p-6 overflow-y-auto space-y-4">
-            <form id="gdsLeadForm" onsubmit="handleLeadSubmit(event)" class="space-y-4">
+        <!-- Modal Form with Sticky Footer -->
+        <form id="gdsLeadForm" onsubmit="handleLeadSubmit(event)" class="flex flex-col flex-1 overflow-hidden">
+            <!-- Scrollable Middle Body -->
+            <div class="p-3.5 sm:p-5 overflow-y-auto space-y-3 flex-1 text-xs sm:text-sm">
                 
-                <!-- Quick Country Selector -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        <i class="fa-solid fa-location-dot text-amber-400 mr-1"></i>
-                        <span lang-bn>আপনার দেশ নির্বাচন করুন:</span>
-                        <span lang-en>Select Your Country:</span>
-                    </label>
-                    <div class="flex flex-wrap gap-1.5 sm:gap-2" id="countryChipsContainer">
-                        <button type="button" onclick="selectCountryChip('সৌদি আরব', '+966 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 border border-amber-400 text-amber-400 transition cursor-pointer">
-                            🇸🇦 সৌদি আরব
-                        </button>
-                        <button type="button" onclick="selectCountryChip('কাতার', '+974 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
-                            🇶🇦 কাতার
-                        </button>
-                        <button type="button" onclick="selectCountryChip('ইউএই (দুবাই)', '+971 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
-                            🇦🇪 দুবাই / ইউএই
-                        </button>
-                        <button type="button" onclick="selectCountryChip('বাংলাদেশ', '+880 ', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
-                            🇧🇩 বাংলাদেশ
-                        </button>
-                        <button type="button" onclick="selectCountryChip('অন্যান্য দেশ', '+', this)" class="country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer">
-                            🌐 অন্যান্য
-                        </button>
-                    </div>
-                    <input type="hidden" id="selectedCountryInput" name="country" value="সৌদি আরব">
-                </div>
-
-                <!-- Name & Phone -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Row 1: Name & Phone (2 cols) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <div>
                         <label for="leadFullName" class="block text-xs font-bold text-slate-300 mb-1">
                             <span lang-bn>আপনার নাম <span class="text-amber-400">*</span></span>
                             <span lang-en>Full Name <span class="text-amber-400">*</span></span>
                         </label>
-                        <input type="text" id="leadFullName" required placeholder="যেমন: শাকিল আহমেদ" class="w-full bg-slate-900/90 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition">
+                        <input type="text" id="leadFullName" required placeholder="যেমন: শাকিল আহমেদ" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3 py-2 text-xs sm:text-sm text-white placeholder-slate-500 outline-none transition">
                     </div>
                     <div>
                         <label for="leadPhoneNumber" class="block text-xs font-bold text-slate-300 mb-1">
                             <span lang-bn>WhatsApp নম্বর <span class="text-amber-400">*</span></span>
                             <span lang-en>WhatsApp Number <span class="text-amber-400">*</span></span>
                         </label>
-                        <input type="tel" id="leadPhoneNumber" required value="+966 " placeholder="+966 50 123 4567" class="w-full bg-slate-900/90 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition mono-font">
+                        <input type="tel" id="leadPhoneNumber" required placeholder="+966 / +974 / +880..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3 py-2 text-xs sm:text-sm text-white placeholder-slate-500 outline-none transition mono-font">
                     </div>
                 </div>
 
-                <!-- Package Choice -->
+                <!-- Row 2: Country & City (Free text - Any Country!) -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                        <i class="fa-solid fa-boxes-stacked text-amber-400 mr-1"></i>
-                        <span lang-bn>কোন প্যাকেজটি নিতে চান?</span>
-                        <span lang-en>Select Package:</span>
+                    <label for="leadCountryInput" class="block text-xs font-bold text-slate-300 mb-1">
+                        <i class="fa-solid fa-earth-americas text-amber-400 mr-1"></i>
+                        <span lang-bn>আপনার দেশ ও শহর <span class="text-amber-400">*</span></span>
+                        <span lang-en>Country & City <span class="text-amber-400">*</span></span>
                     </label>
-                    <div class="space-y-2" id="packageOptionsList">
-                        <!-- Option 1: 3 GDS Complete Bundle -->
-                        <label class="flex items-center justify-between p-3 rounded-xl border border-amber-500/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-transparent cursor-pointer hover:border-amber-400 transition group">
-                            <div class="flex items-center gap-2.5">
-                                <input type="radio" name="gdsPackage" value="৩টি জিডিএস কমপ্লিট বান্ডেল (৳৫,০০০)" checked class="w-4 h-4 text-amber-500 focus:ring-0 bg-slate-900 border-slate-700">
-                                <div>
-                                    <div class="text-xs sm:text-sm font-black text-amber-300 flex items-center gap-1.5">
-                                        <span>৩টি জিডিএস কমপ্লিট বান্ডেল</span>
-                                        <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded">বেস্ট ভ্যালু</span>
-                                    </div>
-                                    <p class="text-[11px] text-slate-400">Amadeus + Galileo + Sabre + ফ্রি ইবুক</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs sm:text-sm font-black text-white">৳ ৫,০০০</div>
-                                <div class="text-[10px] text-amber-400/80">~১৭০ রিয়াল</div>
-                            </div>
-                        </label>
+                    <input type="text" id="leadCountryInput" required placeholder="যেমন: সৌদি আরব (রিয়াদ) / কাতার / মালয়েশিয়া / দুবাই / ঢাকা..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3 py-2 text-xs sm:text-sm text-white placeholder-slate-500 outline-none transition">
+                </div>
 
-                        <!-- Option 2: Any 2 GDS -->
-                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-900/60 cursor-pointer hover:border-emerald-500/50 transition group">
-                            <div class="flex items-center gap-2.5">
-                                <input type="radio" name="gdsPackage" value="যেকোনো ২টি জিডিএস (৳৩,৫০০)" class="w-4 h-4 text-emerald-500 focus:ring-0 bg-slate-900 border-slate-700">
-                                <div>
-                                    <div class="text-xs sm:text-sm font-bold text-slate-200">যেকোনো ২টি GDS সিস্টেম</div>
-                                    <p class="text-[11px] text-slate-400">পছন্দের ২টি সিমুলেটর + ফ্রি ইবুক</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs sm:text-sm font-bold text-slate-200">৳ ৩,৫০০</div>
-                                <div class="text-[10px] text-emerald-400/80">~১২০ রিয়াল</div>
-                            </div>
+                <!-- Row 3: Which GDS Simulators? (Multiple Checkboxes with Live Price Calculation) -->
+                <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider">
+                            <i class="fa-solid fa-layer-group mr-1"></i>
+                            <span lang-bn>কোন কোন GDS নিতে চান? (টিক দিন):</span>
+                            <span lang-en>Select Simulators:</span>
                         </label>
+                        <button type="button" onclick="selectAllGds()" class="text-[11px] text-amber-300 hover:underline font-bold cursor-pointer">
+                            ৩টি বান্ডেল একসাথে
+                        </button>
+                    </div>
 
-                        <!-- Option 3: Any 1 GDS -->
-                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-900/60 cursor-pointer hover:border-sky-500/50 transition group">
-                            <div class="flex items-center gap-2.5">
-                                <input type="radio" name="gdsPackage" value="যেকোনো ১টি জিডিএস (৳২,০০০)" class="w-4 h-4 text-sky-500 focus:ring-0 bg-slate-900 border-slate-700">
-                                <div>
-                                    <div class="text-xs sm:text-sm font-bold text-slate-200">যেকোনো ১টি GDS সিস্টেম</div>
-                                    <p class="text-[11px] text-slate-400">Amadeus / Galileo / Sabre (যেকোনো ১টি)</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs sm:text-sm font-bold text-slate-200">৳ ২,০০০</div>
-                                <div class="text-[10px] text-sky-400/80">~৭০ রিয়াল</div>
-                            </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <!-- Amadeus -->
+                        <label class="flex items-center gap-1.5 sm:gap-2 p-2 rounded-lg border border-slate-700 bg-slate-950 cursor-pointer hover:border-sky-400 transition" id="lblGdsAmadeus">
+                            <input type="checkbox" name="simChoice" value="Amadeus" checked onchange="updatePriceSummary()" class="w-4 h-4 text-amber-500 rounded bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+                            <span class="text-xs font-bold text-white">Amadeus</span>
+                        </label>
+                        <!-- Galileo -->
+                        <label class="flex items-center gap-1.5 sm:gap-2 p-2 rounded-lg border border-slate-700 bg-slate-950 cursor-pointer hover:border-emerald-400 transition" id="lblGdsGalileo">
+                            <input type="checkbox" name="simChoice" value="Galileo" checked onchange="updatePriceSummary()" class="w-4 h-4 text-amber-500 rounded bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+                            <span class="text-xs font-bold text-white">Galileo</span>
+                        </label>
+                        <!-- Sabre -->
+                        <label class="flex items-center gap-1.5 sm:gap-2 p-2 rounded-lg border border-slate-700 bg-slate-950 cursor-pointer hover:border-rose-400 transition" id="lblGdsSabre">
+                            <input type="checkbox" name="simChoice" value="Sabre" checked onchange="updatePriceSummary()" class="w-4 h-4 text-amber-500 rounded bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+                            <span class="text-xs font-bold text-white">Sabre</span>
+                        </label>
+                    </div>
+
+                    <!-- Dynamic Live Price Display Bar -->
+                    <div class="flex flex-wrap items-center justify-between pt-1 text-xs border-t border-slate-800 gap-1">
+                        <span class="text-slate-400" id="selectedSimSummary">নির্বাচিত: Amadeus + Galileo + Sabre</span>
+                        <span class="font-black text-amber-400" id="livePriceBadge">৳ ৫,০০০ (~১৭০ রিয়াল)</span>
+                    </div>
+                </div>
+
+                <!-- Row 4: Device / Platform Needed (Windows PC & Android APK) -->
+                <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                        <i class="fa-solid fa-laptop-code text-amber-400 mr-1"></i>
+                        <span lang-bn>কোন ডিভাইসের ভার্সন চান? (টিক দিন):</span>
+                        <span lang-en>Platform Version:</span>
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 p-2 rounded-lg border border-slate-700 bg-slate-950 cursor-pointer hover:border-amber-400 transition">
+                            <input type="checkbox" name="deviceChoice" value="Windows PC" checked class="w-4 h-4 text-amber-500 rounded bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+                            <span class="text-xs font-semibold text-slate-200">💻 Windows PC</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg border border-slate-700 bg-slate-950 cursor-pointer hover:border-amber-400 transition">
+                            <input type="checkbox" name="deviceChoice" value="Android APK" checked class="w-4 h-4 text-amber-500 rounded bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+                            <span class="text-xs font-semibold text-slate-200">📱 Android মোবাইল</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Notes / Special Comments -->
+                <!-- Row 5: Notes / Questions -->
                 <div>
-                    <label for="leadNotesInput" class="block text-xs font-bold text-slate-300 mb-1">
-                        <span lang-bn>কোনো প্রশ্ন বা ঠিকানা (ঐচ্ছিক):</span>
-                        <span lang-en>City / Special Notes (Optional):</span>
+                    <label for="leadNotesInput" class="block text-xs font-bold text-slate-400 mb-1">
+                        <span lang-bn>কোনো বিশেষ প্রশ্ন বা মন্তব্য (ঐচ্ছিক):</span>
+                        <span lang-en>Any Question or Notes (Optional):</span>
                     </label>
-                    <input type="text" id="leadNotesInput" placeholder="যেমন: রিয়াদ থেকে নিতে চাই, বিস্তারিত জানতে চাই" class="w-full bg-slate-900/90 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 outline-none transition">
+                    <input type="text" id="leadNotesInput" placeholder="আপনার কোনো জিজ্ঞাসা থাকলে লিখুন..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none transition">
                 </div>
 
-                <!-- Overseas Reassurance Box -->
-                <div class="rounded-xl p-3 bg-slate-900/80 border border-amber-500/20 text-[11px] text-slate-300 space-y-1">
-                    <div class="flex items-center gap-1.5 text-amber-400 font-bold">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span lang-bn>প্রবাসী ভাইদের জন্য বিশেষ নিশ্চয়তা:</span>
-                        <span lang-en>Overseas Order Guarantee:</span>
-                    </div>
-                    <p class="text-slate-400 leading-relaxed">
-                        • <strong>পেমেন্ট:</strong> Al Rajhi, STC Pay, Urpay, Ooredoo Money বা বাংলাদেশের বিকাশ/ব্যাংক সাপোর্ট।<br>
-                        • <strong>ডেলিভারি:</strong> অর্ডার কনফার্ম হওয়ামাত্রই ৩ মিনিটে WhatsApp ও Google Drive লিংকে সফটওয়্যার ইনস্ট্যান্ট প্রদান।
-                    </p>
-                </div>
+            </div>
 
-                <!-- Submit Button -->
-                <button type="submit" id="submitLeadBtn" class="w-full py-3.5 px-4 rounded-xl font-black bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 hover:brightness-110 shadow-lg text-sm sm:text-base transition flex items-center justify-center gap-2 cursor-pointer">
+            <!-- Modal Footer (ALWAYS VISIBLE & STICKY AT BOTTOM) -->
+            <div class="p-3 sm:p-4 bg-[#0a0f1d] border-t border-slate-800 shrink-0 space-y-1.5">
+                <button type="submit" id="submitLeadBtn" class="w-full py-3 px-4 rounded-xl font-black bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 hover:brightness-110 shadow-lg text-sm sm:text-base transition flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
-                    <span lang-bn>জমা দিয়ে WhatsApp-এ মেসেজ দিন 📲</span>
+                    <span lang-bn>জমা দিন ও WhatsApp-এ মেসেজ দিন 📲</span>
                     <span lang-en>Submit & Chat on WhatsApp 📲</span>
                 </button>
-            </form>
-
-            <!-- Direct WhatsApp Bypass Link -->
-            <div class="text-center pt-1">
-                <a id="directWaBypassLink" href="https://wa.me/8801674091748" target="_blank" class="text-[11px] text-slate-400 hover:text-amber-400 underline transition">
-                    <span lang-bn>সরাসরি ফর্ম ছাড়া হোয়াটসঅ্যাপে যেতে চান? এখানে ক্লিক করুন</span>
-                    <span lang-en>Want to chat directly without form? Click here</span>
-                </a>
+                <div class="text-center">
+                    <a id="directWaBypassLink" href="https://wa.me/8801674091748" target="_blank" class="text-[11px] text-slate-400 hover:text-amber-400 underline transition">
+                        <span lang-bn>সরাসরি হোয়াটসঅ্যাপে যেতে চান? এখানে ক্লিক করুন</span>
+                        <span lang-en>Direct WhatsApp Chat</span>
+                    </a>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -2153,42 +2120,55 @@
         } catch (e) {}
     }
 
-    window.selectCountryChip = function(country, code, btn) {
-        var input = document.getElementById('selectedCountryInput');
-        if (input) input.value = country;
-        var phone = document.getElementById('leadPhoneNumber');
-        if (phone) {
-            var val = phone.value.trim();
-            if (!val || /^\+\d{1,4}\s?$/.test(val)) {
-                phone.value = code;
-            } else if (!val.startsWith('+')) {
-                phone.value = code + val;
-            }
-            phone.focus();
+    window.updatePriceSummary = function() {
+        var checked = Array.from(document.querySelectorAll('input[name="simChoice"]:checked')).map(function(c) { return c.value; });
+        var summaryEl = document.getElementById('selectedSimSummary');
+        var priceEl = document.getElementById('livePriceBadge');
+        if (!summaryEl || !priceEl) return;
+
+        if (checked.length === 3) {
+            summaryEl.textContent = 'নির্বাচিত: ৩টি কমপ্লিট বান্ডেল (Amadeus + Galileo + Sabre)';
+            priceEl.textContent = '৳ ৫,০০০ (~১৭০ রিয়াল)';
+        } else if (checked.length === 2) {
+            summaryEl.textContent = 'নির্বাচিত: ' + checked.join(' + ');
+            priceEl.textContent = '৳ ৩,৫০০ (~১২০ রিয়াল)';
+        } else if (checked.length === 1) {
+            summaryEl.textContent = 'নির্বাচিত: ' + checked[0];
+            priceEl.textContent = '৳ ২,০০০ (~৭০ রিয়াল)';
+        } else {
+            summaryEl.textContent = 'দয়া করে অন্তত ১টি সিমুলেটর সিলেক্ট করুন';
+            priceEl.textContent = '৳ 0';
         }
-        document.querySelectorAll('#countryChipsContainer .country-chip').forEach(function(c) {
-            c.className = 'country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:border-amber-400 hover:text-amber-400 transition cursor-pointer';
-        });
-        if (btn) {
-            btn.className = 'country-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 border border-amber-400 text-amber-400 transition cursor-pointer';
-        }
+    };
+
+    window.selectAllGds = function() {
+        document.querySelectorAll('input[name="simChoice"]').forEach(function(c) { c.checked = true; });
+        updatePriceSummary();
     };
 
     window.openGdsLeadModal = function(presetPkg, fallbackUrl) {
         var modal = document.getElementById(MODAL_ID);
-        if (!modal) {
-            console.error('Modal element not found');
-            return;
-        }
+        if (!modal) return;
 
-        if (presetPkg) {
-            var radios = document.querySelectorAll('input[name="gdsPackage"]');
-            radios.forEach(function(r) {
-                if (presetPkg === 'single1' && /১টি|1/i.test(r.value)) r.checked = true;
-                else if (presetPkg === 'duo2' && /২টি|2/i.test(r.value)) r.checked = true;
-                else if (presetPkg === 'bundle3' && /৩টি|3|কমপ্লিট/i.test(r.value)) r.checked = true;
-            });
+        // Apply preset package checkboxes
+        var cAmadeus = document.querySelector('input[name="simChoice"][value="Amadeus"]');
+        var cGalileo = document.querySelector('input[name="simChoice"][value="Galileo"]');
+        var cSabre = document.querySelector('input[name="simChoice"][value="Sabre"]');
+
+        if (presetPkg === 'single1') {
+            if (cAmadeus) cAmadeus.checked = true;
+            if (cGalileo) cGalileo.checked = false;
+            if (cSabre) cSabre.checked = false;
+        } else if (presetPkg === 'duo2') {
+            if (cAmadeus) cAmadeus.checked = true;
+            if (cGalileo) cGalileo.checked = true;
+            if (cSabre) cSabre.checked = false;
+        } else {
+            if (cAmadeus) cAmadeus.checked = true;
+            if (cGalileo) cGalileo.checked = true;
+            if (cSabre) cSabre.checked = true;
         }
+        updatePriceSummary();
 
         var bypass = document.getElementById('directWaBypassLink');
         if (bypass && fallbackUrl) {
@@ -2219,17 +2199,39 @@
 
         var name = (document.getElementById('leadFullName').value || '').trim();
         var phone = (document.getElementById('leadPhoneNumber').value || '').trim();
-        var country = (document.getElementById('selectedCountryInput').value || 'সৌদি আরব').trim();
+        var country = (document.getElementById('leadCountryInput').value || '').trim();
         var notes = (document.getElementById('leadNotesInput').value || '').trim();
 
-        var selectedPkg = '৩টি জিডিএস কমপ্লিট বান্ডেল (৳৫,০০০)';
-        var pkgRadio = document.querySelector('input[name="gdsPackage"]:checked');
-        if (pkgRadio) selectedPkg = pkgRadio.value;
+        var selectedSims = Array.from(document.querySelectorAll('input[name="simChoice"]:checked')).map(function(c) { return c.value; });
+        var selectedDevices = Array.from(document.querySelectorAll('input[name="deviceChoice"]:checked')).map(function(c) { return c.value; });
 
         if (!name || !phone) {
             alert('দয়া করে আপনার নাম এবং হোয়াটসঅ্যাপ নম্বরটি দিন।');
             return;
         }
+        if (!country) {
+            alert('দয়া করে আপনার দেশ ও শহরের নাম লিখুন।');
+            return;
+        }
+        if (selectedSims.length === 0) {
+            alert('দয়া করে অন্তত ১টি GDS সিমুলেটর সিলেক্ট করুন।');
+            return;
+        }
+
+        var pkgTitle = '';
+        var estVal = 2000;
+        if (selectedSims.length === 3) {
+            pkgTitle = '৩টি কমপ্লিট বান্ডেল (' + selectedSims.join(', ') + ') - ৳৫,০০০';
+            estVal = 5000;
+        } else if (selectedSims.length === 2) {
+            pkgTitle = '২টি জিডিএস (' + selectedSims.join(' + ') + ') - ৳৩,৫০০';
+            estVal = 3500;
+        } else {
+            pkgTitle = '১টি জিডিএস (' + selectedSims[0] + ') - ৳২,০০০';
+            estVal = 2000;
+        }
+
+        var deviceTitle = selectedDevices.length > 0 ? selectedDevices.join(' + ') : 'Windows + Android';
 
         var src = '';
         try {
@@ -2249,7 +2251,7 @@
             name: name,
             phone: "'" + phone,
             country: country,
-            package: selectedPkg,
+            package: pkgTitle + ' [' + deviceTitle + ']',
             notes: notes,
             source: src || 'Website'
         };
@@ -2260,11 +2262,8 @@
         // 2. Trigger Meta Pixel Lead event
         try {
             if (typeof fbq === 'function') {
-                var estVal = 5000;
-                if (/২টি|2/i.test(selectedPkg)) estVal = 3500;
-                else if (/১টি|1/i.test(selectedPkg)) estVal = 2000;
                 fbq('track', 'Lead', {
-                    content_name: selectedPkg,
+                    content_name: pkgTitle,
                     content_category: 'GDS Simulator',
                     value: estVal,
                     currency: 'BDT'
@@ -2272,7 +2271,7 @@
             }
         } catch (err) {}
 
-        // 3. Google Sheet Sync
+        // 3. Google Sheet Sync (Async)
         var sheetUrl = window.GDS_GOOGLE_SHEET_URL;
         if (sheetUrl && sheetUrl.startsWith('http')) {
             try {
@@ -2293,7 +2292,9 @@
             '👤 নাম: ' + name,
             '🌍 দেশ/শহর: ' + country,
             '📱 হোয়াটসঅ্যাপ: ' + phone,
-            '📦 প্যাকেজ: ' + selectedPkg,
+            '📦 সিমুলেটর: ' + selectedSims.join(' + '),
+            '💻 ভার্সন: ' + deviceTitle,
+            '💰 প্যাকেজ মূল্য: ' + (estVal === 5000 ? '৳ ৫,০০০ (~১৭০ রিয়াল)' : (estVal === 3500 ? '৳ ৩,৫০০ (~১২০ রিয়াল)' : '৳ ২,০০০ (~৭০ রিয়াল)')),
             notes ? ('💬 নোট/প্রশ্ন: ' + notes) : '',
             '',
             '(Source: ' + (leadData.source || 'Website') + ')'
@@ -2339,7 +2340,7 @@
         if (/1\s*GDS|2000/i.test(hrefTxt)) preset = 'single1';
         else if (/2\s*GDS|3500/i.test(hrefTxt)) preset = 'duo2';
         else if (/Complete\s*Bundle|3\s*GDS|5000/i.test(hrefTxt)) preset = 'bundle3';
-        else preset = 'inquiry';
+        else preset = 'bundle3';
 
         openGdsLeadModal(preset, a.href);
     }, true);
@@ -2355,5 +2356,6 @@
     }
 })();
 </script>
+
 </body>
 </html>
