@@ -1954,6 +1954,7 @@
 <!-- ========================================== -->
 <!-- ========================================== -->
 <!-- ========================================== -->
+<!-- ========================================== -->
 <!-- GDS Lead Capture Modal & WhatsApp Connector -->
 <!-- ========================================== -->
 <style>
@@ -1967,11 +1968,11 @@
 .gds-input:focus { border-color:#f59e0b; box-shadow:0 0 0 2px rgba(245,158,11,0.25); }
 /* GDS Sim Cards */
 .gds-card { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:12px; border:2px solid; cursor:pointer; transition:all 0.2s; text-align:center; user-select:none; }
-.gds-card.inactive { opacity:0.4; filter:grayscale(70%); }
+.gds-card.inactive { opacity:0.35; filter:grayscale(80%); }
 .gds-card input[type=checkbox] { position:absolute; opacity:0; width:0; height:0; }
 /* Device cards */
 .dev-card { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px 8px; border-radius:12px; border:2px solid; cursor:pointer; transition:all 0.2s; text-align:center; user-select:none; }
-.dev-card.inactive { opacity:0.4; filter:grayscale(70%); }
+.dev-card.inactive { opacity:0.35; filter:grayscale(80%); }
 .dev-card input[type=checkbox] { position:absolute; opacity:0; width:0; height:0; }
 /* Submit button */
 #submitLeadBtn { width:100%; padding:14px 16px; border-radius:14px; font-weight:900; font-size:15px; background:linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%); color:#0c0a00; border:none; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.3px; box-shadow:0 4px 20px rgba(245,158,11,0.4); }
@@ -2060,7 +2061,7 @@
                         <!-- 3 GDS badges -->
                         <div class="gds-grid-3" style="margin-bottom:10px;">
                             <!-- Amadeus — Cyan/Sky -->
-                            <label id="cardAmadeus" class="gds-card" style="border-color:#0ea5e9;background:#001929;" onclick="">
+                            <label id="cardAmadeus" class="gds-card" style="border-color:#0ea5e9;background:#001929;">
                                 <input type="checkbox" name="simChoice" value="Amadeus" checked onchange="updatePriceSummary()">
                                 <i class="fa-solid fa-terminal" style="color:#38bdf8;font-size:16px;margin-bottom:4px;"></i>
                                 <span style="font-size:11px;font-weight:800;color:#7dd3fc;">Amadeus</span>
@@ -2068,7 +2069,7 @@
                             </label>
 
                             <!-- Galileo — Emerald -->
-                            <label id="cardGalileo" class="gds-card" style="border-color:#10b981;background:#001a0d;" onclick="">
+                            <label id="cardGalileo" class="gds-card" style="border-color:#10b981;background:#001a0d;">
                                 <input type="checkbox" name="simChoice" value="Galileo" checked onchange="updatePriceSummary()">
                                 <i class="fa-solid fa-globe" style="color:#34d399;font-size:16px;margin-bottom:4px;"></i>
                                 <span style="font-size:11px;font-weight:800;color:#6ee7b7;">Galileo</span>
@@ -2076,7 +2077,7 @@
                             </label>
 
                             <!-- Sabre — Rose/Pink -->
-                            <label id="cardSabre" class="gds-card" style="border-color:#f43f5e;background:#1a0010;" onclick="">
+                            <label id="cardSabre" class="gds-card" style="border-color:#f43f5e;background:#1a0010;">
                                 <input type="checkbox" name="simChoice" value="Sabre" checked onchange="updatePriceSummary()">
                                 <i class="fa-solid fa-bolt" style="color:#fb7185;font-size:16px;margin-bottom:4px;"></i>
                                 <span style="font-size:11px;font-weight:800;color:#fda4af;">Sabre</span>
@@ -2084,10 +2085,10 @@
                             </label>
                         </div>
 
-                        <!-- Price bar -->
+                        <!-- Price bar (Only in Taka, no riyal) -->
                         <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid #1e3a5f;">
                             <span id="selectedSimSummary" style="font-size:11px;color:#94a3b8;">৩টি কমপ্লিট বান্ডেল</span>
-                            <span id="livePriceBadge" style="font-size:14px;font-weight:900;color:#fbbf24;">৳ ৫,০০০ (~১৭০ রিয়াল)</span>
+                            <span id="livePriceBadge" style="font-size:14px;font-weight:900;color:#fbbf24;">৳ ৫,০০০</span>
                         </div>
                     </div>
 
@@ -2100,30 +2101,30 @@
                         </div>
 
                         <div class="gds-grid-2" style="margin-bottom:10px;">
-                            <!-- Windows PC — Blue -->
-                            <label id="cardDevicePc" class="dev-card" style="border-color:#3b82f6;background:#00163a;" onclick="">
-                                <input type="checkbox" name="deviceChoice" value="Windows PC" checked onchange="updateDeviceStyles()">
+                            <!-- Windows PC — Blue (Checked by default) -->
+                            <label id="cardDevicePc" class="dev-card" style="border-color:#3b82f6;background:#00163a;">
+                                <input type="checkbox" name="deviceChoice" value="Windows PC" checked onchange="handleDeviceToggle()">
                                 <i class="fa-brands fa-windows" style="color:#60a5fa;font-size:18px;margin-bottom:4px;"></i>
                                 <span style="font-size:11px;font-weight:800;color:#93c5fd;">Windows PC</span>
                                 <span class="dev-check-status" style="font-size:9px;color:#60a5fa;margin-top:2px;">✔ নির্বাচিত</span>
                             </label>
 
-                            <!-- Android — Green -->
-                            <label id="cardDeviceAndroid" class="dev-card" style="border-color:#22c55e;background:#00200d;" onclick="">
-                                <input type="checkbox" name="deviceChoice" value="Android APK" checked onchange="updateDeviceStyles()">
+                            <!-- Android — Green (Unchecked by default, user can select) -->
+                            <label id="cardDeviceAndroid" class="dev-card inactive" style="border-color:#22c55e;background:#00200d;">
+                                <input type="checkbox" name="deviceChoice" value="Android APK" onchange="handleDeviceToggle()">
                                 <i class="fa-brands fa-android" style="color:#4ade80;font-size:18px;margin-bottom:4px;"></i>
                                 <span style="font-size:11px;font-weight:800;color:#86efac;">Android মোবাইল</span>
-                                <span class="dev-check-status" style="font-size:9px;color:#4ade80;margin-top:2px;">✔ নির্বাচিত</span>
+                                <span class="dev-check-status" style="font-size:9px;color:#4ade80;margin-top:2px;">বাদ দেওয়া</span>
                             </label>
                         </div>
 
-                        <!-- Free note -->
-                        <div style="background:#0d1f0a;border:1px solid #166534;border-radius:8px;padding:7px 10px;text-align:center;">
-                            <p style="margin:0;font-size:10px;color:#86efac;">
-                                <i class="fa-solid fa-gift" style="color:#fbbf24;margin-right:4px;"></i>
-                                <strong>উইন্ডোজ + অ্যান্ড্রয়েড</strong> উভয়ই প্যাকেজে ফ্রি অন্তর্ভুক্ত!
+                        <!-- Device note: Explicitly stating separate ID / payment -->
+                        <div style="background:#0d1f0a;border:1px solid #166534;border-radius:8px;padding:8px 10px;text-align:center;">
+                            <p style="margin:0;font-size:11px;font-weight:700;color:#86efac;line-height:1.5;">
+                                <i class="fa-solid fa-circle-exclamation" style="color:#fbbf24;margin-right:4px;"></i>
+                                অ্যান্ড্রয়েড ও উইন্ডোজের জন্য আলাদা করে আইডি / payment কাউন্ট করা হবে।
                             </p>
-                            <p style="margin:4px 0 0;font-size:10px;color:#6ee7b7;">৩-ইন-১ GDS Master Ebook ফ্রি</p>
+                            <p style="margin:4px 0 0;font-size:10px;color:#6ee7b7;">৩-ইন-১ GDS Master Ebook ফ্রি অন্তর্ভুক্ত</p>
                         </div>
                     </div>
                 </div>
@@ -2134,7 +2135,7 @@
                         <i class="fa-solid fa-comment-dots" style="color:#a78bfa;margin-right:3px;"></i>
                         কোনো প্রশ্ন বা মন্তব্য <span style="font-weight:400;color:#475569;">(ঐচ্ছিক)</span>
                     </label>
-                    <input type="text" id="leadNoteField" class="gds-input" placeholder="যেমন: রিয়াদ থেকে নিতে চাই, ভিসারিত জানতে চাই" style="border-color:#3730a3;">
+                    <input type="text" id="leadNoteField" class="gds-input" placeholder="যেমন: রিয়াদ থেকে নিতে চাই, বিস্তারিত জানতে চাই" style="border-color:#3730a3;">
                 </div>
 
             </form>
@@ -2142,12 +2143,12 @@
 
         <!-- FOOTER — Always Visible Submit Button -->
         <div id="gdsModalFooter">
-            <!-- Payment info strip -->
-            <div style="background:#0d1a08;border:1px solid #15803d;border-radius:10px;padding:7px 12px;margin-bottom:10px;">
-                <p style="margin:0;font-size:10px;color:#86efac;line-height:1.5;">
-                    <i class="fa-solid fa-shield-halved" style="color:#fbbf24;margin-right:4px;"></i>
-                    <strong>প্রবাসীদের জন্য:</strong> Al Rajhi, STC Pay, Urpay, Ooredoo Money বা বিকাশ/ব্যাংক সাপোর্ট।
-                    <span style="color:#4ade80;">⚡ ৩ মিনিটে Google Drive ও WhatsApp লিঙ্কে সফটওয়্যার।</span>
+            <!-- Payment info strip: bKash, Nagad & BRAC Bank -->
+            <div style="background:#0d1a08;border:1px solid #15803d;border-radius:10px;padding:8px 12px;margin-bottom:10px;">
+                <p style="margin:0;font-size:11px;color:#86efac;line-height:1.5;">
+                    <i class="fa-solid fa-credit-card" style="color:#fbbf24;margin-right:5px;"></i>
+                    <strong>পেমেন্ট মাধ্যম:</strong> বিকাশ (bKash), নগদ (Nagad) এবং ব্যাংক ট্রান্সফার (BRAC Bank) সাপোর্ট।
+                    <span style="display:block;margin-top:2px;color:#94a3b8;font-size:10px;">(অর্ডার সাবমিট করলে সরাসরি WhatsApp-এ অ্যাকাউন্ট নম্বর ও পেমেন্ট ডিটেইলস পাবেন)</span>
                 </p>
             </div>
 
@@ -2184,12 +2185,18 @@
         try { var list = getLeads(); list.unshift(item); localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
     }
 
+    window.handleDeviceToggle = function() {
+        window.updateDeviceStyles();
+        window.updatePriceSummary();
+    };
+
     window.updatePriceSummary = function() {
-        var checked = Array.from(document.querySelectorAll('input[name="simChoice"]:checked')).map(function(c){return c.value;});
+        var checkedSims = Array.from(document.querySelectorAll('input[name="simChoice"]:checked')).map(function(c){return c.value;});
+        var checkedDevs = Array.from(document.querySelectorAll('input[name="deviceChoice"]:checked')).map(function(c){return c.value;});
         var summaryEl = document.getElementById('selectedSimSummary');
         var priceEl = document.getElementById('livePriceBadge');
 
-        // Card active/inactive styles
+        // Card active/inactive styles for GDS
         ['Amadeus','Galileo','Sabre'].forEach(function(sim) {
             var inp = document.querySelector('input[name="simChoice"][value="'+sim+'"]');
             var card = document.getElementById('card'+sim);
@@ -2198,27 +2205,49 @@
             if (inp.checked) {
                 card.style.opacity = '1';
                 card.style.filter = 'none';
-                if (statusEl) statusEl.textContent = '\u2714 \u09A8\u09BF\u09B0\u09CD\u09AC\u09BE\u099A\u09BF\u09A4';
+                if (statusEl) statusEl.textContent = '✔ নির্বাচিত';
             } else {
                 card.style.opacity = '0.35';
                 card.style.filter = 'grayscale(80%)';
-                if (statusEl) statusEl.textContent = '\u09AC\u09BE\u09A6 \u09A6\u09C7\u0993\u09DF\u09BE';
+                if (statusEl) statusEl.textContent = 'বাদ দেওয়া';
             }
         });
 
-        if (!summaryEl || !priceEl) return;
-        if (checked.length === 3) {
-            summaryEl.textContent = '\u09E9\u099F\u09BF \u0995\u09AE\u09AA\u09CD\u09B2\u09BF\u099F \u09AC\u09BE\u09A8\u09CD\u09A1\u09C7\u09B2';
-            priceEl.textContent = '\u09F3 \u09EB,\u09E6\u09E6\u09E6 (~\u09E7\u09ED\u09E6 \u09B0\u09BF\u09AF\u09BC\u09BE\u09B2)';
-        } else if (checked.length === 2) {
-            summaryEl.textContent = checked.join(' + ');
-            priceEl.textContent = '\u09F3 \u09E9,\u09EB\u09E6\u09E6 (~\u09E7\u09E8\u09E6 \u09B0\u09BF\u09AF\u09BC\u09BE\u09B2)';
-        } else if (checked.length === 1) {
-            summaryEl.textContent = checked[0];
-            priceEl.textContent = '\u09F3 \u09E8,\u09E6\u09E6\u09E6 (~\u09ED\u09E6 \u09B0\u09BF\u09AF\u09BC\u09BE\u09B2)';
+        // Base price calculation from GDS
+        var basePrice = 0;
+        var summaryText = '';
+        if (checkedSims.length === 3) {
+            basePrice = 5000;
+            summaryText = '৩টি কমপ্লিট বান্ডেল';
+        } else if (checkedSims.length === 2) {
+            basePrice = 3500;
+            summaryText = checkedSims.join(' + ');
+        } else if (checkedSims.length === 1) {
+            basePrice = 2000;
+            summaryText = checkedSims[0];
         } else {
-            summaryEl.textContent = '\u0985\u09A8\u09CD\u09A4\u09A4 \u09E7\u099F\u09BF \u09B8\u09BF\u09B2\u09C7\u0995\u09CD\u099F \u0995\u09B0\u09C1\u09A8';
-            priceEl.textContent = '\u09F3 0';
+            basePrice = 0;
+            summaryText = 'অন্তত ১টি GDS বেছে নিন';
+        }
+
+        // Device multiplier logic: each device is a separate ID / payment
+        var devMultiplier = checkedDevs.length > 0 ? checkedDevs.length : 1;
+        var finalPrice = basePrice * devMultiplier;
+
+        if (summaryEl) summaryEl.textContent = summaryText;
+
+        if (priceEl) {
+            if (basePrice === 0) {
+                priceEl.textContent = '৳ ০';
+            } else if (checkedDevs.length === 2) {
+                var bnNum2 = finalPrice === 10000 ? '১০,০০০' : (finalPrice === 7000 ? '৭,০০০' : '৪,০০০');
+                priceEl.textContent = '৳ ' + bnNum2 + ' (২টি ডিভাইসের আইডি)';
+            } else if (checkedDevs.length === 0) {
+                priceEl.textContent = 'ডিভাইস বেছে নিন';
+            } else {
+                var bnNum1 = finalPrice === 5000 ? '৫,০০০' : (finalPrice === 3500 ? '৩,৫০০' : '২,০০০');
+                priceEl.textContent = '৳ ' + bnNum1;
+            }
         }
     };
 
@@ -2232,18 +2261,18 @@
             if (inp.checked) {
                 card.style.opacity = '1';
                 card.style.filter = 'none';
-                if (statusEl) statusEl.textContent = '\u2714 \u09A8\u09BF\u09B0\u09CD\u09AC\u09BE\u099A\u09BF\u09A4';
+                if (statusEl) statusEl.textContent = '✔ নির্বাচিত';
             } else {
                 card.style.opacity = '0.35';
                 card.style.filter = 'grayscale(80%)';
-                if (statusEl) statusEl.textContent = '\u09AC\u09BE\u09A6 \u09A6\u09C7\u0993\u09DF\u09BE';
+                if (statusEl) statusEl.textContent = 'বাদ দেওয়া';
             }
         }
     };
 
     window.selectAllGds = function() {
         document.querySelectorAll('input[name="simChoice"]').forEach(function(c){c.checked=true;});
-        updatePriceSummary();
+        window.updatePriceSummary();
     };
 
     window.openGdsLeadModal = function(presetPkg, fallbackUrl) {
@@ -2259,8 +2288,16 @@
         } else {
             if(cA) cA.checked=true; if(cG) cG.checked=true; if(cS) cS.checked=true;
         }
-        updatePriceSummary();
-        updateDeviceStyles();
+
+        // Default device preset: Windows PC checked, Android unchecked
+        var cPc = document.querySelector('input[name="deviceChoice"][value="Windows PC"]');
+        var cAnd = document.querySelector('input[name="deviceChoice"][value="Android APK"]');
+        if (cPc) cPc.checked = true;
+        if (cAnd) cAnd.checked = false;
+
+        window.updateDeviceStyles();
+        window.updatePriceSummary();
+
         var bypass = document.getElementById('directWaBypassLink');
         if (bypass && fallbackUrl) bypass.href = fallbackUrl;
         modal.style.display = 'flex';
@@ -2282,16 +2319,29 @@
         var selectedSims = Array.from(document.querySelectorAll('input[name="simChoice"]:checked')).map(function(c){return c.value;});
         var selectedDevices = Array.from(document.querySelectorAll('input[name="deviceChoice"]:checked')).map(function(c){return c.value;});
 
-        if (!name) { alert('\u09A6\u09AF\u09BC\u09BE \u0995\u09B0\u09C7 \u0986\u09AA\u09A8\u09BE\u09B0 \u09A8\u09BE\u09AE \u09B2\u09BF\u0996\u09C1\u09A8\u0964'); return; }
-        if (!country) { alert('\u09A6\u09AF\u09BC\u09BE \u0995\u09B0\u09C7 \u0986\u09AA\u09A8\u09BE\u09B0 \u09A6\u09C7\u09B6 \u0993 \u09B6\u09B9\u09B0\u09C7\u09B0 \u09A8\u09BE\u09AE \u09B2\u09BF\u0996\u09C1\u09A8\u0964'); return; }
-        if (selectedSims.length === 0) { alert('\u0985\u09A8\u09CD\u09A4\u09A4 \u09E7\u099F\u09BF GDS \u09B8\u09BF\u09AE\u09C1\u09B2\u09C7\u099F\u09B0 \u09B8\u09BF\u09B2\u09C7\u0995\u09CD\u099F \u0995\u09B0\u09C1\u09A8\u0964'); return; }
+        if (!name) { alert('দয়া করে আপনার নাম লিখুন।'); return; }
+        if (!country) { alert('দয়া করে আপনার দেশ ও শহরের নাম লিখুন।'); return; }
+        if (selectedSims.length === 0) { alert('দয়া করে অন্তত ১টি GDS সিমুলেটর সিলেক্ট করুন।'); return; }
+        if (selectedDevices.length === 0) { alert('দয়া করে অন্তত ১টি ডিভাইস (উইন্ডোজ অথবা অ্যান্ড্রয়েড) সিলেক্ট করুন।'); return; }
 
-        var pkgTitle, estVal;
-        if (selectedSims.length === 3) { pkgTitle = '\u09E9\u099F\u09BF \u0995\u09AE\u09AA\u09CD\u09B2\u09BF\u099F \u09AC\u09BE\u09A8\u09CD\u09A1\u09C7\u09B2 ('+selectedSims.join(', ')+') - \u09F3\u09EB,\u09E6\u09E6\u09E6'; estVal=5000; }
-        else if (selectedSims.length === 2) { pkgTitle = '\u09E8\u099F\u09BF GDS ('+selectedSims.join(' + ')+') - \u09F3\u09E9,\u09EB\u09E6\u09E6'; estVal=3500; }
-        else { pkgTitle = '\u09E7\u099F\u09BF GDS ('+selectedSims[0]+') - \u09F3\u09E8,\u09E6\u09E6\u09E6'; estVal=2000; }
+        var basePrice = 2000;
+        var pkgTitle = '';
+        if (selectedSims.length === 3) {
+            basePrice = 5000;
+            pkgTitle = '৩টি কমপ্লিট বান্ডেল (' + selectedSims.join(', ') + ')';
+        } else if (selectedSims.length === 2) {
+            basePrice = 3500;
+            pkgTitle = '২টি GDS (' + selectedSims.join(' + ') + ')';
+        } else {
+            basePrice = 2000;
+            pkgTitle = '১টি GDS (' + selectedSims[0] + ')';
+        }
 
-        var deviceTitle = selectedDevices.length > 0 ? selectedDevices.join(' + ') : 'Windows PC + Android';
+        var estVal = basePrice * selectedDevices.length;
+        var bnTotal = estVal === 10000 ? '১০,০০০' : (estVal === 7000 ? '৭,০০০' : (estVal === 5000 ? '৫,০০০' : (estVal === 4000 ? '৪,০০০' : (estVal === 3500 ? '৩,৫০০' : '২,০০০'))));
+        var priceDisplay = '৳ ' + bnTotal + (selectedDevices.length === 2 ? ' (২টি ডিভাইসের আলাদা আইডি)' : '');
+
+        var deviceTitle = selectedDevices.join(' + ');
         var src = '';
         try { src = sessionStorage.getItem('gds_src')||''; if(!src){var p=new URLSearchParams(location.search);src=p.get('src')||p.get('utm_source')||(p.get('fbclid')?'facebook_boost':'direct');} } catch(x){}
 
@@ -2304,7 +2354,7 @@
             name: name,
             phone: phone ? ("'"+phone) : 'WhatsApp Message',
             country: country,
-            package: pkgTitle+' ['+deviceTitle+']',
+            package: pkgTitle + ' [' + deviceTitle + '] - ' + priceDisplay,
             notes: note || 'WhatsApp Direct Lead',
             source: src || 'Website'
         };
@@ -2318,35 +2368,33 @@
             try { fetch(sheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(leadData)}); } catch(err){}
         }
 
-        var priceStr = estVal===5000 ? '\u09F3 \u09EB,\u09E6\u09E6\u09E6 (~\u09E7\u09ED\u09E6 \u09B0\u09BF\u09AF\u09BC\u09BE\u09B2)' : (estVal===3500 ? '\u09F3 \u09E9,\u09EB\u09E6\u09E6 (~\u09E7\u09E8\u09E6 \u09B0\u09BF\u09AF\u09BC\u09BE\u09B2)' : '\u09F3 \u09E8,\u09E6\u09E6\u09E6 (~\u09ED\u09E6 \u09B0\u09BF\u09AF\u09BC\u09BE\u09B2)');
-
         var waLines = [
-            '\u0986\u09B8\u09B8\u09BE\u09B2\u09BE\u09AE\u09C1 \u0986\u09B2\u09BE\u0987\u0995\u09C1\u09AE\u0964',
-            '\u0986\u09AE\u09BF GDS Training Hub \u0993\u09AF\u09BC\u09C7\u09AC\u09B8\u09BE\u0987\u099F \u09A5\u09C7\u0995\u09C7 \u0985\u09B0\u09CD\u09A1\u09BE\u09B0 \u0995\u09B0\u09A4\u09C7 \u099A\u09BE\u0987:',
+            'আসসালামু আলাইকুম।',
+            'আমি GDS Training Hub ওয়েবসাইট থেকে অর্ডার করতে চাই:',
             '',
-            '\uD83D\uDC64 \u09A8\u09BE\u09AE: '+name,
-            '\uD83C\uDF0D \u09A6\u09C7\u09B6/\u09B6\u09B9\u09B0: '+country,
-            phone ? ('\uD83D\uDCF1 \u09AB\u09CB\u09A8: '+phone) : '',
-            '\uD83D\uDCE6 \u09B8\u09BF\u09AE\u09C1\u09B2\u09C7\u099F\u09B0: '+selectedSims.join(' + '),
-            '\uD83D\uDCBB \u09AD\u09BE\u09B0\u09CD\u09B8\u09A8: '+deviceTitle,
-            '\uD83D\uDCB0 \u09AE\u09C2\u09B2\u09CD\u09AF: '+priceStr,
-            note ? ('\uD83D\uDCDD \u09A8\u09CB\u099F: '+note) : '',
+            '👤 নাম: ' + name,
+            '🌐 দেশ/শহর: ' + country,
+            phone ? ('📱 ফোন: ' + phone) : '',
+            '📦 সিমুলেটর: ' + selectedSims.join(' + '),
+            '💻 ডিভাইস: ' + deviceTitle + (selectedDevices.length === 2 ? ' (২টি আলাদা আইডি)' : ''),
+            '💰 মোট মূল্য: ' + priceDisplay,
+            note ? ('📝 নোট: ' + note) : '',
             '',
-            '(Source: '+(leadData.source||'Website')+')'
+            '(Source: ' + (leadData.source || 'Website') + ')'
         ].filter(Boolean).join('\n');
 
         var targetWaUrl = 'https://wa.me/8801674091748?text='+encodeURIComponent(waLines);
-        closeGdsLeadModal();
+        window.closeGdsLeadModal();
         setTimeout(function(){window.open(targetWaUrl,'_blank');},120);
     };
 
     // Backdrop click
     document.addEventListener('click',function(e){
         var modal=document.getElementById(MODAL_ID);
-        if(modal && modal.style.display==='flex' && e.target===modal) closeGdsLeadModal();
+        if(modal && modal.style.display==='flex' && e.target===modal) window.closeGdsLeadModal();
     });
     // Escape key
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeGdsLeadModal();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeGdsLeadModal();});
 
     // WhatsApp link interceptor
     document.addEventListener('click',function(e){
@@ -2361,11 +2409,11 @@
         if(/1\s*GDS|2000/i.test(hrefTxt)) preset='single1';
         else if(/2\s*GDS|3500/i.test(hrefTxt)) preset='duo2';
         else if(/Complete\s*Bundle|3\s*GDS|5000/i.test(hrefTxt)) preset='bundle3';
-        openGdsLeadModal(preset,a.href);
+        window.openGdsLeadModal(preset,a.href);
     },true);
 
     // Wire close button
-    function wireClose(){var btn=document.getElementById('closeLeadModalBtn');if(btn)btn.onclick=closeGdsLeadModal;}
+    function wireClose(){var btn=document.getElementById('closeLeadModalBtn');if(btn)btn.onclick=window.closeGdsLeadModal;}
     if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',wireClose);}else{wireClose();}
 })();
 </script>
