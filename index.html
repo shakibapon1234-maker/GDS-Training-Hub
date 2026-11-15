@@ -2135,7 +2135,7 @@
 <script>
 (function() {
     var MODAL_ID = 'gdsLeadModal';
-        var STORAGE_KEY = 'gds_leads_v1';
+    var STORAGE_KEY = 'gds_leads_v1';
     window.GDS_GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycby3G_zjritnMYFzWvNwUTN2P4X3Sjkywf5Yy389EJ8Q4Pmb2D64Qosm3a3VAlCUQLRT/exec';
 
     function getLeads() {
@@ -2176,14 +2176,17 @@
 
     window.openGdsLeadModal = function(presetPkg, fallbackUrl) {
         var modal = document.getElementById(MODAL_ID);
-        if (!modal) return;
+        if (!modal) {
+            console.error('Modal element not found');
+            return;
+        }
 
         if (presetPkg) {
             var radios = document.querySelectorAll('input[name="gdsPackage"]');
             radios.forEach(function(r) {
-                if (presetPkg === 'single1' && /১টি/i.test(r.value)) r.checked = true;
-                else if (presetPkg === 'duo2' && /২টি/i.test(r.value)) r.checked = true;
-                else if (presetPkg === 'bundle3' && /৩টি|কমপ্লিট/i.test(r.value)) r.checked = true;
+                if (presetPkg === 'single1' && /১টি|1/i.test(r.value)) r.checked = true;
+                else if (presetPkg === 'duo2' && /২টি|2/i.test(r.value)) r.checked = true;
+                else if (presetPkg === 'bundle3' && /৩টি|3|কমপ্লিট/i.test(r.value)) r.checked = true;
             });
         }
 
@@ -2258,8 +2261,8 @@
         try {
             if (typeof fbq === 'function') {
                 var estVal = 5000;
-                if (/২টি/i.test(selectedPkg)) estVal = 3500;
-                else if (/১টি/i.test(selectedPkg)) estVal = 2000;
+                if (/২টি|2/i.test(selectedPkg)) estVal = 3500;
+                else if (/১টি|1/i.test(selectedPkg)) estVal = 2000;
                 fbq('track', 'Lead', {
                     content_name: selectedPkg,
                     content_category: 'GDS Simulator',
@@ -2269,8 +2272,8 @@
             }
         } catch (err) {}
 
-        // 3. Optional Google Sheet Sync
-        var sheetUrl = localStorage.getItem('gds_sheet_webhook_url') || window.GDS_GOOGLE_SHEET_URL;
+        // 3. Google Sheet Sync
+        var sheetUrl = window.GDS_GOOGLE_SHEET_URL;
         if (sheetUrl && sheetUrl.startsWith('http')) {
             try {
                 fetch(sheetUrl, {
@@ -2311,46 +2314,46 @@
         if (modal && modal.style.display !== 'none' && !modal.classList.contains('hidden')) {
             if (e.target === modal) closeGdsLeadModal();
         }
-        
     });
 
-    // Close on Escape & Ctrl+Shift+L
+    // Close on Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeGdsLeadModal();
-                    }
-        
+        }
     });
 
-    
-    document.addEventListener('DOMContentLoaded', checkHash);
-
-    // Global Click Interceptor for WhatsApp links
+    // Global Click Interceptor for WhatsApp links - capture phase to run first!
     document.addEventListener('click', function(e) {
         var a = e.target && e.target.closest ? e.target.closest('a') : null;
         if (!a || !a.href) return;
         if (a.id === 'directWaBypassLink') return;
-        if (!/wa.me|whatsapp.com|api.whatsapp/i.test(a.href)) return;
+        if (!/wa\.me|whatsapp\.com|api\.whatsapp/i.test(a.href)) return;
 
+        // Prevent opening WhatsApp immediately!
         e.preventDefault();
+        e.stopPropagation();
 
         var hrefTxt = decodeURIComponent(a.href || '');
         var preset = 'bundle3';
-        if (/1s*GDS/i.test(hrefTxt)) preset = 'single1';
-        else if (/2s*GDS/i.test(hrefTxt)) preset = 'duo2';
-        else if (/Completes*Bundle|3s*GDS/i.test(hrefTxt)) preset = 'bundle3';
+        if (/1\s*GDS|2000/i.test(hrefTxt)) preset = 'single1';
+        else if (/2\s*GDS|3500/i.test(hrefTxt)) preset = 'duo2';
+        else if (/Complete\s*Bundle|3\s*GDS|5000/i.test(hrefTxt)) preset = 'bundle3';
         else preset = 'inquiry';
 
         openGdsLeadModal(preset, a.href);
-    });
+    }, true);
 
-    document.addEventListener('DOMContentLoaded', function() {
+    function wireCloseBtn() {
         var btn = document.getElementById('closeLeadModalBtn');
-        if (btn) btn.addEventListener('click', closeGdsLeadModal);
-            });
-
-    })();
+        if (btn) btn.onclick = closeGdsLeadModal;
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wireCloseBtn);
+    } else {
+        wireCloseBtn();
+    }
+})();
 </script>
-
 </body>
 </html>
