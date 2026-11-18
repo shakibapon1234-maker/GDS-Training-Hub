@@ -1,7 +1,7 @@
 /**
- * GDS Training Hub — Terminal UI Controller (v2.0)
+ * GDS Training Hub — Terminal UI Controller (v2.2)
  * Command Input at the TOP, results render directly BELOW.
- * Supports Flight Availability Search & Realistic Seat Holding (HK1).
+ * Strict Error handling — No "Command Executed" badges, authentic GDS terminal output.
  */
 
 (function () {
@@ -38,9 +38,9 @@
           { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
           { token: 'DACDXB', desc: 'যাত্রার রুট (ঢাকা DAC থেকে দুবাই DXB)' },
           { token: '/AEK', desc: 'নির্দিষ্ট এয়ারলাইন ফিল্টার (/A + EK = Emirates)' },
-          { token: 'SS 1 Y 1', desc: 'সিট হোল্ড কমান্ড: SS (Seat Sell) + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
+          { token: 'SS 1 Y 1', desc: 'সিট হোল্ড: SS + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
         ],
-        tips: 'Amadeus-এ AN দিয়ে ফ্লাইট খুঁজে SS 1 Y 1 লিখলেই সিট কনফার্মড (HK1) স্ট্যাটাস সহ হোল্ড হয়।'
+        tips: 'ভুল কমান্ড লিখলে টার্মিনালে সরাসরি আসল Amadeus-এর মতো "INVALID FORMAT" এরর দেখাবে।'
       }
     },
     galileo: {
@@ -69,9 +69,9 @@
           { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
           { token: 'DACDXB', desc: 'রুট: ঢাকা DAC থেকে দুবাই DXB' },
           { token: '*EK', desc: 'নির্দিষ্ট এয়ারলাইন সিলেক্টর (* + EK)' },
-          { token: 'N1Y1', desc: 'সিট বিক্রি কমান্ড: N (Number of seats: 1) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
+          { token: 'N1Y1', desc: 'সিট বিক্রি: N (সিট ১) + Y (ক্লাস) + ১ (লাইন নাম্বার)' }
         ],
-        tips: 'Galileo-তে স্পেস ছাড়া সব একসাথে লিখতে হয় (যেমন A15OCTDACDXB*EK)। সিট নিতে N1Y1 লিখলে HK1 স্ট্যাটাস আসে।'
+        tips: 'ভুল কমান্ড লিখলে টার্মিনালে আসল গ্যালিলিওর মতো "CHECK ENTRY - FORMAT ERROR" এরর দেখাবে।'
       }
     },
     sabre: {
@@ -100,9 +100,9 @@
           { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
           { token: 'DACDXB', desc: 'ঢাকা DAC থেকে দুবাই DXB' },
           { token: '‡EK', desc: 'ক্রস অব লোরেন এয়ারলাইন কোড (‡ বা / + EK)' },
-          { token: '01Y1', desc: 'সিট বিক্রি কমান্ড: 0 (Sell indicator) + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
+          { token: '01Y1', desc: 'সিট বিক্রি: 0 + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন)' }
         ],
-        tips: 'Sabre-এ "1" দিয়ে ফ্লাইট খুঁজে "01Y1" দিলে ১ নং ফ্লাইটে ১টি সিট হোল্ড কনফার্ম (HK1) হয়।'
+        tips: 'ভুল কমান্ড লিখলে টার্মিনালে আসল Sabre-এর মতো "FORMAT" এরর বার্তা দেখাবে।'
       }
     }
   };
@@ -118,7 +118,6 @@
     if (!GDS_CONFIG[gdsKey]) return;
     currentGds = gdsKey;
 
-    // Update active tab buttons
     document.querySelectorAll('.gds-demo-tab-btn').forEach(btn => {
       const target = btn.getAttribute('data-gds');
       if (target === gdsKey) {
@@ -132,14 +131,12 @@
 
     const cfg = GDS_CONFIG[gdsKey];
 
-    // Update terminal header
     const pccEl = document.getElementById('demoTerminalPcc');
     if (pccEl) pccEl.textContent = cfg.pcc;
 
     const gdsTitleEl = document.getElementById('demoTerminalTitle');
     if (gdsTitleEl) gdsTitleEl.textContent = cfg.name;
 
-    // Update input placeholder with current GDS default
     const input = document.getElementById('demoCommandInput');
     if (input) {
       input.placeholder = `কমান্ড লিখুন (যেমন: ${cfg.defaultCmd}) এবং Enter চাপুন...`;
@@ -148,9 +145,8 @@
     renderChips();
     renderGuide();
 
-    // Reset terminal with clean single view
     resetTerminal();
-    executeDemoCommand(cfg.defaultCmd, true); // true = initial run without duplicating
+    executeDemoCommand(cfg.defaultCmd, true);
   };
 
   function renderChips() {
@@ -237,14 +233,14 @@
     const screen = document.getElementById('demoTerminalScreen');
     if (!screen) return;
 
-    // Clear previous search output and show fresh result directly under the command bar
     const block = document.createElement('div');
     block.className = 'mt-2 pt-2 border-t border-slate-800 space-y-1 font-mono text-xs sm:text-sm';
 
-    // Echo the command just run
+    // Echo the prompt line exactly like real GDS (NO "Command Executed" fake badge!)
     const cmdEcho = document.createElement('div');
-    cmdEcho.className = 'text-amber-300 font-bold flex items-center gap-2 pb-1 border-b border-slate-900';
-    cmdEcho.innerHTML = `<span class="text-amber-500 font-black">&gt; ${escapeHtml(cmd)}</span> <span class="text-[11px] px-2 py-0.2 rounded bg-slate-800 text-slate-400 font-normal">Command Executed</span>`;
+    const isErr = res.type === 'error';
+    cmdEcho.className = `${isErr ? 'text-red-400' : 'text-amber-300'} font-bold flex items-center gap-1.5 pb-1 border-b border-slate-900`;
+    cmdEcho.innerHTML = `<span class="text-amber-500 font-black">&gt;</span> <span>${escapeHtml(cmd)}</span>`;
     block.appendChild(cmdEcho);
 
     let colorClass = 'text-emerald-400';
@@ -261,8 +257,6 @@
       block.appendChild(row);
     });
 
-    // Replace previous command result so the screen always shows current command right under the input line
-    // Keep the welcome header if screen is empty, but replace older searches for crystal-clear clarity
     const existingResult = screen.querySelector('.active-demo-result');
     if (existingResult) {
       existingResult.remove();
@@ -270,7 +264,6 @@
     block.classList.add('active-demo-result');
     screen.appendChild(block);
 
-    // Scroll to show top of result
     screen.scrollTop = block.offsetTop - screen.offsetTop - 10;
   }
 
@@ -278,18 +271,16 @@
     if (!cmd || !cmd.trim()) return;
     const trimmed = cmd.trim();
 
-    // Store in history
     history[currentGds].push(trimmed);
     historyIndex[currentGds] = history[currentGds].length;
 
-    // Process via GdsDemoEngine
     if (!window.GdsDemoEngine) return;
     const res = window.GdsDemoEngine.processCommand(currentGds, trimmed);
 
     if (!res) {
       displayResultUnderCommand(trimmed, {
         type: 'error',
-        lines: ['UNRECOGNIZED COMMAND - TYPE HELP FOR EXAMPLES']
+        lines: ['INVALID COMMAND FORMAT']
       });
       return;
     }
@@ -303,7 +294,6 @@
     }
   }
 
-  // Handle Form Submit & Keyboard Navigation
   function initTerminalInput() {
     const input = document.getElementById('demoCommandInput');
     const form = document.getElementById('demoTerminalForm');
@@ -342,7 +332,6 @@
     }
   }
 
-  // Modal Functions
   window.openDemoLockedModal = function (triggerCmd) {
     const modal = document.getElementById('demoLockedModal');
     const triggerTxt = document.getElementById('lockedTriggerCmd');
@@ -365,7 +354,6 @@
     if (input) input.focus();
   };
 
-  // Initialize on DOM Ready
   document.addEventListener('DOMContentLoaded', function () {
     initTerminalInput();
     switchGdsDemoTab('amadeus');
