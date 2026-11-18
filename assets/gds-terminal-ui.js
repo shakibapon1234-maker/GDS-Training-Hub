@@ -1,22 +1,15 @@
 /**
- * GDS Training Hub — Terminal UI Controller
- * Manages Tab switching, terminal outputs, quick-chips, interactive prompts, and modals
+ * GDS Training Hub — Terminal UI Controller (v2.0)
+ * Command Input at the TOP, results render directly BELOW.
+ * Supports Flight Availability Search & Realistic Seat Holding (HK1).
  */
 
 (function () {
   'use strict';
 
   let currentGds = 'amadeus'; // 'amadeus' | 'galileo' | 'sabre'
-  const history = {
-    amadeus: [],
-    galileo: [],
-    sabre: []
-  };
-  const historyIndex = {
-    amadeus: -1,
-    galileo: -1,
-    sabre: -1
-  };
+  const history = { amadeus: [], galileo: [], sabre: [] };
+  const historyIndex = { amadeus: -1, galileo: -1, sabre: -1 };
 
   const GDS_CONFIG = {
     amadeus: {
@@ -28,26 +21,26 @@
       welcome: [
         '*** AMADEUS SELLING PLATFORM CONNECT — TRAINING SIMULATOR ***',
         'OFFICE ID: DAC1A0980    AGENT: 0001AA/SU    SIGN-IN: OK',
-        'STATUS: [DEMO MODE - FLIGHT AVAILABILITY SEARCH ONLY]',
+        'STATUS: [DEMO MODE - FLIGHT SEARCH & SEAT HOLD ACTIVE]',
         '-------------------------------------------------------------------',
-        'ফ্লাইট সার্চ করতে টাইপ করুন (যেমন: AN 15OCT DACDXB) অথবা নিচের বাটনে চাপুন:'
+        'উপরে কমান্ড লিখে [রান করুন ↵] চাপুন অথবা নিচের রেডিমেড বাটনে ক্লিক করুন:'
       ],
       defaultCmd: 'AN 15OCT DACDXB',
       chips: [
-        { label: 'ঢাকা টু দুবাই (সব ফ্লাইট)', cmd: 'AN 15OCT DACDXB' },
-        { label: 'এমিরেটস দিয়ে ঢাকা - জেদ্দা', cmd: 'AN 20NOV DACJED/AEK' },
-        { label: 'সৌদিয়া দিয়ে ঢাকা - লন্ডন', cmd: 'AN 10DEC DACLHR/ASV' },
-        { label: 'সিঙ্গাপুর সরাসরি ও ট্রানজিট', cmd: 'AN 05JAN DACSIN' },
-        { label: 'সিট বুকিং ট্রাই করুন (লক টেস্ট)', cmd: 'SS 1 Y 1' }
+        { label: '১. ফ্লাইট সার্চ (ঢাকা-দুবাই)', cmd: 'AN 15OCT DACDXB' },
+        { label: '২. ফ্লাইট সার্চ (এমিরেটস জেদ্দা)', cmd: 'AN 20NOV DACJED/AEK' },
+        { label: '৩. সিট হোল্ড করুন (HK1)', cmd: 'SS 1 Y 1' },
+        { label: '৪. নাম ও টিকিট ট্রাই (লক টেস্ট)', cmd: 'NM1RAHMAN/ANIS MR' }
       ],
       guide: {
         commandBreakdown: [
-          { token: 'AN', desc: 'Availability Neutral (ফ্লাইট খোঁজার মূল কমান্ড)' },
+          { token: 'AN', desc: 'Availability Neutral (ফ্লাইট সার্চের মূল কমান্ড)' },
           { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
           { token: 'DACDXB', desc: 'যাত্রার রুট (ঢাকা DAC থেকে দুবাই DXB)' },
-          { token: '/AEK', desc: 'নির্দিষ্ট এয়ারলাইন ফিল্টার (/A + এয়ারলাইন কোড EK = Emirates)' }
+          { token: '/AEK', desc: 'নির্দিষ্ট এয়ারলাইন ফিল্টার (/A + EK = Emirates)' },
+          { token: 'SS 1 Y 1', desc: 'সিট হোল্ড কমান্ড: SS (Seat Sell) + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
         ],
-        tips: 'Amadeus-এ AN কমান্ড দিয়ে সার্চ করলে এয়ারলাইন্স, ডিপার্চার টাইম এবং সিট ক্লাস (যেমন J4 C4 Y9) রিয়েল-টাইমে দেখা যায়।'
+        tips: 'Amadeus-এ AN দিয়ে ফ্লাইট খুঁজে SS 1 Y 1 লিখলেই সিট কনফার্মড (HK1) স্ট্যাটাস সহ হোল্ড হয়।'
       }
     },
     galileo: {
@@ -59,26 +52,26 @@
       welcome: [
         '*** TRAVELPORT GALILEO / SMARTPOINT — TRAINING SIMULATOR ***',
         'PCC: HA89MD    SIGN-ON: SON/ZHA    WORK AREA: A (ACTIVE)',
-        'STATUS: [DEMO MODE - FLIGHT AVAILABILITY SEARCH ONLY]',
+        'STATUS: [DEMO MODE - FLIGHT SEARCH & SEAT HOLD ACTIVE]',
         '-------------------------------------------------------------------',
-        'ফ্লাইট সার্চ করতে টাইপ করুন (যেমন: A15OCTDACDXB) অথবা নিচের বাটনে চাপুন:'
+        'উপরে কমান্ড লিখে [রান করুন ↵] চাপুন অথবা নিচের রেডিমেড বাটনে ক্লিক করুন:'
       ],
       defaultCmd: 'A15OCTDACDXB',
       chips: [
-        { label: 'ঢাকা টু দুবাই (সব ফ্লাইট)', cmd: 'A15OCTDACDXB' },
-        { label: 'এমিরেটস দিয়ে ঢাকা - জেদ্দা', cmd: 'A20NOVDACJED*EK' },
-        { label: 'সৌদিয়া দিয়ে ঢাকা - লন্ডন', cmd: 'A10DECDACLHR*SV' },
-        { label: 'সিঙ্গাপুর এয়ারলাইন্স', cmd: 'A05JANDACSIN*SQ' },
-        { label: 'সিট বিক্রি ট্রাই করুন (লক টেস্ট)', cmd: 'N1Y1' }
+        { label: '১. ফ্লাইট সার্চ (ঢাকা-দুবাই)', cmd: 'A15OCTDACDXB' },
+        { label: '২. ফ্লাইট সার্চ (এমিরেটস জেদ্দা)', cmd: 'A20NOVDACJED*EK' },
+        { label: '৩. সিট বিক্রি/হোল্ড (HK1)', cmd: 'N1Y1' },
+        { label: '৪. নাম ও টিকিট ট্রাই (লক টেস্ট)', cmd: 'N.RAHMAN/MD MR' }
       ],
       guide: {
         commandBreakdown: [
-          { token: 'A', desc: 'Availability (ফ্লাইট সার্চের জন্য গ্যালিলিওর কমান্ড)' },
+          { token: 'A', desc: 'Availability (গ্যালিলিওর ফ্লাইট সার্চ কোড)' },
           { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
-          { token: 'DACDXB', desc: 'ঢাকা DAC থেকে দুবাই DXB' },
-          { token: '*EK', desc: 'নির্দিষ্ট এয়ারলাইন সিলেক্টর (* + এয়ারলাইন কোড EK = Emirates)' }
+          { token: 'DACDXB', desc: 'রুট: ঢাকা DAC থেকে দুবাই DXB' },
+          { token: '*EK', desc: 'নির্দিষ্ট এয়ারলাইন সিলেক্টর (* + EK)' },
+          { token: 'N1Y1', desc: 'সিট বিক্রি কমান্ড: N (Number of seats: 1) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
         ],
-        tips: 'Galileo-তে স্পেস ছাড়া সব একসাথে লিখতে হয় (যেমন A15OCTDACDXB*EK)। ক্লাস লেটারগুলোর পাশে কত সিট বাকি আছে তা দেখায়।'
+        tips: 'Galileo-তে স্পেস ছাড়া সব একসাথে লিখতে হয় (যেমন A15OCTDACDXB*EK)। সিট নিতে N1Y1 লিখলে HK1 স্ট্যাটাস আসে।'
       }
     },
     sabre: {
@@ -90,31 +83,30 @@
       welcome: [
         '*** SABRE RED 360 WORKSPACE — TRAINING SIMULATOR ***',
         'PCC: 14KT    AGENT: 9999/SU    STATUS: SIGNED IN TO WORK AREA A',
-        'STATUS: [DEMO MODE - FLIGHT AVAILABILITY SEARCH ONLY]',
+        'STATUS: [DEMO MODE - FLIGHT SEARCH & SEAT HOLD ACTIVE]',
         '-------------------------------------------------------------------',
-        'ফ্লাইট সার্চ করতে টাইপ করুন (যেমন: 115OCTDACDXB) অথবা নিচের বাটনে চাপুন:'
+        'উপরে কমান্ড লিখে [রান করুন ↵] চাপুন অথবা নিচের রেডিমেড বাটনে ক্লিক করুন:'
       ],
       defaultCmd: '115OCTDACDXB',
       chips: [
-        { label: 'ঢাকা টু দুবাই (সব ফ্লাইট)', cmd: '115OCTDACDXB' },
-        { label: 'এমিরেটস দিয়ে ঢাকা - জেদ্দা', cmd: '120NOVDACJED‡EK' },
-        { label: 'সৌদিয়া দিয়ে ঢাকা - লন্ডন', cmd: '110DECDACLHR‡SV' },
-        { label: 'সিঙ্গাপুর এয়ারলাইন্স', cmd: '105JANDACSIN‡SQ' },
-        { label: 'সিট বিক্রি ট্রাই করুন (লক টেস্ট)', cmd: '01Y1' }
+        { label: '১. ফ্লাইট সার্চ (ঢাকা-দুবাই)', cmd: '115OCTDACDXB' },
+        { label: '২. ফ্লাইট সার্চ (এমিরেটস জেদ্দা)', cmd: '120NOVDACJED‡EK' },
+        { label: '৩. সিট বিক্রি/হোল্ড (HK1)', cmd: '01Y1' },
+        { label: '৪. নাম ও টিকিট ট্রাই (লক টেস্ট)', cmd: '-RAHMAN/ANIS MR' }
       ],
       guide: {
         commandBreakdown: [
-          { token: '1', desc: 'Availability Indicator (Sabre-এ ১ দিয়ে ফ্লাইট সার্চ শুরু হয়)' },
+          { token: '1', desc: 'Availability (Sabre-এ ১ দিয়ে ফ্লাইট সার্চ শুরু হয়)' },
           { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
           { token: 'DACDXB', desc: 'ঢাকা DAC থেকে দুবাই DXB' },
-          { token: '‡EK', desc: 'ক্রস অব লোরেন / স্লেশ ক্যারিয়ার কোড (‡ বা / + এয়ারলাইন EK)' }
+          { token: '‡EK', desc: 'ক্রস অব লোরেন এয়ারলাইন কোড (‡ বা / + EK)' },
+          { token: '01Y1', desc: 'সিট বিক্রি কমান্ড: 0 (Sell indicator) + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
         ],
-        tips: 'Sabre-এ "1" হলো ফ্লাইট খোঁজার ইউনিভার্সাল কোড। কীবোর্ডের বিশেষ চিহ্ন ‡ (বা /) দিয়ে নির্দিষ্ট এয়ারলাইন্সের ফ্লাইট সরাসরি ফিল্টার করা যায়।'
+        tips: 'Sabre-এ "1" দিয়ে ফ্লাইট খুঁজে "01Y1" দিলে ১ নং ফ্লাইটে ১টি সিট হোল্ড কনফার্ম (HK1) হয়।'
       }
     }
   };
 
-  // Helper to escape HTML
   function escapeHtml(text) {
     var div = document.createElement('div');
     div.textContent = text;
@@ -147,15 +139,18 @@
     const gdsTitleEl = document.getElementById('demoTerminalTitle');
     if (gdsTitleEl) gdsTitleEl.textContent = cfg.name;
 
-    // Update chips
-    renderChips();
+    // Update input placeholder with current GDS default
+    const input = document.getElementById('demoCommandInput');
+    if (input) {
+      input.placeholder = `কমান্ড লিখুন (যেমন: ${cfg.defaultCmd}) এবং Enter চাপুন...`;
+    }
 
-    // Update command guide
+    renderChips();
     renderGuide();
 
-    // Reset terminal content to welcome + execute default sample command
+    // Reset terminal with clean single view
     resetTerminal();
-    executeDemoCommand(cfg.defaultCmd);
+    executeDemoCommand(cfg.defaultCmd, true); // true = initial run without duplicating
   };
 
   function renderChips() {
@@ -167,11 +162,11 @@
       <button
         type="button"
         onclick="window.runDemoChip('${escapeHtml(chip.cmd)}')"
-        class="text-xs font-mono px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700/80 hover:border-amber-500/40 transition flex items-center gap-1.5 shadow-sm group text-left"
+        class="text-xs font-mono px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700/80 hover:border-amber-500/40 transition flex items-center gap-1.5 shadow-sm group text-left cursor-pointer"
         title="ক্লিক করলেই কমান্ড টার্মিনালে রান হবে"
       >
-        <span class="text-amber-400 group-hover:scale-110 transition-transform">▸</span>
-        <span class="font-bold text-amber-300/90">${escapeHtml(chip.cmd)}</span>
+        <span class="text-amber-400 group-hover:scale-110 transition-transform font-bold">▸</span>
+        <span class="font-bold text-amber-300/95">${escapeHtml(chip.cmd)}</span>
         <span class="text-slate-400 text-[11px] hidden sm:inline">(${escapeHtml(chip.label)})</span>
       </button>
     `).join('');
@@ -217,7 +212,7 @@
     const screen = document.getElementById('demoTerminalScreen');
     if (!screen) return;
     const cfg = GDS_CONFIG[currentGds];
-    screen.innerHTML = cfg.welcome.map(line => `<div class="text-slate-400 leading-tight">${escapeHtml(line)}</div>`).join('');
+    screen.innerHTML = cfg.welcome.map(line => `<div class="text-slate-500 text-[11px] sm:text-xs leading-tight">${escapeHtml(line)}</div>`).join('');
   }
 
   window.clearDemoTerminal = function () {
@@ -238,40 +233,48 @@
     executeDemoCommand(cmd);
   };
 
-  function appendToTerminal(lines, isCommand, isError, isRestricted) {
+  function displayResultUnderCommand(cmd, res) {
     const screen = document.getElementById('demoTerminalScreen');
     if (!screen) return;
 
+    // Clear previous search output and show fresh result directly under the command bar
     const block = document.createElement('div');
-    block.className = 'mt-2 space-y-0.5 font-mono text-xs sm:text-sm';
+    block.className = 'mt-2 pt-2 border-t border-slate-800 space-y-1 font-mono text-xs sm:text-sm';
 
-    if (isCommand) {
-      block.innerHTML = `
-        <div class="text-amber-300 font-bold flex items-center gap-1.5 pt-2 border-t border-slate-900">
-          <span class="text-amber-500">&gt;</span>
-          <span>${escapeHtml(lines)}</span>
-        </div>
-      `;
-    } else {
-      let colorClass = 'text-emerald-400';
-      if (currentGds === 'amadeus') colorClass = 'text-sky-300';
-      if (currentGds === 'sabre') colorClass = 'text-rose-200';
-      if (isError) colorClass = 'text-red-400 font-bold';
-      if (isRestricted) colorClass = 'text-amber-400 font-bold';
+    // Echo the command just run
+    const cmdEcho = document.createElement('div');
+    cmdEcho.className = 'text-amber-300 font-bold flex items-center gap-2 pb-1 border-b border-slate-900';
+    cmdEcho.innerHTML = `<span class="text-amber-500 font-black">&gt; ${escapeHtml(cmd)}</span> <span class="text-[11px] px-2 py-0.2 rounded bg-slate-800 text-slate-400 font-normal">Command Executed</span>`;
+    block.appendChild(cmdEcho);
 
-      lines.forEach(line => {
-        const row = document.createElement('div');
-        row.className = `leading-relaxed whitespace-pre-wrap ${colorClass}`;
-        row.textContent = line;
-        block.appendChild(row);
-      });
+    let colorClass = 'text-emerald-400';
+    if (currentGds === 'amadeus') colorClass = 'text-sky-300';
+    if (currentGds === 'sabre') colorClass = 'text-rose-200';
+    if (res.type === 'seathold') colorClass = 'text-emerald-300 font-semibold';
+    if (res.type === 'error') colorClass = 'text-red-400 font-bold';
+    if (res.type === 'restricted') colorClass = 'text-amber-400 font-bold';
+
+    res.lines.forEach(line => {
+      const row = document.createElement('div');
+      row.className = `leading-relaxed whitespace-pre-wrap ${colorClass}`;
+      row.textContent = line;
+      block.appendChild(row);
+    });
+
+    // Replace previous command result so the screen always shows current command right under the input line
+    // Keep the welcome header if screen is empty, but replace older searches for crystal-clear clarity
+    const existingResult = screen.querySelector('.active-demo-result');
+    if (existingResult) {
+      existingResult.remove();
     }
-
+    block.classList.add('active-demo-result');
     screen.appendChild(block);
-    screen.scrollTop = screen.scrollHeight;
+
+    // Scroll to show top of result
+    screen.scrollTop = block.offsetTop - screen.offsetTop - 10;
   }
 
-  function executeDemoCommand(cmd) {
+  function executeDemoCommand(cmd, isInitial) {
     if (!cmd || !cmd.trim()) return;
     const trimmed = cmd.trim();
 
@@ -279,34 +282,25 @@
     history[currentGds].push(trimmed);
     historyIndex[currentGds] = history[currentGds].length;
 
-    // Echo command in terminal
-    appendToTerminal(trimmed, true);
-
     // Process via GdsDemoEngine
     if (!window.GdsDemoEngine) return;
     const res = window.GdsDemoEngine.processCommand(currentGds, trimmed);
 
     if (!res) {
-      appendToTerminal(['UNRECOGNIZED COMMAND - TYPE HELP FOR EXAMPLES'], false, true);
+      displayResultUnderCommand(trimmed, {
+        type: 'error',
+        lines: ['UNRECOGNIZED COMMAND - TYPE HELP FOR EXAMPLES']
+      });
       return;
     }
 
-    if (res.type === 'restricted') {
-      appendToTerminal(res.lines, false, false, true);
-      // Trigger Lock Modal with delay for natural feel
+    displayResultUnderCommand(trimmed, res);
+
+    if (res.type === 'restricted' && !isInitial) {
       setTimeout(() => {
         openDemoLockedModal(trimmed);
-      }, 1000);
-      return;
+      }, 700);
     }
-
-    if (res.type === 'error') {
-      appendToTerminal(res.lines, false, true);
-      return;
-    }
-
-    // Normal availability or help
-    appendToTerminal(res.lines, false, false);
   }
 
   // Handle Form Submit & Keyboard Navigation
@@ -374,7 +368,6 @@
   // Initialize on DOM Ready
   document.addEventListener('DOMContentLoaded', function () {
     initTerminalInput();
-    // Start with Amadeus tab
     switchGdsDemoTab('amadeus');
   });
 

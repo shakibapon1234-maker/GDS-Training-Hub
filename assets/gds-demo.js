@@ -1,6 +1,7 @@
 /**
  * GDS Training Hub — Live Terminal Demo Engine
  * Real Cryptic Terminal Simulation for Amadeus, Galileo, and Sabre
+ * Supports Flight Availability Search & Seat Holding (HK1)
  * (C) GDS Training Hub — Educational Aviation Simulator
  */
 
@@ -73,17 +74,14 @@
       { al: 'SV', fn: '805', dep: '0320', arr: '0740', eq: '77W', classes: 'J4 C4 D4 Y9 B9 M9 H9 K9 L9' },
       { al: 'BG', fn: '335', dep: '2045', arr: '0115+1', eq: '77W', classes: 'J2 C2 Y9 B9 M9 H9 K9' },
       { al: 'SV', fn: '803', dep: '1430', arr: '1850', eq: '77W', classes: 'J4 C4 D4 Y9 B9 M9 H9 K9' },
-      // Connecting via DXB
       { al: 'EK', fn: '585', dep: '0100', arr: '0430', eq: '77W', via: 'DXB', conxAl: 'EK', conxFn: '803', conxDep: '0700', conxArr: '0910', conxEq: '77W', classes: 'J4 C4 D4 Y9 B9 M9 H9 K9' },
-      // Connecting via DOH
       { al: 'QR', fn: '643', dep: '2000', arr: '2250', eq: '789', via: 'DOH', conxAl: 'QR', conxFn: '1184', conxDep: '0130+1', conxArr: '0405+1', conxEq: '359', classes: 'J4 C4 D4 Y9 B9 M9' }
     ],
     'DAC-LHR': [
       { al: 'BG', fn: '201', dep: '1015', arr: '1615', eq: '789', classes: 'J2 C2 D1 Y9 B9 M9 H9 K9' },
       { al: 'EK', fn: '585', dep: '0100', arr: '0430', eq: '77W', via: 'DXB', conxAl: 'EK', conxFn: '001', conxDep: '0745', conxArr: '1140', conxEq: '388', classes: 'J4 C4 D4 Y9 B9 M9 H9 K9' },
       { al: 'QR', fn: '639', dep: '1050', arr: '1340', eq: '788', via: 'DOH', conxAl: 'QR', conxFn: '007', conxDep: '1505', conxArr: '1940', conxEq: '388', classes: 'J4 C4 D4 Y9 B9 M9 H9' },
-      { al: 'TK', fn: '713', dep: '0655', arr: '1325', eq: '77W', via: 'IST', conxAl: 'TK', conxFn: '1971', conxDep: '1500', conxArr: '1610', conxEq: '321', classes: 'J4 C4 D4 Y9 B9 M9 H9' },
-      { al: 'SV', fn: '805', dep: '0320', arr: '0740', eq: '77W', via: 'JED', conxAl: 'SV', conxFn: '107', conxDep: '0955', conxArr: '1420', conxEq: '77W', classes: 'J4 C4 D4 Y9 B9 M9' }
+      { al: 'TK', fn: '713', dep: '0655', arr: '1325', eq: '77W', via: 'IST', conxAl: 'TK', conxFn: '1971', conxDep: '1500', conxArr: '1610', conxEq: '321', classes: 'J4 C4 D4 Y9 B9 M9 H9' }
     ],
     'DAC-SIN': [
       { al: 'SQ', fn: '447', dep: '2355', arr: '0605+1', eq: '359', classes: 'J4 C4 U4 Y9 B9 M9 H9 W9 K9' },
@@ -95,21 +93,16 @@
       { al: 'TG', fn: '322', dep: '1335', arr: '1700', eq: '777', classes: 'C4 J4 Y9 B9 M9 H9 Q9 T9 K9' },
       { al: 'BG', fn: '088', dep: '1130', arr: '1500', eq: '738', classes: 'J2 C2 Y9 B9 M9 K9 H9' },
       { al: 'BS', fn: '213', dep: '0940', arr: '1310', eq: '738', classes: 'Y9 B9 M9 K9 H9 V9' }
-    ],
-    'DAC-KUL': [
-      { al: 'MH', fn: '197', dep: '1215', arr: '1810', eq: '333', classes: 'J4 C4 D4 Y9 B9 M9 H9 K9' },
-      { al: 'BG', fn: '082', dep: '2300', arr: '0450+1', eq: '738', classes: 'J2 C2 Y9 B9 M9 K9' },
-      { al: 'BS', fn: '315', dep: '2000', arr: '0150+1', eq: '738', classes: 'Y9 B9 M9 K9 H9' },
-      { al: 'MH', fn: '113', dep: '2350', arr: '0545+1', eq: '738', classes: 'J4 C4 D4 Y9 B9 M9' }
-    ],
-    'DAC-DOH': [
-      { al: 'QR', fn: '643', dep: '2000', arr: '2250', eq: '789', classes: 'J4 C4 D4 I2 Y9 B9 M9 H9 K9' },
-      { al: 'QR', fn: '639', dep: '1050', arr: '1340', eq: '788', classes: 'J4 C4 D4 I2 Y9 B9 M9 H9 K9' },
-      { al: 'BG', fn: '125', dep: '1815', arr: '2115', eq: '788', classes: 'J2 C2 Y9 B9 M9 K9 H9' }
     ]
   };
 
-  // Helper: Month name to uppercase code
+  // State to track last flight search for seat holding
+  const sessionState = {
+    amadeus: { lastRoute: 'DAC-DXB', lastDate: '15OCT', lastFlights: null },
+    galileo: { lastRoute: 'DAC-DXB', lastDate: '15OCT', lastFlights: null },
+    sabre:   { lastRoute: 'DAC-DXB', lastDate: '15OCT', lastFlights: null }
+  };
+
   function normalizeDate(raw) {
     if (!raw) {
       const now = new Date(Date.now() + 7 * 86400000);
@@ -136,7 +129,6 @@
     return days[d.getDay()];
   }
 
-  // Generate generic flights if route is not predefined
   function generateFallbackRoute(org, dst, carrierFilter) {
     const alList = carrierFilter ? [carrierFilter] : ['BG', 'EK', 'QR', 'SV', 'TK'];
     const results = [];
@@ -156,12 +148,10 @@
     return results;
   }
 
-  // Retrieve route flights
   function getFlights(org, dst, carrierFilter) {
     const key = `${org}-${dst}`;
     let list = ROUTE_DATA[key];
     if (!list) {
-      // try reverse or fallback
       list = generateFallbackRoute(org, dst, carrierFilter);
     }
     if (carrierFilter) {
@@ -172,14 +162,20 @@
   }
 
   // ==========================================
-  // 1. AMADEUS FORMATTER
+  // 1. AMADEUS ENGINE
   // ==========================================
   function formatAmadeusAvailability(org, dst, dateStr, carrierFilter) {
-    const o = AIRPORTS[org] || { city: org, tz: 'BST' };
     const d = AIRPORTS[dst] || { city: dst, tz: 'GST' };
     const day = getDayOfWeek(dateStr);
     const destCity = d.city.padEnd(20, ' ');
     const flights = getFlights(org, dst, carrierFilter);
+
+    sessionState.amadeus = {
+      lastRoute: `${org}-${dst}`,
+      lastDate: dateStr,
+      lastFlights: flights,
+      org, dst
+    };
 
     const lines = [];
     lines.push(`** AMADEUS AVAILABILITY - AN ** ${destCity} ${dateStr} ${day} 0000`);
@@ -190,9 +186,7 @@
       const clsPart = fl.classes.slice(0, 21).padEnd(21, ' ');
 
       if (fl.via) {
-        // First leg
         lines.push(`${lineNum}  ${alPad}  ${clsPart} /${org} ${fl.via}   ${fl.dep}   ${fl.arr}   ${fl.eq}  0 /E`);
-        // Second leg
         const conxAlPad = `${fl.conxAl} ${fl.conxFn.padEnd(4, ' ')}`;
         lines.push(`    ${conxAlPad}  ${clsPart} /${fl.via} ${dst}   ${fl.conxDep}   ${fl.conxArr}   ${fl.conxEq}  0 /E`);
       } else {
@@ -201,17 +195,49 @@
     });
 
     lines.push(` `);
-    lines.push(`> [DEMO MODE ACTIVE] To sell seats, type SS1Y1 or click a command below.`);
+    lines.push(`👉 পরবর্তী ধাপ (সিট হোল্ড): টাইপ করুন SS 1 Y 1 অথবা নিচে বাটনে চাপুন`);
+    return lines;
+  }
+
+  function handleAmadeusSeatHold(cmd) {
+    const clean = cmd.replace(/\s+/g, '');
+    const m = clean.match(/^SS(\d+)([A-Z])(\d+)$/i) || clean.match(/^SS(\d+)([A-Z])$/i);
+    const paxCount = m ? m[1] : '1';
+    const cls = m ? m[2].toUpperCase() : 'Y';
+    const lineNum = (m && m[3]) ? parseInt(m[3], 10) : 1;
+
+    const state = sessionState.amadeus;
+    const flights = state.lastFlights || getFlights('DAC', 'DXB');
+    const fl = flights[lineNum - 1] || flights[0];
+    const date = state.lastDate || '15OCT';
+    const org = state.org || 'DAC';
+    const dst = state.dst || 'DXB';
+
+    const lines = [];
+    lines.push(`--- PNR ITINERARY SEGMENT (AMADEUS) ---`);
+    lines.push(` 1  ${fl.al} ${fl.fn.padEnd(4, ' ')} ${cls}  ${date}  ${org}${dst}  HK${paxCount}   ${fl.dep} ${fl.arr}   ${fl.eq} /E`);
+    lines.push(` `);
+    lines.push(`✓ SEAT HOLD CONFIRMED: ${paxCount} SEAT (${cls} CLASS) - STATUS: HK${paxCount}`);
+    lines.push(`-------------------------------------------------------------------`);
+    lines.push(`👉 অভিনন্দন! সিট হোল্ড টেস্ট সফল হয়েছে।`);
+    lines.push(`👉 পূর্ণাঙ্গ PNR তৈরি (NM1...), ফেয়ার প্রাইসিং (FXP) ও টিকেট ইস্যু করতে ফুল সিমুলেটর নিন।`);
     return lines;
   }
 
   // ==========================================
-  // 2. GALILEO FORMATTER
+  // 2. GALILEO ENGINE
   // ==========================================
   function formatGalileoAvailability(org, dst, dateStr, carrierFilter) {
     const day = getDayOfWeek(dateStr);
     const flights = getFlights(org, dst, carrierFilter);
     const dom = dateStr.slice(0, 2);
+
+    sessionState.galileo = {
+      lastRoute: `${org}-${dst}`,
+      lastDate: dateStr,
+      lastFlights: flights,
+      org, dst
+    };
 
     const lines = [];
     lines.push(`       ${day} ${dateStr}         ${org}${dst}      ${dom}/0000 ${dom}/2359`);
@@ -233,18 +259,50 @@
     });
 
     lines.push(` `);
-    lines.push(`> [GALILEO DEMO] To sell seats enter N1Y1 (e.g. N1K1)`);
+    lines.push(`👉 পরবর্তী ধাপ (সিট হোল্ড): টাইপ করুন N1Y1 অথবা নিচে বাটনে চাপুন`);
+    return lines;
+  }
+
+  function handleGalileoSeatHold(cmd) {
+    const clean = cmd.replace(/\s+/g, '');
+    const m = clean.match(/^(?:N|0)(\d+)([A-Z])(\d+)?$/i);
+    const paxCount = m ? m[1] : '1';
+    const cls = m ? m[2].toUpperCase() : 'Y';
+    const lineNum = (m && m[3]) ? parseInt(m[3], 10) : 1;
+
+    const state = sessionState.galileo;
+    const flights = state.lastFlights || getFlights('DAC', 'DXB');
+    const fl = flights[lineNum - 1] || flights[0];
+    const date = state.lastDate || '15OCT';
+    const org = state.org || 'DAC';
+    const dst = state.dst || 'DXB';
+
+    const lines = [];
+    lines.push(`--- BOOKING FILE ITINERARY (GALILEO) ---`);
+    lines.push(`1. ${fl.al} ${fl.fn.padStart(4, ' ')} ${cls} ${date} ${org}${dst} HK${paxCount}  ${fl.dep} ${fl.arr}  ${fl.eq}  E`);
+    lines.push(` `);
+    lines.push(`✓ SEAT SOLD: ${paxCount} SEAT (${cls} CLASS) - STATUS: HK${paxCount} CONFIRMED`);
+    lines.push(`-------------------------------------------------------------------`);
+    lines.push(`👉 অভিনন্দন! গ্যালিলিওতে সিট সফলভাবে হোল্ড হয়েছে।`);
+    lines.push(`👉 প্যাসেঞ্জার নেম (N.NAME), ফেয়ার কোটেশন (FQ) ও টিকিট ইস্যু ফুল সিমুলেটরে সংরক্ষিত।`);
     return lines;
   }
 
   // ==========================================
-  // 3. SABRE FORMATTER
+  // 3. SABRE ENGINE
   // ==========================================
   function formatSabreAvailability(org, dst, dateStr, carrierFilter) {
     const o = AIRPORTS[org] || { tz: 'BST' };
     const d = AIRPORTS[dst] || { tz: 'GST' };
     const day = getDayOfWeek(dateStr);
     const flights = getFlights(org, dst, carrierFilter);
+
+    sessionState.sabre = {
+      lastRoute: `${org}-${dst}`,
+      lastDate: dateStr,
+      lastFlights: flights,
+      org, dst
+    };
 
     const lines = [];
     lines.push(`${dateStr} ${day} ${org}/${o.tz} ${dst}/${d.tz}`);
@@ -266,7 +324,32 @@
     });
 
     lines.push(` `);
-    lines.push(`> [SABRE DEMO] Flight search loaded. Enter 01Y1 to sell seat.`);
+    lines.push(`👉 পরবর্তী ধাপ (সিট হোল্ড): টাইপ করুন 01Y1 অথবা নিচে বাটনে চাপুন`);
+    return lines;
+  }
+
+  function handleSabreSeatHold(cmd) {
+    const clean = cmd.replace(/\s+/g, '');
+    const m = clean.match(/^0(\d+)?([A-Z])(\d+)?$/i);
+    const paxCount = (m && m[1]) ? m[1] : '1';
+    const cls = m ? m[2].toUpperCase() : 'Y';
+    const lineNum = (m && m[3]) ? parseInt(m[3], 10) : 1;
+
+    const state = sessionState.sabre;
+    const flights = state.lastFlights || getFlights('DAC', 'DXB');
+    const fl = flights[lineNum - 1] || flights[0];
+    const date = state.lastDate || '15OCT';
+    const org = state.org || 'DAC';
+    const dst = state.dst || 'DXB';
+
+    const lines = [];
+    lines.push(`--- SABRE ITINERARY SEGMENT ---`);
+    lines.push(`1 ${fl.al} ${fl.fn}${cls} ${date} W ${org}${dst} HK${paxCount}  ${fl.dep} ${fl.arr} /${fl.eq} /E`);
+    lines.push(` `);
+    lines.push(`✓ SEAT HOLD CONFIRMED: ${paxCount} SEAT ${cls} CLASS (STATUS: HK${paxCount})`);
+    lines.push(`-------------------------------------------------------------------`);
+    lines.push(`👉 অভিনন্দন! সেবরে সিট সফলভাবে হোল্ড হয়েছে।`);
+    lines.push(`👉 পুরো PNR তৈরি (-NAME / 9 / 6P / 7T), WP ও টিকেটিং প্র্যাকটিস করতে ফুল সিমুলেটর নিন।`);
     return lines;
   }
 
@@ -277,31 +360,54 @@
     const cmd = rawCmd.trim().toUpperCase();
     if (!cmd) return null;
 
-    // Check for PNR Sell or Restricted commands first
-    const isAmadeusSell = /^(SS|NM|AP|TK|FQ|FXP|FP|RT|ET|ER|HE)/i.test(cmd);
-    const isGalileoSell = /^(N\d|0\d|N\.|P\.|T\.|FQ|TMU|ER|IR|TKPDTD|H\/)/i.test(cmd);
-    const isSabreSell = /^(0\d|0[A-Z]|-|9|6|7|WP|WFR|ER|IR|\*)/i.test(cmd);
+    // Check for Seat Holding Commands (ALLOWED IN DEMO!)
+    if (gds === 'amadeus' && /^SS\s*\d+\s*[A-Z]/i.test(cmd)) {
+      return {
+        type: 'seathold',
+        cmd: cmd,
+        lines: handleAmadeusSeatHold(cmd)
+      };
+    }
+    if (gds === 'galileo' && /^N\d+[A-Z]/i.test(cmd)) {
+      return {
+        type: 'seathold',
+        cmd: cmd,
+        lines: handleGalileoSeatHold(cmd)
+      };
+    }
+    if (gds === 'sabre' && /^0\d*[A-Z]/i.test(cmd)) {
+      return {
+        type: 'seathold',
+        cmd: cmd,
+        lines: handleSabreSeatHold(cmd)
+      };
+    }
+
+    // Check for PNR, Ticketing & Pricing Commands (LOCKED -> SHOWS MODAL)
+    const isAmadeusRestricted = /^(NM|AP|TK|FQ|FXP|FP|RT|ET|ER|XI|XE)/i.test(cmd);
+    const isGalileoRestricted = /^(N\.|P\.|T\.|FQ|TMU|ER|IR|TKPDTD|X\d)/i.test(cmd);
+    const isSabreRestricted = /^(-|9|6|7|WP|WFR|ER|IR|\*|WCA|X\d)/i.test(cmd);
 
     if (
-      (gds === 'amadeus' && isAmadeusSell && !cmd.startsWith('HE')) ||
-      (gds === 'galileo' && isGalileoSell && !cmd.startsWith('H/')) ||
-      (gds === 'sabre' && isSabreSell && !cmd.startsWith('1*'))
+      (gds === 'amadeus' && isAmadeusRestricted) ||
+      (gds === 'galileo' && isGalileoRestricted) ||
+      (gds === 'sabre' && isSabreRestricted)
     ) {
       return {
         type: 'restricted',
         cmd: cmd,
         lines: [
           `>> ⚠️ [DEMO MODE LIMITATION]`,
-          `>> "${cmd}" — SEAT SELL / PNR CREATION / PRICING IS LOCKED IN FREE DEMO.`,
+          `>> "${cmd}" — PNR CREATION / PASSENGER DATA / PRICING IS LOCKED IN FREE DEMO.`,
           `>> `,
-          `>> সম্পূর্ণ PNR তৈরি, অটো-প্রাইসিং (TST/FQ), ফেয়ার রুলস, রি-ইস্যু, রিফান্ড ও`,
-          `>> টিকেটিং প্র্যাকটিস করতে আমাদের ফুল ট্রেনিং সিমুলেটরের লাইফটাইম প্যাকেজ নিন!`,
-          `>> নিচে "সম্পূর্ণ সিমুলেটর কিনুন" বাটনে ক্লিক করে WhatsApp-এ যোগাযোগ করুন।`
+          `>> আপনি সফলভাবে ফ্লাইট সার্চ ও সিট হোল্ড টেস্ট করেছেন!`,
+          `>> সম্পূর্ণ PNR তৈরি, অটো-প্রাইসিং (TST/FQ), ব্যাগেজ রুলস, রি-ইস্যু ও`,
+          `>> টিকিট ইস্যু প্র্যাকটিস করতে আমাদের ফুল ট্রেনিং সিমুলেটরের লাইফটাইম প্যাকেজ নিন।`
         ]
       };
     }
 
-    // Amadeus availability: AN 15OCT DACDXB or AN15OCTDACDXB or AN15OCTDACDXB/AEK or AD...
+    // Amadeus Availability
     if (gds === 'amadeus') {
       const clean = cmd.replace(/\s+/g, '');
       const m = clean.match(/^(?:AN|AD)(\d{1,2}[A-Z]{3})?([A-Z]{3})([A-Z]{3})(?:\/A?([A-Z0-9]{2}))?$/i);
@@ -322,12 +428,12 @@
           type: 'help',
           cmd: cmd,
           lines: [
-            `*** AMADEUS COMMAND GUIDE (ফ্লাইট সার্চ গাইড) ***`,
-            `• AN 15OCT DACDXB        - ঢাকা থেকে দুবাই সব ফ্লাইট`,
+            `*** AMADEUS COMMAND GUIDE (ফ্লাইট সার্চ ও সিট হোল্ড গাইড) ***`,
+            `• AN 15OCT DACDXB        - ঢাকা থেকে দুবাই সব ফ্লাইট সার্চ`,
             `• AN 20NOV DACJED/AEK    - এমিরেটস এয়ারলাইন্সে ঢাকা টু জেদ্দা`,
-            `• AN 10DEC DACLHR/ASV    - সৌদিয়া এয়ারলাইন্সে ঢাকা টু লন্ডন`,
-            `• AN 05JAN DACSIN        - ঢাকা টু সিঙ্গাপুর সরাসরি ও ট্রানজিট`,
-            `• SS 1 Y 1               - ১ নং ফ্লাইটের Y ক্লাসে সিট বুক (পেইড ভার্সনে)`
+            `• SS 1 Y 1               - ১ নং ফ্লাইটের Y ক্লাসে ১টি সিট হোল্ড করুন (HK1)`,
+            `• NM1RAHMAN/ANIS MR      - প্যাসেঞ্জার নেম (পেইড ভার্সনে আনলক)`,
+            `• FXP                    - অটো-ফেয়ার ক্যালকুলেশন ও TST তৈরি (পেইড ভার্সনে)`
           ]
         };
       }
@@ -335,13 +441,13 @@
         type: 'error',
         cmd: cmd,
         lines: [
-          `INVALID FORMAT — e.g. AN 15OCT DACDXB or AN 20NOV DACJED/AEK`,
-          `কমান্ডের সঠিক নিয়ম দেখতে নিচে রেডিমেড বাটনে ক্লিক করুন অথবা HELP লিখুন।`
+          `INVALID FORMAT — e.g. AN 15OCT DACDXB or SS 1 Y 1`,
+          `সঠিক কমান্ড দেখতে নিচে রেডিমেড বাটনে চাপুন অথবা HELP লিখুন।`
         ]
       };
     }
 
-    // Galileo availability: A15OCTDACDXB or A15OCTDACDXB*EK
+    // Galileo Availability
     if (gds === 'galileo') {
       const clean = cmd.replace(/\s+/g, '');
       const m = clean.match(/^A(\d{1,2}[A-Z]{3})?([A-Z]{3})([A-Z]{3})(?:[*#\/]([A-Z0-9]{2}))?$/i);
@@ -362,12 +468,12 @@
           type: 'help',
           cmd: cmd,
           lines: [
-            `*** GALILEO COMMAND GUIDE (ফ্লাইট সার্চ গাইড) ***`,
+            `*** GALILEO COMMAND GUIDE (ফ্লাইট সার্চ ও সিট হোল্ড গাইড) ***`,
             `• A15OCTDACDXB           - ঢাকা থেকে দুবাই সব ফ্লাইট সার্চ`,
             `• A20NOVDACJED*EK        - এমিরেটস এয়ারলাইন্সে জেদ্দা সার্চ`,
-            `• A10DECDACLHR*SV        - সৌদিয়া এয়ারলাইন্সে লন্ডন সার্চ`,
-            `• A05JANDACSIN*SQ        - সিঙ্গাপুর এয়ারলাইন্সে সিঙ্গাপুর`,
-            `• N1Y1                   - ১ নং ফ্লাইটে ১টি Y ক্লাস সিট বিক্রি (পেইড ভার্সনে)`
+            `• N1Y1                   - ১ নং ফ্লাইটে ১টি Y ক্লাস সিট হোল্ড (HK1)`,
+            `• N.RAHMAN/MD MR         - যাত্রী নাম অ্যাড (পেইড ভার্সনে)`,
+            `• FQ                     - ফেয়ার কোটেশন ও টিকেট ইস্যু (পেইড ভার্সনে)`
           ]
         };
       }
@@ -375,13 +481,13 @@
         type: 'error',
         cmd: cmd,
         lines: [
-          `INVALID ENTRY - e.g. A15OCTDACDXB or A20NOVDACJED*EK`,
-          `গ্যালিলিও ফরম্যাট দেখতে নিচে বাটনে ক্লিক করুন বা HELP লিখুন।`
+          `INVALID ENTRY - e.g. A15OCTDACDXB or N1Y1`,
+          `গ্যালিলিও ফরম্যাট দেখতে নিচের বাটনে ক্লিক করুন বা HELP লিখুন।`
         ]
       };
     }
 
-    // Sabre availability: 115OCTDACDXB or 120NOVDACJED‡EK or 120NOVDACJED/EK
+    // Sabre Availability
     if (gds === 'sabre') {
       const clean = cmd.replace(/\s+/g, '');
       const m = clean.match(/^1(\d{1,2}[A-Z]{3})?([A-Z]{3})([A-Z]{3})(?:[‡¥☨\/*#]([A-Z0-9]{2}))?$/i);
@@ -402,12 +508,12 @@
           type: 'help',
           cmd: cmd,
           lines: [
-            `*** SABRE COMMAND GUIDE (ফ্লাইট সার্চ গাইড) ***`,
+            `*** SABRE COMMAND GUIDE (ফ্লাইট সার্চ ও সিট হোল্ড গাইড) ***`,
             `• 115OCTDACDXB           - ঢাকা থেকে দুবাই সব ফ্লাইট সার্চ`,
-            `• 120NOVDACJED‡EK        - এমিরেটস এয়ারলাইন্সে জেদ্দা (বা 120NOVDACJED/EK)`,
-            `• 110DECDACLHR‡SV        - সৌদিয়া এয়ারলাইন্সে লন্ডন সার্চ`,
-            `• 105JANDACSIN‡SQ        - সিঙ্গাপুর এয়ারলাইন্সে সিঙ্গাপুর`,
-            `• 01Y1                   - ১ নং ফ্লাইটে ১টি Y ক্লাস বুকিং (পেইড ভার্সনে)`
+            `• 120NOVDACJED‡EK        - এমিরেটস এয়ারলাইন্সে জেদ্দা সার্চ`,
+            `• 01Y1                   - ১ নং ফ্লাইটে ১টি Y ক্লাস সিট হোল্ড (HK1)`,
+            `• -RAHMAN/ANIS MR        - নাম ফিল্ড এন্ট্রি (পেইড ভার্সনে)`,
+            `• WP                     - ফেয়ার ক্যালকুলেশন ও টিকেটিং (পেইড ভার্সনে)`
           ]
         };
       }
@@ -415,7 +521,7 @@
         type: 'error',
         cmd: cmd,
         lines: [
-          `FORMAT: 1<DDMMM><ORG><DST> e.g. 115OCTDACDXB or 120NOVDACJED‡EK`,
+          `FORMAT: 1<DDMMM><ORG><DST> e.g. 115OCTDACDXB or 01Y1`,
           `সঠিক কমান্ড জানতে নিচের বাটনে ক্লিক করুন বা HELP লিখুন।`
         ]
       };

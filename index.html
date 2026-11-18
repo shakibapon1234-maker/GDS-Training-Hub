@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn" class="scroll-smooth scroll-pt-24">
 <head>
     <meta charset="UTF-8">
@@ -691,12 +691,12 @@
                     <span lang-en>TRY BEFORE YOU BUY — Live Terminal Demo</span>
                 </div>
                 <h2 class="text-2xl sm:text-3xl font-black text-white">
-                    <span lang-bn>ফ্লাইট সার্চ নিজে কমান্ড চালিয়ে টেস্ট করুন</span>
-                    <span lang-en>Test Flight Search Directly in GDS Terminal</span>
+                    <span lang-bn>ফ্লাইট সার্চ ও সিট হোল্ড নিজে কমান্ড চালিয়ে টেস্ট করুন</span>
+                    <span lang-en>Test Flight Search & Seat Holding in GDS Terminal</span>
                 </h2>
                 <p class="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto">
-                    <span lang-bn>নিচে Amadeus, Galileo বা Sabre সিলেক্ট করুন। সরাসরি টার্মিনাল কমান্ড টাইপ করে অথবা রেডিমেড বাটনে চাপ দিয়ে আসল ফলাফল যাচাই করুন।</span>
-                    <span lang-en>Select Amadeus, Galileo, or Sabre. Type cryptic commands or click ready-made buttons to see authentic availability results.</span>
+                    <span lang-bn>নিচে Amadeus, Galileo বা Sabre সিলেক্ট করুন। সরাসরি টার্মিনাল কমান্ড টাইপ করে অথবা রেডিমেড বাটনে চাপ দিয়ে ফ্লাইট সার্চ ও সিট হোল্ড (HK1) যাচাই করুন।</span>
+                    <span lang-en>Select Amadeus, Galileo, or Sabre. Type cryptic commands or click ready-made buttons to test flight search and seat holding (HK1).</span>
                 </p>
             </div>
 
@@ -764,16 +764,8 @@
                     </div>
                 </div>
 
-                <!-- Terminal Screen (Output area) -->
-                <div
-                    id="demoTerminalScreen"
-                    class="p-4 sm:p-6 text-left mono-font text-xs sm:text-sm bg-black min-h-[260px] max-h-[420px] overflow-y-auto select-text space-y-1"
-                >
-                    <!-- Rendered dynamically -->
-                </div>
-
-                <!-- Terminal Command Input Bar -->
-                <form id="demoTerminalForm" class="p-3 bg-slate-950 border-t border-slate-800/80 flex items-center gap-2">
+                <!-- Terminal Command Input Bar (At the TOP of Terminal) -->
+                <form id="demoTerminalForm" class="p-3 bg-slate-950 border-b border-slate-800 flex items-center gap-2">
                     <span class="text-amber-400 font-bold text-base sm:text-lg mono-font px-1">&gt;</span>
                     <input
                         type="text"
@@ -783,16 +775,24 @@
                         autocapitalize="characters"
                         spellcheck="false"
                         placeholder="কমান্ড লিখুন (যেমন: AN 15OCT DACDXB) এবং Enter চাপুন..."
-                        class="flex-1 bg-black/60 text-amber-300 font-mono text-xs sm:text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400 transition placeholder:text-slate-600"
+                        class="flex-1 bg-black text-amber-300 font-mono text-xs sm:text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400 transition placeholder:text-slate-600"
                     >
                     <button
                         type="submit"
-                        class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-md flex-shrink-0"
+                        class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-md flex-shrink-0 cursor-pointer"
                     >
                         <span>রান করুন</span>
                         <i class="fa-solid fa-arrow-turn-down text-[10px] rotate-90"></i>
                     </button>
                 </form>
+
+                <!-- Terminal Screen (Output area directly BELOW the command input) -->
+                <div
+                    id="demoTerminalScreen"
+                    class="p-4 sm:p-6 text-left mono-font text-xs sm:text-sm bg-black min-h-[260px] max-h-[420px] overflow-y-auto select-text space-y-1"
+                >
+                    <!-- Rendered dynamically directly below command input -->
+                </div>
             </div>
 
             <!-- Beginner Quick Chips -->
