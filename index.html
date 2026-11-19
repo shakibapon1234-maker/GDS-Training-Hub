@@ -136,6 +136,9 @@
         .online-gds-option { display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; border: 1px solid #334155; border-radius: 10px; background: #070c1a; color: #e2e8f0; cursor: pointer; font-size: 14px; }
         .online-gds-option:has(input:checked) { border-color: #34d399; background: rgba(16,185,129,.12); color: #d1fae5; }
         .online-gds-option input { width: 16px; height: 16px; accent-color: #34d399; }
+        .online-class-submit { display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 13px 22px; border: 2px solid #fde68a; border-radius: 12px; background: linear-gradient(135deg, #f97316, #fbbf24); color: #111827; font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 8px 24px rgba(249,115,22,.45), 0 0 0 4px rgba(251,191,36,.12); transition: transform .18s ease, filter .18s ease, box-shadow .18s ease; }
+        .online-class-submit:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 12px 28px rgba(249,115,22,.6), 0 0 0 5px rgba(251,191,36,.18); }
+        .online-class-submit:focus-visible { outline: 3px solid #fef3c7; outline-offset: 3px; }
         @media (max-width: 767px) {
             .online-class-benefits, .online-class-fields { grid-template-columns: 1fr; }
             .online-class-fields .online-class-full { grid-column: auto; }
@@ -1367,7 +1370,7 @@
                     <label class="block text-sm font-semibold text-slate-300">পেমেন্ট মাধ্যম<select id="classPaymentMethod" required class="mt-1.5 gds-input"><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>BRAC Bank</option></select></label>
                     <label class="block text-sm font-semibold text-slate-300">পেমেন্ট Transaction ID<input id="classTransactionId" required class="mt-1.5 gds-input" placeholder="Transaction ID লিখুন"></label>
                     <label class="online-class-full block text-sm font-semibold text-slate-300">অতিরিক্ত তথ্য (ঐচ্ছিক)<textarea id="classNote" rows="2" class="mt-1.5 gds-input" placeholder="আপনার সুবিধাজনক সময় বা অন্য কোনো তথ্য লিখুন"></textarea></label>
-                    <div class="online-class-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2"><p class="text-xs text-slate-400">bKash / Nagad: <strong class="text-pink-300">01674091748</strong> &nbsp;•&nbsp; <span lang-bn>পেমেন্ট যাচাইয়ের পর ক্লাসের সময়সূচি জানানো হবে।</span><span lang-en>Class schedule will be shared after payment verification.</span></p><button type="submit" class="shrink-0 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-slate-950 font-black px-5 py-3 rounded-xl transition shadow-lg shadow-emerald-500/20"><i class="fa-solid fa-paper-plane"></i><span lang-bn>রেজিস্ট্রেশন জমা দিন</span><span lang-en>Submit Registration</span></button></div>
+                    <div class="online-class-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2"><p class="text-xs text-slate-400">bKash / Nagad: <strong class="text-pink-300">01674091748</strong> &nbsp;•&nbsp; <span lang-bn>পেমেন্ট যাচাইয়ের পর ক্লাসের সময়সূচি জানানো হবে।</span><span lang-en>Class schedule will be shared after payment verification.</span></p><button type="submit" class="online-class-submit"><i class="fa-solid fa-paper-plane"></i><span lang-bn>রেজিস্ট্রেশন জমা দিন</span><span lang-en>Submit Registration</span></button></div>
                 </form>
                 <p id="onlineClassStatus" class="hidden mt-4 rounded-lg px-4 py-3 text-sm font-semibold" role="status"></p>
             </div>
