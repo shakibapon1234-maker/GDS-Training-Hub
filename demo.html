@@ -85,19 +85,38 @@
         <div class="max-w-4xl mx-auto space-y-3">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>TRY BEFORE YOU BUY — লাইভ টার্মিনাল ডেমো</span>
+                <span>ONE-TIME FREE PRACTICE — ১-বার লাইভ ট্রায়াল</span>
             </div>
             <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                GDS ক্রিপ্টিক টার্মিনালে <span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">ফ্লাইট সার্চ ও সিট হোল্ড ডেমো</span>
+                GDS ক্রিপ্টিক টার্মিনালে <span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">১-বার ফ্রি PNR তৈরি ও টিকেট ইস্যু ট্রায়াল</span>
             </h1>
             <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-                পেইড সিমুলেটর কেনার আগে নিজেই টার্মিনালে আসল GDS কমান্ড লিখে ফ্লাইট শিডিউল সার্চ ও সিট হোল্ড (HK1) পরীক্ষা করে দেখুন।
+                ইউটিউব চ্যানেল সাবস্ক্রাইব করে ব্রাউজারেই সরাসরি আসল Amadeus, Galileo ও Sabre GDS টার্মিনালে আসল কমান্ড দিয়ে PNR তৈরি ও টিকিট ইস্যু প্র্যাকটিস করুন।
             </p>
         </div>
     </header>
 
     <!-- Main Interactive Demo Component -->
     <main class="flex-1 py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full space-y-8">
+
+        <!-- Trial Status Banner -->
+        <div id="trialStatusBanner" class="p-3.5 sm:p-4 rounded-xl border border-sky-500/30 bg-sky-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+            <div class="flex items-center gap-3">
+                <span id="trialStatusDot" class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+                <div>
+                    <span id="trialStatusTitle" class="text-xs sm:text-sm font-bold text-white">১-বার ফ্রি ট্রায়াল সেশন সক্রিয়:</span>
+                    <span id="trialStatusDesc" class="text-xs text-slate-300 block sm:inline ml-0 sm:ml-1">ফ্লাইট সার্চ থেকে টিকিট ইস্যু পর্যন্ত ১০০% আসল কমান্ডে প্র্যাকটিস করুন। (রিইস্যু ও রিফান্ড ফুল ভার্সনে সংরক্ষিত)</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0" id="trialBannerActions">
+                <span id="trialBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                    ✓ TRIAL UNLOCKED
+                </span>
+                <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-400 hover:text-white underline">
+                    শর্তাবলী দেখুন
+                </button>
+            </div>
+        </div>
 
         <!-- GDS System Switcher Tabs -->
         <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
@@ -244,7 +263,7 @@
 
     </main>
 
-    <!-- Locked Features Modal -->
+    <!-- Locked Features Modal (Reissue / Refund Notice) -->
     <div id="demoLockedModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative space-y-4 animate-scaleUp">
             <button
@@ -261,15 +280,15 @@
                     <i class="fa-solid fa-lock"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-black text-white">ডেমো মোড সীমাবদ্ধতা</h3>
+                    <h3 class="text-xl font-black text-white">রি-ইস্যু ও রিফান্ড সীমাবদ্ধতা</h3>
                     <p class="text-xs text-slate-400">
-                        কমান্ড: <code id="lockedTriggerCmd" class="text-amber-300 font-mono">SEAT SELL / PNR</code>
+                        কমান্ড: <code id="lockedTriggerCmd" class="text-amber-300 font-mono">REISSUE / REFUND</code>
                     </p>
                 </div>
             </div>
 
             <p class="text-sm text-slate-300 leading-relaxed">
-                ফ্রি ডেমোতে শুধুমাত্র <strong>ফ্লাইট শিডিউল ও সিট হোল্ড (HK1)</strong> অনুমোদিত। যাত্রী নাম এন্ট্রি, ফেয়ার ক্যালকুলেশন ও টিকেট ইস্যু করতে আমাদের ফুল ট্রেনিং সিমুলেটরের লাইসেন্স প্রয়োজন।
+                ফ্রি ডেমো ট্রায়ালে <strong>ফ্লাইট সার্চ, সিট হোল্ড, সম্পূর্ণ PNR তৈরি ও টিকিট ইস্যু</strong> উন্মুক্ত। তবে <strong>রি-ইস্যু (Re-issue), রিফান্ড (Refund) ও পেনাল্টি ক্যালকুলেশন</strong>-এর অ্যাডভান্সড ফিচারগুলো শুধুমাত্র আমাদের ফুল ট্রেনিং সফটওয়্যারের পেইড লাইসেন্সে অন্তর্ভুক্ত।
             </p>
 
             <div class="p-4 rounded-xl bg-black/50 border border-slate-800 space-y-2 text-xs">
@@ -288,17 +307,17 @@
                 </div>
                 <div class="flex items-center gap-2 text-slate-200">
                     <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                    <span>রি-ইস্যু (Reissue), রিফান্ড (Refund) ও ভয়েড প্র্যাকটিস</span>
+                    <span>রি-ইস্যু (Reissue), রিফান্ড (Refund) ও ভয়েড লাইভ প্র্যাকটিস</span>
                 </div>
                 <div class="flex items-center gap-2 text-slate-200">
                     <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                    <span>Windows PC ও Android Phone দুটি ডিভাইসেই লাইফটাইম সাপোর্ট</span>
+                    <span>Windows PC ও Android Phone দুটি ডিভাইসেই লাইফটাইম অ্যাক্সেস</span>
                 </div>
             </div>
 
             <div class="pt-2 flex flex-col sm:flex-row gap-2">
                 <a
-                    href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A6%A1%E0%A7%87%E0%A6%AE%E0%A7%8B%20%E0%A6%9F%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%9F%20%E0%A6%95%E0%A6%B0%E0%A7%87%E0%A6%9B%E0%A6%BF%E0%A7%88%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B8%E0%A6%BF%E0%A6%AE%E0%A7%81%E0%A6%B2%E0%A7%87%E0%A6%9F%E0%A6%B0%20%E0%A6%AA%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%95%E0%A7%87%E0%A6%9C%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
+                    href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A6%A1%E0%A7%87%E0%A6%AE%E0%A7%8B%20%E0%A6%9F%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%9F%20%E0%A6%95%E0%A6%B0%E0%A7%87%E0%A6%9B%E0%A6%BF%E0%A7%88%20%E0%A6%B0%E0%A6%BF-%E0%A6%87%E0%A6%B8%E0%A7%8D%E0%A6%AF%E0%A7%81%20%E0%A6%93%20%E0%A6%B0%E0%A6%BF%E0%A6%AB%E0%A6%BE%E0%A6%A8%E0%A7%8D%E0%A6%A1%20%E0%A6%B8%E0%A6%B9%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B8%E0%A6%BF%E0%A6%AE%E0%A7%81%E0%A6%B2%E0%A7%87%E0%A6%9F%E0%A6%B0%20%E0%A6%AA%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%95%E0%A7%87%E0%A6%9C%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm py-3 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 shadow-lg"
@@ -311,7 +330,197 @@
                     onclick="window.closeDemoLockedModal()"
                     class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition"
                 >
-                    ফ্লাইট সার্চে ফিরুন
+                    টার্মিনালে ফিরুন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 1-Time Practice Gate Modal (YouTube & Terms) -->
+    <!-- ========================================== -->
+    <div id="gdsTrialGateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 hidden">
+        <div class="bg-gradient-to-b from-slate-900 via-[#0a1222] to-[#050a14] border-2 border-amber-500/40 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative space-y-5 animate-scaleUp">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-amber-600 text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-lg">
+                    <i class="fa-brands fa-youtube"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg sm:text-xl font-black text-white">১-বার ফ্রি প্র্যাকটিস মোড আনলক</h3>
+                    <p class="text-xs text-amber-400 font-medium">ইউটিউব চ্যানেল সাবস্ক্রাইব করে PNR ও টিকেট ইস্যু প্র্যাকটিস করুন</p>
+                </div>
+            </div>
+
+            <!-- YouTube Channel Subscribe Card -->
+            <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center text-lg">
+                            <i class="fa-brands fa-youtube"></i>
+                        </span>
+                        <div>
+                            <div class="text-xs font-bold text-white">GDS Training Hub BD</div>
+                            <div class="text-[11px] text-slate-400">@gdstraininghubbd (বাংলা ভিডিও টিউটোরিয়াল)</div>
+                        </div>
+                    </div>
+                    <span id="ytSubBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        সাবস্ক্রাইব প্রয়োজন
+                    </span>
+                </div>
+
+                <a
+                    href="https://www.youtube.com/@gdstraininghubbd?sub_confirmation=1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    id="btnYtSubscribe"
+                    onclick="window.handleYtSubscribeClick()"
+                    class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black text-xs sm:text-sm py-2.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                >
+                    <i class="fa-brands fa-youtube text-base"></i>
+                    <span>YouTube চ্যানেল সাবস্ক্রাইব করুন</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+                </a>
+                <p class="text-[11px] text-slate-400 text-center">
+                    (লিংকে ক্লিক করলে নতুন ট্যাবে চ্যানেল ওপেন হবে, সাবস্ক্রাইব করে এই ট্যাবে ফিরে আসুন)
+                </p>
+            </div>
+
+            <!-- Facebook Page Card (Helpful / Branding) -->
+            <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800/80 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 text-slate-300">
+                    <i class="fa-brands fa-facebook text-sky-400 text-sm"></i>
+                    <span>আমাদের অফিসিয়াল Facebook পেজ:</span>
+                </div>
+                <a
+                    href="https://facebook.com/gdstraininghub"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 text-[11px]"
+                >
+                    <span>facebook.com/gdstraininghub</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+            </div>
+
+            <!-- Terms & Conditions Checklist -->
+            <div class="space-y-2 pt-1 text-xs">
+                <div class="font-bold text-slate-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-contract text-amber-400"></i>
+                    <span>ট্রায়াল শর্তাবলী (Terms & Conditions):</span>
+                </div>
+                <label class="flex items-start gap-2.5 cursor-pointer text-slate-300 p-2.5 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 transition select-none">
+                    <input type="checkbox" id="termsCheck1" onchange="window.updateGateUnlockState()" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0">
+                    <span class="text-[11px] leading-relaxed">
+                        আমি স্বীকার করছি এটি <strong>১-বার ব্যবহারযোগ্য ফ্রি ট্রায়াল</strong> (ফ্লাইট সার্চ, সিট হোল্ড, PNR ক্রিয়েশন ও টিকিট ইস্যু পর্যন্ত)।
+                    </span>
+                </label>
+                <label class="flex items-start gap-2.5 cursor-pointer text-slate-300 p-2.5 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 transition select-none">
+                    <input type="checkbox" id="termsCheck2" onchange="window.updateGateUnlockState()" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0">
+                    <span class="text-[11px] leading-relaxed">
+                        রি-ইস্যু (Re-issue) এবং রিফান্ড (Refund) ফিচারটি শুধুমাত্র আমাদের ফুল লাইসেন্সড পেইড সফটওয়্যারে উপলব্ধ।
+                    </span>
+                </label>
+            </div>
+
+            <!-- Unlock CTA -->
+            <div class="pt-2">
+                <button
+                    type="button"
+                    id="btnUnlockTerminal"
+                    onclick="window.unlockDemoTerminalAction()"
+                    disabled
+                    class="w-full bg-slate-800 text-slate-500 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 cursor-not-allowed opacity-60"
+                >
+                    <i class="fa-solid fa-lock" id="unlockIcon"></i>
+                    <span id="unlockBtnText">সাবস্ক্রাইব করুন ও শর্তাবলী মেনে আনলক করুন</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- Ticket Issue Completion Celebration Modal -->
+    <!-- ========================================== -->
+    <div id="gdsCompletionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 hidden">
+        <div class="bg-gradient-to-b from-slate-900 via-[#0a1222] to-[#050a14] border-2 border-emerald-500/50 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative space-y-4 animate-scaleUp">
+            <button
+                type="button"
+                onclick="window.closeCompletionModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 text-lg"
+                title="বন্ধ করুন"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl flex-shrink-0 shadow-lg">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg sm:text-xl font-black text-white">🎉 অভিনন্দন! টিকেট সফলভাবে ইস্যু হয়েছে</h3>
+                    <p class="text-xs text-emerald-400 font-bold">আপনার ১-বার ফ্রি ট্রায়াল সম্পন্ন হয়েছে</p>
+                </div>
+            </div>
+
+            <!-- Issued Ticket Card -->
+            <div class="p-4 rounded-xl bg-black/70 border border-emerald-500/30 space-y-2 mono-font text-xs">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <span id="compGdsName" class="text-amber-400 font-bold">Amadeus GDS Ticket</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">STATUS: OK / ISSUED</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1">
+                    <div>
+                        <span class="text-slate-500 block text-[10px]">TICKET NUMBER:</span>
+                        <span id="compTktNum" class="text-white font-bold">176-2489103841</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px]">PNR LOCATOR:</span>
+                        <span id="compLocator" class="text-amber-300 font-bold">J99GZO</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px]">PASSENGER:</span>
+                        <span id="compPax" class="text-slate-200">CHOWDHURY/RAHIM MR</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px]">TOTAL FARE:</span>
+                        <span id="compFare" class="text-emerald-400 font-bold">BDT 55,050</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/5 border border-amber-500/30 space-y-2">
+                <div class="text-xs font-black text-amber-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-crown"></i>
+                    <span>আজীবন আনলিমিটেড প্র্যাকটিস করতে ফুল ভার্সন নিন:</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    আমাদের ৩টি সফটওয়্যার বান্ডেল (Amadeus, Galileo, Sabre)-এ পাবেন আনলিমিটেড PNR, অটো/ম্যানুয়াল ফেয়ার, ব্যাগেজ রুলস, রি-ইস্যু, রিফান্ড ও লাইভ টিকেট প্রিন্টিং।
+                </p>
+                <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-800">
+                    <span class="text-slate-400">৩টি বান্ডেল (Windows + Android):</span>
+                    <span class="text-sm font-black text-amber-400">৳ ৫,০০০ (লাইফটাইম)</span>
+                </div>
+            </div>
+
+            <!-- WhatsApp Order CTA -->
+            <div class="pt-2 flex flex-col sm:flex-row gap-2">
+                <a
+                    href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A6%A1%E0%A7%87%E0%A6%AE%E0%A7%8B%20%E0%A6%9F%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%9F%20%E0%A6%95%E0%A6%B0%E0%A7%87%20%E0%A6%B8%E0%A6%AB%E0%A6%B2%E0%A6%AD%E0%A6%BE%E0%A6%AC%E0%A7%87%20%E0%A6%9F%E0%A6%BF%E0%A6%95%E0%A6%BF%E0%A6%9F%20%E0%A6%87%E0%A6%B8%E0%A7%8D%E0%A6%AF%E0%A7%81%20%E0%A6%95%E0%A6%B0%E0%A7%87%E0%A6%9B%E0%A6%BF%E0%A7%88%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20%E0%A7%A9%E0%A6%9F%E0%A6%BF%20%E0%A6%95%E0%A6%AE%E0%A6%AA%E0%A7%8D%E0%A6%B2%E0%A6%BF%E0%A6%9F%20%E0%A6%AC%E0%A6%BE%E0%A6%A8%E0%A7%8D%E0%A6%A1%E0%A7%87%E0%A6%B2%20(%E0%A7%A7%E0%A7%A6%E0%A7%A6%25%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B2%E0%A6%BE%E0%A6%87%E0%A6%AB%E0%A6%9F%E0%A6%BE%E0%A6%87%E0%A6%AE)%20%E0%A7%AB%2C%E0%A7%A6%E0%A7%A6%E0%A7%A6%20%E0%A6%9F%E0%A6%BE%E0%A6%95%E0%A6%BE%E0%A6%AF%E0%A6%BC%20%E0%A6%85%E0%A6%B0%E0%A7%8D%E0%A6%A1%E0%A6%BE%E0%A6%B0%20%E0%A6%95%E0%A6%B0%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-black text-sm py-3 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 shadow-lg"
+                >
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp-এ ৫,০০০ টাকার বান্ডেল অর্ডার করুন</span>
+                </a>
+                <button
+                    type="button"
+                    onclick="window.closeCompletionModal()"
+                    class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition"
+                >
+                    টার্মিনাল দেখুন
                 </button>
             </div>
         </div>
@@ -682,6 +891,201 @@
             if (btn) btn.onclick = window.closeGdsLeadModal;
         }
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', wireClose); } else { wireClose(); }
+    })();
+    </script>
+
+    <!-- 1-Time Practice Gate & Completion Logic -->
+    <script>
+    (function() {
+        var TRIAL_USED_KEY = 'gds_trial_used';
+        var TRIAL_UNLOCKED_KEY = 'gds_trial_unlocked';
+        var YT_CLICKED_KEY = 'gds_yt_subscribed_clicked';
+
+        var isYtClicked = false;
+        try {
+            isYtClicked = localStorage.getItem(YT_CLICKED_KEY) === 'true';
+        } catch(e) {}
+
+        window.handleYtSubscribeClick = function() {
+            isYtClicked = true;
+            try { localStorage.setItem(YT_CLICKED_KEY, 'true'); } catch(e) {}
+            var badge = document.getElementById('ytSubBadge');
+            if (badge) {
+                badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                badge.innerHTML = '<i class="fa-solid fa-check"></i> চ্যানেল ওপেন হয়েছে';
+            }
+            window.updateGateUnlockState();
+        };
+
+        window.updateGateUnlockState = function() {
+            var c1 = document.getElementById('termsCheck1');
+            var c2 = document.getElementById('termsCheck2');
+            var btn = document.getElementById('btnUnlockTerminal');
+            var txt = document.getElementById('unlockBtnText');
+            var icon = document.getElementById('unlockIcon');
+
+            var termsAgreed = (c1 && c1.checked) && (c2 && c2.checked);
+
+            if (isYtClicked && termsAgreed) {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.className = 'w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 shadow-xl cursor-pointer hover:scale-[1.01]';
+                }
+                if (txt) txt.textContent = 'টার্মিনাল আনলক করুন & প্র্যাকটিস শুরু করুন';
+                if (icon) icon.className = 'fa-solid fa-lock-open text-slate-950';
+            } else {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.className = 'w-full bg-slate-800 text-slate-500 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 cursor-not-allowed opacity-60';
+                }
+                if (txt) {
+                    if (!isYtClicked) {
+                        txt.textContent = 'YouTube চ্যানেল সাবস্ক্রাইব করুন ও শর্তাবলী টিক দিন';
+                    } else {
+                        txt.textContent = 'উভয় শর্তাবলীতে টিক চিহ্ন দিয়ে সম্মতি দিন';
+                    }
+                }
+                if (icon) icon.className = 'fa-solid fa-lock';
+            }
+        };
+
+        window.openTrialGateModal = function(isViewTermsOnly) {
+            var modal = document.getElementById('gdsTrialGateModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+            if (isYtClicked) {
+                var badge = document.getElementById('ytSubBadge');
+                if (badge) {
+                    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                    badge.innerHTML = '<i class="fa-solid fa-check"></i> চ্যানেল ওপেন হয়েছে';
+                }
+            }
+            window.updateGateUnlockState();
+        };
+
+        window.closeTrialGateModal = function() {
+            var modal = document.getElementById('gdsTrialGateModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        };
+
+        window.unlockDemoTerminalAction = function() {
+            try {
+                localStorage.setItem(TRIAL_UNLOCKED_KEY, 'true');
+            } catch(e) {}
+            window.closeTrialGateModal();
+            window.updateTrialBannerUI();
+
+            var input = document.getElementById('demoCommandInput');
+            if (input) input.focus();
+        };
+
+        window.updateTrialBannerUI = function() {
+            var isUsed = false;
+            try { isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true'; } catch(e) {}
+
+            var banner = document.getElementById('trialStatusBanner');
+            var dot = document.getElementById('trialStatusDot');
+            var title = document.getElementById('trialStatusTitle');
+            var desc = document.getElementById('trialStatusDesc');
+            var actions = document.getElementById('trialBannerActions');
+
+            if (!banner) return;
+
+            if (isUsed) {
+                banner.className = 'p-3.5 sm:p-4 rounded-xl border border-amber-500/40 bg-amber-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
+                if (dot) dot.className = 'w-3 h-3 rounded-full bg-amber-400 flex-shrink-0';
+                if (title) title.textContent = '⚠️ আপনার ১-বার ফ্রি ট্রায়াল সেশন সম্পন্ন হয়েছে:';
+                if (desc) desc.textContent = 'ফুল ভার্সনে আনলিমিটেড PNR, ফেয়ার ক্যালকুলেশন, টিকিট ইস্যু, রিইস্যু ও রিফান্ড পেতে আমাদের ফুল প্যাকেজ নিন।';
+                if (actions) {
+                    actions.innerHTML = `
+                        <a href="https://wa.me/8801674091748?text=${encodeURIComponent('হ্যালো, আমি GDS Training Hub এর ডেমো ট্রায়াল শেষ করেছি। ৩টি কমপ্লিট বান্ডেল (Windows + Android) ৫,০০০ টাকায় কিনতে চাই।')}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span>ফুল বান্ডেল অর্ডার (৳ ৫,০০০)</span>
+                        </a>
+                        <button type="button" onclick="window.resetTrialForTesting()" class="text-[11px] text-slate-500 hover:text-slate-300 ml-1" title="আবার টেস্ট করুন">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    `;
+                }
+            } else {
+                banner.className = 'p-3.5 sm:p-4 rounded-xl border border-sky-500/30 bg-sky-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
+                if (dot) dot.className = 'w-3 h-3 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
+                if (title) title.textContent = '১-বার ফ্রি ট্রায়াল সেশন সক্রিয়:';
+                if (desc) desc.textContent = 'ফ্লাইট সার্চ থেকে টিকিট ইস্যু পর্যন্ত ১০০% আসল কমান্ডে প্র্যাকটিস করুন। (রিইস্যু ও রিফান্ড ফুল ভার্সনে সংরক্ষিত)';
+                if (actions) {
+                    actions.innerHTML = `
+                        <span id="trialBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                            ✓ TRIAL UNLOCKED
+                        </span>
+                        <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-400 hover:text-white underline">
+                            শর্তাবলী দেখুন
+                        </button>
+                    `;
+                }
+            }
+        };
+
+        window.openCompletionModal = function(ticket) {
+            var modal = document.getElementById('gdsCompletionModal');
+            if (!modal) return;
+
+            if (ticket) {
+                var gdsEl = document.getElementById('compGdsName');
+                var numEl = document.getElementById('compTktNum');
+                var locEl = document.getElementById('compLocator');
+                var paxEl = document.getElementById('compPax');
+                var fareEl = document.getElementById('compFare');
+
+                if (gdsEl) gdsEl.textContent = (ticket.gds || 'GDS') + ' E-Ticket Confirmation';
+                if (numEl) numEl.textContent = ticket.ticketNumber || '176-2489103841';
+                if (locEl) locEl.textContent = ticket.pnr || 'J99GZO';
+                if (paxEl) paxEl.textContent = ticket.pax || 'CHOWDHURY/RAHIM MR';
+                if (fareEl) fareEl.textContent = ticket.amount || 'BDT 55,050';
+            }
+
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            window.updateTrialBannerUI();
+        };
+
+        window.closeCompletionModal = function() {
+            var modal = document.getElementById('gdsCompletionModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+            window.updateTrialBannerUI();
+        };
+
+        window.resetTrialForTesting = function() {
+            try {
+                localStorage.removeItem(TRIAL_USED_KEY);
+                localStorage.removeItem(TRIAL_UNLOCKED_KEY);
+            } catch(e) {}
+            window.location.reload();
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var isUnlocked = false;
+            var isUsed = false;
+            try {
+                isUnlocked = localStorage.getItem(TRIAL_UNLOCKED_KEY) === 'true';
+                isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true';
+            } catch(e) {}
+
+            window.updateTrialBannerUI();
+
+            if (!isUnlocked && !isUsed) {
+                setTimeout(function() {
+                    window.openTrialGateModal(false);
+                }, 600);
+            }
+        });
     })();
     </script>
 

@@ -1,7 +1,8 @@
 /**
- * GDS Training Hub — Terminal UI Controller (v2.2)
+ * GDS Training Hub — Terminal UI Controller (v3.0)
  * Command Input at the TOP, results render directly BELOW.
- * Strict Error handling — No "Command Executed" badges, authentic GDS terminal output.
+ * Supports full 1-Time PNR Creation and Ticket Issue with Completion Modal.
+ * Reissue and Refund restricted with informative educational notice.
  */
 
 (function () {
@@ -21,26 +22,34 @@
       welcome: [
         '*** AMADEUS SELLING PLATFORM CONNECT — TRAINING SIMULATOR ***',
         'OFFICE ID: DAC1A0980    AGENT: 0001AA/SU    SIGN-IN: OK',
-        'STATUS: [DEMO MODE - FLIGHT SEARCH & SEAT HOLD ACTIVE]',
+        'STATUS: [ONE-TIME FREE TRIAL - FULL PNR & TICKET ISSUE ACTIVE]',
         '-------------------------------------------------------------------',
-        'উপরে কমান্ড লিখে [রান করুন ↵] চাপুন অথবা নিচের রেডিমেড বাটনে ক্লিক করুন:'
+        'কমান্ড লিখুন অথবা নিচে পর্যায়ক্রমে রেডিমেড চিপসগুলোতে ক্লিক করে PNR ও টিকেট ইস্যু সম্পন্ন করুন:'
       ],
       defaultCmd: 'AN 15OCT DACDXB',
       chips: [
-        { label: '১. ফ্লাইট সার্চ (ঢাকা-দুবাই)', cmd: 'AN 15OCT DACDXB' },
-        { label: '২. ফ্লাইট সার্চ (এমিরেটস জেদ্দা)', cmd: 'AN 20NOV DACJED/AEK' },
-        { label: '৩. সিট হোল্ড করুন (HK1)', cmd: 'SS 1 Y 1' },
-        { label: '৪. নাম ও টিকিট ট্রাই (লক টেস্ট)', cmd: 'NM1RAHMAN/ANIS MR' }
+        { label: '১. ফ্লাইট সার্চ', cmd: 'AN 15OCT DACDXB' },
+        { label: '২. সিট সিলেক্ট (HK1)', cmd: 'SS 1 Y 1' },
+        { label: '৩. প্যাসেঞ্জার নাম', cmd: 'NM1CHOWDHURY/RAHIM MR' },
+        { label: '৪. কন্টাক্ট ফিল্ড', cmd: 'AP DAC 01711000000' },
+        { label: '৫. টিকেট টাইম-লিমিট', cmd: 'TK TL15OCT' },
+        { label: '৬. রিসিভড ফ্রম', cmd: 'RF BAYEZID' },
+        { label: '৭. পিএনআর সম্পন্ন', cmd: 'ER' },
+        { label: '৮. টিকিট ইস্যু', cmd: 'FXP' },
+        { label: '৯. রিইস্যু (লক টেস্ট)', cmd: 'FO' }
       ],
       guide: {
         commandBreakdown: [
-          { token: 'AN', desc: 'Availability Neutral (ফ্লাইট সার্চের মূল কমান্ড)' },
-          { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
-          { token: 'DACDXB', desc: 'যাত্রার রুট (ঢাকা DAC থেকে দুবাই DXB)' },
-          { token: '/AEK', desc: 'নির্দিষ্ট এয়ারলাইন ফিল্টার (/A + EK = Emirates)' },
-          { token: 'SS 1 Y 1', desc: 'সিট হোল্ড: SS + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন নাম্বার)' }
+          { token: 'AN 15OCT DACDXB', desc: 'ফ্লাইট শিডিউল ও সিট অ্যাভেইলেবিলিটি সার্চ' },
+          { token: 'SS 1 Y 1', desc: '১টি সিট Y ক্লাসে লাইন ১ থেকে হোল্ড (HK1)' },
+          { token: 'NM1SURNAME/FIRST MR', desc: 'যাত্রীর নাম সংযোজন (Adult/Child/Infant)' },
+          { token: 'AP DAC 01711...', desc: 'এজেন্সি ও প্যাসেঞ্জার কন্টাক্ট ইনফো (Phone Element)' },
+          { token: 'TK TL15OCT', desc: 'টিকেট ইস্যুর টাইম-লিমিট নির্ধারণ' },
+          { token: 'RF BAYEZID', desc: 'রিসিভড ফ্রম — যিনি বুকিংটি প্রদান করেছেন' },
+          { token: 'ER', desc: 'End Record — নিশ্চিত PNR তৈরি ও ৬ সংখ্যার রেকর্ড লোকেটর জেনারেট' },
+          { token: 'FXP / TTP', desc: 'অটো ফেয়ার ক্যালকুলেশন এবং আসল ইলেকট্রনিক টিকিট ইস্যু' }
         ],
-        tips: 'ভুল কমান্ড লিখলে টার্মিনালে সরাসরি আসল Amadeus-এর মতো "INVALID FORMAT" এরর দেখাবে।'
+        tips: 'রি-ইস্যু বা রিফান্ড কমান্ড দিলে ডেমো লিমিটেশন দেখাবে—কারণ এটি শুধুমাত্র পেইড ফুল ভার্সনে সংরক্ষিত।'
       }
     },
     galileo: {
@@ -52,26 +61,34 @@
       welcome: [
         '*** TRAVELPORT GALILEO / SMARTPOINT — TRAINING SIMULATOR ***',
         'PCC: HA89MD    SIGN-ON: SON/ZHA    WORK AREA: A (ACTIVE)',
-        'STATUS: [DEMO MODE - FLIGHT SEARCH & SEAT HOLD ACTIVE]',
+        'STATUS: [ONE-TIME FREE TRIAL - FULL PNR & TICKET ISSUE ACTIVE]',
         '-------------------------------------------------------------------',
-        'উপরে কমান্ড লিখে [রান করুন ↵] চাপুন অথবা নিচের রেডিমেড বাটনে ক্লিক করুন:'
+        'কমান্ড লিখুন অথবা নিচে পর্যায়ক্রমে রেডিমেড চিপসগুলোতে ক্লিক করে PNR ও টিকেট ইস্যু সম্পন্ন করুন:'
       ],
       defaultCmd: 'A15OCTDACDXB',
       chips: [
-        { label: '১. ফ্লাইট সার্চ (ঢাকা-দুবাই)', cmd: 'A15OCTDACDXB' },
-        { label: '২. ফ্লাইট সার্চ (এমিরেটস জেদ্দা)', cmd: 'A20NOVDACJED*EK' },
-        { label: '৩. সিট বিক্রি/হোল্ড (HK1)', cmd: 'N1Y1' },
-        { label: '৪. নাম ও টিকিট ট্রাই (লক টেস্ট)', cmd: 'N.RAHMAN/MD MR' }
+        { label: '১. ফ্লাইট সার্চ', cmd: 'A15OCTDACDXB' },
+        { label: '২. সিট সিলেক্ট (HK1)', cmd: 'N.1Y1' },
+        { label: '৩. প্যাসেঞ্জার নাম', cmd: 'N.CHOWDHURY/RAHIM MR' },
+        { label: '৪. ফোন ফিল্ড', cmd: 'P.DAC*01711000000' },
+        { label: '৫. টিকেট টাইম-লিমিট', cmd: 'T.TAU/15OCT' },
+        { label: '৬. রিসিভড ফ্রম', cmd: 'R.BAYEZID' },
+        { label: '৭. বুকিং সম্পন্ন', cmd: 'ER' },
+        { label: '৮. টিকিট ইস্যু', cmd: 'FQ' },
+        { label: '৯. রিইস্যু (লক টেস্ট)', cmd: 'TRNE' }
       ],
       guide: {
         commandBreakdown: [
-          { token: 'A', desc: 'Availability (গ্যালিলিওর ফ্লাইট সার্চ কোড)' },
-          { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
-          { token: 'DACDXB', desc: 'রুট: ঢাকা DAC থেকে দুবাই DXB' },
-          { token: '*EK', desc: 'নির্দিষ্ট এয়ারলাইন সিলেক্টর (* + EK)' },
-          { token: 'N1Y1', desc: 'সিট বিক্রি: N (সিট ১) + Y (ক্লাস) + ১ (লাইন নাম্বার)' }
+          { token: 'A15OCTDACDXB', desc: 'Galileo ফ্লাইট অ্যাভেইলেবিলিটি সার্চ' },
+          { token: 'N.1Y1', desc: 'সিট বিক্রি: ১টি সিট Y ক্লাসে লাইন ১ থেকে বুকিং' },
+          { token: 'N.SURNAME/FIRST MR', desc: 'যাত্রীর নাম ইনপুট (Name Field)' },
+          { token: 'P.DAC*01711...', desc: 'ফোন নম্বর ও কন্টাক্ট ফিল্ড যুক্তকরণ' },
+          { token: 'T.TAU/15OCT', desc: 'টিকেট টাইম-লিমিট সেট করা' },
+          { token: 'R.BAYEZID', desc: 'রিসিভড ফ্রম ইনফরমেশন' },
+          { token: 'ER', desc: 'End Record — বুকিং ফাইল তৈরি ও লোকেটর প্রাপ্তি' },
+          { token: 'FQ / *FF', desc: 'ফেয়ার কোটেশন ও ইলেকট্রনিক টিকেট ইস্যু' }
         ],
-        tips: 'ভুল কমান্ড লিখলে টার্মিনালে আসল গ্যালিলিওর মতো "CHECK ENTRY - FORMAT ERROR" এরর দেখাবে।'
+        tips: 'রি-ইস্যু বা রিফান্ড কমান্ড দিলে ডেমো লিমিটেশন দেখাবে—কারণ এটি ফুল লাইফটাইম ভার্সনে সংরক্ষিত।'
       }
     },
     sabre: {
@@ -83,26 +100,34 @@
       welcome: [
         '*** SABRE RED 360 WORKSPACE — TRAINING SIMULATOR ***',
         'PCC: 14KT    AGENT: 9999/SU    STATUS: SIGNED IN TO WORK AREA A',
-        'STATUS: [DEMO MODE - FLIGHT SEARCH & SEAT HOLD ACTIVE]',
+        'STATUS: [ONE-TIME FREE TRIAL - FULL PNR & TICKET ISSUE ACTIVE]',
         '-------------------------------------------------------------------',
-        'উপরে কমান্ড লিখে [রান করুন ↵] চাপুন অথবা নিচের রেডিমেড বাটনে ক্লিক করুন:'
+        'কমান্ড লিখুন অথবা নিচে পর্যায়ক্রমে রেডিমেড চিপসগুলোতে ক্লিক করে PNR ও টিকেট ইস্যু সম্পন্ন করুন:'
       ],
       defaultCmd: '115OCTDACDXB',
       chips: [
-        { label: '১. ফ্লাইট সার্চ (ঢাকা-দুবাই)', cmd: '115OCTDACDXB' },
-        { label: '২. ফ্লাইট সার্চ (এমিরেটস জেদ্দা)', cmd: '120NOVDACJED‡EK' },
-        { label: '৩. সিট বিক্রি/হোল্ড (HK1)', cmd: '01Y1' },
-        { label: '৪. নাম ও টিকিট ট্রাই (লক টেস্ট)', cmd: '-RAHMAN/ANIS MR' }
+        { label: '১. ফ্লাইট সার্চ', cmd: '115OCTDACDXB' },
+        { label: '২. সিট সিলেক্ট (HK1)', cmd: '01Y1' },
+        { label: '৩. প্যাসেঞ্জার নাম', cmd: '-CHOWDHURY/RAHIM MR' },
+        { label: '৪. ফোন ফিল্ড', cmd: '901711000000-A' },
+        { label: '৫. টিকেট টাইম-লিমিট', cmd: '7TAW15OCT/' },
+        { label: '৬. রিসিভড ফ্রম', cmd: '6BAYEZID' },
+        { label: '৭. পিএনআর সম্পন্ন', cmd: 'ER' },
+        { label: '৮. টিকিট ইস্যু', cmd: 'WP' },
+        { label: '৯. রিইস্যু (লক টেস্ট)', cmd: 'WFR' }
       ],
       guide: {
         commandBreakdown: [
-          { token: '1', desc: 'Availability (Sabre-এ ১ দিয়ে ফ্লাইট সার্চ শুরু হয়)' },
-          { token: '15OCT', desc: 'ভ্রমণের তারিখ (১৫ই অক্টোবর)' },
-          { token: 'DACDXB', desc: 'ঢাকা DAC থেকে দুবাই DXB' },
-          { token: '‡EK', desc: 'ক্রস অব লোরেন এয়ারলাইন কোড (‡ বা / + EK)' },
-          { token: '01Y1', desc: 'সিট বিক্রি: 0 + 1 (সিট সংখ্যা) + Y (ক্লাস) + 1 (লাইন)' }
+          { token: '115OCTDACDXB', desc: 'Sabre ফ্লাইট অ্যাভেইলেবিলিটি (1 দিয়ে শুরু)' },
+          { token: '01Y1', desc: 'সিট বিক্রি: ০ + ১ সিট + Y ক্লাস + লাইন ১' },
+          { token: '-SURNAME/FIRST MR', desc: 'মাইনাস (-) দিয়ে Sabre নাম ফিল্ড' },
+          { token: '9PHONE-A', desc: '৯ দিয়ে Sabre এজেন্সি কন্টাক্ট ফিল্ড' },
+          { token: '7TAW15OCT/', desc: '৭ দিয়ে Sabre টিকেট টাইম-লিমিট ফিল্ড' },
+          { token: '6BAYEZID', desc: '৬ দিয়ে Sabre রিসিভড ফ্রম ফিল্ড' },
+          { token: 'ER', desc: 'End Record — Sabre PNR ও রেকর্ড লোকেটর তৈরি' },
+          { token: 'WP / WPNI', desc: 'Work Pricing ও ইলেকট্রনিক টিকেট ইস্যু' }
         ],
-        tips: 'ভুল কমান্ড লিখলে টার্মিনালে আসল Sabre-এর মতো "FORMAT" এরর বার্তা দেখাবে।'
+        tips: 'রি-ইস্যু বা রিফান্ড কমান্ড দিলে ডেমো লিমিটেশন দেখাবে—কারণ এটি ফুল লাইফটাইম ভার্সনে সংরক্ষিত।'
       }
     }
   };
@@ -187,10 +212,10 @@
         <div class="flex items-center justify-between border-b border-slate-800 pb-2">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-circle-question text-amber-400 text-sm"></i>
-            <h4 class="text-sm font-bold text-white">${escapeHtml(cfg.shortName)} কমান্ড কীভাবে কাজ করে?</h4>
+            <h4 class="text-sm font-bold text-white">${escapeHtml(cfg.shortName)} সম্পূর্ণ টিকেট ইস্যু ধাপসমূহ:</h4>
           </div>
           <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-semibold">
-            Syntax Breakdown
+            One-Time Practice Guide
           </span>
         </div>
         <div class="space-y-2">
@@ -236,7 +261,6 @@
     const block = document.createElement('div');
     block.className = 'mt-2 pt-2 border-t border-slate-800 space-y-1 font-mono text-xs sm:text-sm';
 
-    // Echo the prompt line exactly like real GDS (NO "Command Executed" fake badge!)
     const cmdEcho = document.createElement('div');
     const isErr = res.type === 'error';
     cmdEcho.className = `${isErr ? 'text-red-400' : 'text-amber-300'} font-bold flex items-center gap-1.5 pb-1 border-b border-slate-900`;
@@ -247,8 +271,11 @@
     if (currentGds === 'amadeus') colorClass = 'text-sky-300';
     if (currentGds === 'sabre') colorClass = 'text-rose-200';
     if (res.type === 'seathold') colorClass = 'text-emerald-300 font-semibold';
+    if (res.type === 'pnr_building') colorClass = 'text-cyan-300';
+    if (res.type === 'pnr_confirmed') colorClass = 'text-amber-300 font-bold';
+    if (res.type === 'ticket_issued') colorClass = 'text-green-300 font-bold';
     if (res.type === 'error') colorClass = 'text-red-400 font-bold';
-    if (res.type === 'restricted') colorClass = 'text-amber-400 font-bold';
+    if (res.type === 'restricted_reissue') colorClass = 'text-amber-400 font-bold';
 
     res.lines.forEach(line => {
       const row = document.createElement('div');
@@ -287,10 +314,22 @@
 
     displayResultUnderCommand(trimmed, res);
 
-    if (res.type === 'restricted' && !isInitial) {
+    if (res.type === 'restricted_reissue' && !isInitial) {
       setTimeout(() => {
         openDemoLockedModal(trimmed);
       }, 700);
+    }
+
+    if (res.type === 'ticket_issued' && !isInitial) {
+      try {
+        localStorage.setItem('gds_trial_used', 'true');
+      } catch (e) {}
+
+      setTimeout(() => {
+        if (typeof window.openCompletionModal === 'function') {
+          window.openCompletionModal(res.ticket);
+        }
+      }, 1000);
     }
   }
 
