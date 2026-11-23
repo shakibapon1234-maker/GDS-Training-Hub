@@ -1,0 +1,692 @@
+/* =========================================================================
+   sb-fareshop.js  –  Sabre Fare Shop / Bargain Finder Mask (JR - CREATE)
+   Matches Sabre Agency Workspace CERT exact layout.
+   Triggered by command: JR
+   Action P: Prices / shops itineraries
+   Action C / Esc: Cancels the mask
+   ========================================================================= */
+
+function sbGetSabreDate() {
+  const d = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const day = String(d.getDate()).padStart(2, '0');
+  const mon = months[d.getMonth()];
+  return `${day}${mon}`;
+}
+
+/* ── legRow helper ───────────────────────────────────────────────── */
+function _jrLegRow(n, dstVal, dateVal, timeVal) {
+  const star = n === 2 ? '*' : '';
+  return `<div class="jr-line jr-leg-row">` +
+    `<span class="jr-leg-idx">${n}</span>` +
+    `<input class="jr-inp jr-inp-sm" id="jrConn${n}" maxlength="1" value="0">` +
+    `<input class="jr-inp jr-inp-code" id="jrDst${n}" maxlength="3" value="${dstVal}">` +
+    `<span class="jr-leg-star">${star}</span>` +
+    `<input class="jr-inp jr-inp-date" id="jrDate${n}" maxlength="5" value="${dateVal}">` +
+    `<input class="jr-inp jr-inp-time" id="jrTime${n}" maxlength="9" value="${timeVal}">` +
+    `<input class="jr-inp jr-inp-cxr" id="jrCxr${n}" maxlength="5" value="/ /">` +
+    `<input class="jr-inp jr-inp-sm" id="jrCabin${n}" maxlength="1" value="Y">` +
+    `</div>`;
+}
+
+/* ── main mask builder ───────────────────────────────────────────── */
+function cmdFareShopJR() {
+  const term = document.getElementById('termArea');
+  if (!term) return;
+
+  // If mask already on screen, re-focus ACTION
+  const existing = document.getElementById('sbJrMask');
+  if (existing) {
+    const actInp = document.getElementById('jrAction');
+    if (actInp) actInp.focus();
+    existing.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return;
+  }
+
+  // Echo the command without clearing existing history
+  if (typeof sbEcho === 'function') sbEcho('JR');
+
+  const today = sbGetSabreDate();
+
+  const wrap = document.createElement('div');
+  wrap.id = 'sbJrMask';
+  wrap.className = 'sb-jr-mask';
+
+  // Build rows matching Live Sabre CERT screenshot 1 (media_1790725086897.png) exactly
+  wrap.innerHTML = `
+<div class="jr-line jr-hdr"> JR - CREATE</div>
+<div class="jr-line jr-dash"> --------------------------------------------------------------------------------</div>
+<div class="jr-line">
+  <span class="jr-lbl-w6">ACTION</span>
+  <input class="jr-inp jr-inp-sm" id="jrAction" maxlength="1" value="" autofocus>
+  <span style="margin: 0 4px;">P TO PRICE / C TO CANCEL MASK WS/PQ</span>
+  <span style="margin-left: 10px;">N</span><input class="jr-inp jr-inp-sm" id="jrWsPq" maxlength="1" value="N">
+  <span style="margin-left: 6px;">X</span><input class="jr-inp jr-inp-sm" id="jrX" maxlength="1" value="3">
+</div>
+<div class="jr-line">
+  <span class="jr-lbl-w10">PRIORITY-PRICE</span>
+  <input class="jr-inp jr-inp-sm" id="jrPrioPrice" maxlength="1" value="1">
+  <span style="margin: 0 4px 0 10px;">DIRECT/NON-STOP</span>
+  <input class="jr-inp jr-inp-sm" id="jrDirect" maxlength="1" value="2">
+  <span style="margin: 0 4px 0 10px;">TIME</span>
+  <input class="jr-inp jr-inp-sm" id="jrTimePrio" maxlength="1" value="3">
+  <span style="margin: 0 4px 0 10px;">CXR</span>
+  <input class="jr-inp jr-inp-sm" id="jrCxrPrio" maxlength="1" value="4">
+</div>
+<div class="jr-line jr-col-hdr">
+  <span class="jr-lbl-w4">FROM</span>
+  <input class="jr-inp jr-inp-code" id="jrFromMain" maxlength="3" value="">
+  <span class="jr-col-h-date">DATE</span>
+  <span class="jr-col-h-time">TIME/RANGE</span>
+  <span class="jr-col-h-cxr">CARRIER</span>
+  <span class="jr-col-h-cabin">CABIN</span>
+</div>
+<div class="jr-legs" id="jrLegsContainer">
+  ${_jrLegRow(1, '', today, '0700 /¥-')}
+  ${_jrLegRow(2, '', '', '    /¥-')}
+  ${_jrLegRow(3, '', '', '    /¥-')}
+  ${_jrLegRow(4, '', '', '    /¥-')}
+  ${_jrLegRow(5, '', '', '    /¥-')}
+  ${_jrLegRow(6, '', '', '    /¥-')}
+</div>
+<div class="jr-line">
+  <span class="jr-lbl-w9">MORE CITIES</span>
+  <input class="jr-inp jr-inp-code" id="jrMoreCities" maxlength="3" value="">
+  <span style="flex: 1;"></span>
+  <span style="margin-right: 6px;">ONLINE SERVICE ONLY</span>
+  <input class="jr-inp jr-inp-sm" id="jrOnlineOnly" maxlength="1" value="N">
+</div>
+<div class="jr-line jr-dash"> --------------------------------------------------------------------------------</div>
+<div class="jr-line">
+  <span class="jr-lbl-w9">MIN/MAX STAY</span>
+  <input class="jr-inp jr-inp-sm" id="jrMinStay" maxlength="1" value="Y">
+  <span style="margin: 0 4px 0 10px;">REFUND/PEN</span>
+  <input class="jr-inp jr-inp-sm" id="jrRefund" maxlength="1" value="Y">
+  <span style="margin: 0 4px 0 10px;">RES/TKT</span>
+  <input class="jr-inp jr-inp-sm" id="jrResTkt" maxlength="1" value="Y">
+  <span style="margin: 0 4px 0 10px;">JUMP</span>
+  <input class="jr-inp jr-inp-sm" id="jrJump" maxlength="1" value="">
+</div>
+<div class="jr-line">
+  <span class="jr-lbl-w4">PSGR</span>
+  <input class="jr-inp jr-inp-psgr" id="jrPsgr1" maxlength="4" value="1ADT">
+  <input class="jr-inp jr-inp-psgr" id="jrPsgr2" maxlength="4" value="">
+  <input class="jr-inp jr-inp-psgr" id="jrPsgr3" maxlength="4" value="">
+  <input class="jr-inp jr-inp-psgr" id="jrPsgr4" maxlength="4" value="">
+  <span style="flex: 1;"></span>
+  <span style="margin-right: 6px;">TKT DATE</span>
+  <input class="jr-inp jr-inp-date" id="jrTktDate" maxlength="5" value="${today}">
+</div>
+<div class="jr-line">
+  <span class="jr-lbl-w9">NON-PREF CXR</span>
+  <input class="jr-inp jr-inp-cxr" id="jrNonPref" maxlength="5" value="/ /">
+  <span style="margin: 0 4px 0 10px;">CORP ID</span>
+  <input class="jr-inp jr-inp-corp" id="jrCorpId" maxlength="8" value="">
+  <span style="margin: 0 4px 0 10px;">PV</span>
+  <input class="jr-inp jr-inp-sm" id="jrPv" maxlength="1" value="">
+  <span style="margin: 0 4px 0 10px;">PL</span>
+  <input class="jr-inp jr-inp-sm" id="jrPl" maxlength="1" value="">
+</div>
+<div class="jr-line">
+  <span class="jr-lbl-w4">TPR</span>
+  <input class="jr-inp jr-inp-sm" id="jrTpr" maxlength="1" value="N">
+  <span style="margin: 0 4px 0 10px;">TPR ID</span>
+  <input class="jr-inp jr-inp-tprid" id="jrTprId" maxlength="16" value="">
+  <span style="margin: 0 4px 0 10px;">XO</span>
+  <input class="jr-inp jr-inp-sm" id="jrXo" maxlength="1" value="">
+</div>
+<div class="jr-line">
+  <span class="jr-lbl-w9">INSERT AFTER</span>
+  <input class="jr-inp jr-inp-sm" id="jrInsertAfter" maxlength="2" value="">
+  <span style="margin: 0 4px 0 8px;">OR DELETE FROM</span>
+  <input class="jr-inp jr-inp-sm" id="jrDeleteFrom" maxlength="2" value="">
+  <span style="margin: 0 4px 0 8px;">FOR</span>
+  <input class="jr-inp jr-inp-sm" id="jrForSeg" maxlength="2" value="">
+  <span style="margin-left: 4px;">SEGMENTS.</span>
+</div>
+`;
+
+  term.appendChild(wrap);
+
+  // Position mask at top of view initially
+  if (typeof sbScrollToCommand === 'function') {
+    sbScrollToCommand(wrap);
+  } else {
+    wrap.scrollIntoView({ block: 'start', behavior: 'auto' });
+  }
+
+  // Auto-focus ACTION input
+  const act = document.getElementById('jrAction');
+  if (act) setTimeout(() => act.focus(), 50);
+
+  // Handle Enter / Esc across all inputs in the mask
+  wrap.querySelectorAll('.jr-inp').forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sbHandleJrSubmit();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        sbCloseJrMask();
+      }
+    });
+  });
+}
+
+/* ── close mask ──────────────────────────────────────────────────── */
+function sbCloseJrMask(options = {}) {
+  const mask = document.getElementById('sbJrMask');
+  if (mask) mask.remove();
+  const results = document.getElementById('sbJrResults');
+  if (results) results.remove();
+  if (!options.silent && typeof sbPrint === 'function') sbPrint('JR MASK CANCELLED');
+}
+
+/* ── submit handler ──────────────────────────────────────────────── */
+function sbHandleJrSubmit() {
+  const act = (document.getElementById('jrAction')?.value || '').trim().toUpperCase();
+
+  if (act === 'C') {
+    sbCloseJrMask();
+    return;
+  }
+
+  // Gather fields with intelligent fallback if user left blank
+  const origin   = (document.getElementById('jrFromMain')?.value  || 'DAC').trim().toUpperCase();
+  const dst1     = (document.getElementById('jrDst1')?.value      || 'SIN').trim().toUpperCase();
+  const dst2     = (document.getElementById('jrDst2')?.value      || '').trim().toUpperCase();
+  const date1    = (document.getElementById('jrDate1')?.value      || sbGetSabreDate()).trim().toUpperCase();
+  const date2    = (document.getElementById('jrDate2')?.value      || '').trim().toUpperCase();
+  const cxrRaw   = (document.getElementById('jrCxr1')?.value       || '').replace(/[\/\s]/g, '').toUpperCase();
+  const carrier  = cxrRaw || '';
+  // Read every populated city row, not just the outbound/return pair.  The
+  // JR mask offers six rows, so a multi-city search must preserve rows 3-6
+  // as individual itinerary legs too.
+  const requestedLegs = [];
+  let legOrigin = origin;
+  for (let i = 1; i <= 6; i++) {
+    const destination = (document.getElementById(`jrDst${i}`)?.value || '').trim().toUpperCase();
+    if (!destination) continue;
+    const legDate = (document.getElementById(`jrDate${i}`)?.value || date1 || sbGetSabreDate()).trim().toUpperCase();
+    requestedLegs.push({ index: i, org: legOrigin, dst: destination, date: legDate });
+    legOrigin = destination;
+  }
+  // Collect all passenger inputs from the 4 boxes: jrPsgr1, jrPsgr2, jrPsgr3, jrPsgr4
+  const psgrList = [];
+  ['jrPsgr1', 'jrPsgr2', 'jrPsgr3', 'jrPsgr4'].forEach(id => {
+    let val = (document.getElementById(id)?.value || '').trim().toUpperCase();
+    if (val) {
+      // Normalize common typo: capital 'I' or 'L' typed instead of digit '1' at the start (e.g. ICHD -> 1CHD)
+      if (/^[IL]([A-Z0-9]+)$/.test(val) && !val.startsWith('INF')) {
+        val = '1' + val.slice(1);
+      }
+      const m = val.match(/^(\d+)?([A-Z0-9]+)$/);
+      if (m) {
+        const count = m[1] ? parseInt(m[1], 10) : 1;
+        let type = m[2];
+        if (type === 'ICHD') type = 'CHD';
+        if (type === 'ICNN') type = 'CNN';
+        if (type === 'IADT') type = 'ADT';
+        psgrList.push({ raw: val, count, type });
+      }
+    }
+  });
+  if (psgrList.length === 0) {
+    psgrList.push({ raw: '1ADT', count: 1, type: 'ADT' });
+  }
+
+  // IMPORTANT: DO NOT REMOVE THE MASK!
+  // In Live Sabre, the mask remains in place with all typed inputs!
+  const actInp = document.getElementById('jrAction');
+  if (actInp && !actInp.value) actInp.value = 'P';
+
+  // Get or create the results area directly below the mask
+  let resArea = document.getElementById('sbJrResults');
+  if (!resArea) {
+    resArea = document.createElement('div');
+    resArea.id = 'sbJrResults';
+    resArea.className = 'jr-results-area';
+    const mask = document.getElementById('sbJrMask');
+    if (mask && mask.parentNode) {
+      mask.parentNode.insertBefore(resArea, mask.nextSibling);
+    } else {
+      document.getElementById('termArea')?.appendChild(resArea);
+    }
+  }
+
+  // Clear previous results content
+  resArea.innerHTML = '';
+
+  const isRT = Boolean(dst2 && dst2 !== '');
+  _sbRenderBfmResultsInContainer(resArea, origin, dst1, date1, dst2, date2, carrier, psgrList, isRT, requestedLegs);
+
+  // SCROLL IMMEDIATELY SO ITINERARY OPTION 1 IS AT THE TOP OF THE SCREEN!
+  // Exactly matching Live Sabre screenshot media_1790726488183.png
+  setTimeout(() => {
+    if (typeof sbScrollToCommand === 'function') {
+      sbScrollToCommand(resArea);
+    } else {
+      resArea.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }, 10);
+}
+
+/* ── BFM results renderer matching Screenshot (media_1790726488183.png) ── */
+function _sbRenderBfmResultsInContainer(container, org, dst, date1, dst2, date2, reqCxr, psgrList, isRT, requestedLegs = []) {
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const dayLetters = ['S','M','T','W','Q','F','S']; // Sunday=S, Monday=M, Tue=T, Wed=W, Thu=Q, Fri=F, Sat=S
+
+  function parseDate(str) {
+    if (!str || str.length < 5) return new Date();
+    const dd  = parseInt(str.slice(0,2), 10);
+    const mon = str.slice(2);
+    const mi  = months.findIndex(m => m === mon);
+    if (mi < 0) return new Date();
+    const yr  = new Date().getFullYear();
+    return new Date(yr, mi, dd);
+  }
+
+  const d1 = parseDate(date1);
+  const d2 = date2 ? parseDate(date2) : new Date(d1.getTime() + 24*3600*1000);
+
+  // If psgrList was passed as string (fallback)
+  if (!Array.isArray(psgrList)) {
+    const raw = String(psgrList || '1ADT');
+    const cnt = parseInt((raw.match(/\d+/) || ['1'])[0], 10) || 1;
+    const typ = raw.replace(/\d/g, '') || 'ADT';
+    psgrList = [{ raw, count: cnt, type: typ }];
+  }
+
+  // Calculate total seated passengers (adults + children; infants sit on lap with no seat)
+  const seatCount = psgrList.filter(p => p.type !== 'INF').reduce((sum, p) => sum + p.count, 0) || 1;
+
+  const preferredCarriers = reqCxr ? [reqCxr] : ['AI', 'AI', 'BS', 'SQ', 'BG', 'MH'];
+
+  const sampleOptions = [
+    {
+      carrier: preferredCarriers[0] || 'AI',
+      legs: isRT ? [
+        { seg: 1, al: 'AI', fn: '238', cls: 'S', d: d1, org: org, dst: 'DEL', dt: '1510', at: '1730', eq: '320', stops: 0 },
+        { seg: 1, al: 'AI', fn: '2115', cls: 'S', d: new Date(d1.getTime() + 24*3600*1000), org: 'DEL', dst: dst, dt: '0340', at: '1210', eq: '321', stops: 0 },
+        { seg: 2, al: 'AI', fn: '2108', cls: 'S', d: d2, org: dst, dst: 'BOM', dt: '1940', at: '2325', eq: '321', stops: 0 },
+        { seg: 2, al: 'AI', fn: '2183', cls: 'Q', d: new Date(d2.getTime() + 24*3600*1000), org: 'BOM', dst: dst2 || org, dt: '0720', at: '1045', eq: '32N', stops: 0 }
+      ] : [
+        { seg: 1, al: 'AI', fn: '238', cls: 'S', d: d1, org: org, dst: 'DEL', dt: '1510', at: '1730', eq: '320', stops: 0 },
+        { seg: 1, al: 'AI', fn: '2115', cls: 'S', d: new Date(d1.getTime() + 24*3600*1000), org: 'DEL', dst: dst, dt: '0340', at: '1210', eq: '321', stops: 0 }
+      ],
+      fare: 28018
+    },
+    {
+      carrier: 'AI',
+      legs: isRT ? [
+        { seg: 1, al: 'AI', fn: '238', cls: 'S', d: d1, org: org, dst: 'DEL', dt: '1510', at: '1730', eq: '320', stops: 0 },
+        { seg: 1, al: 'AI', fn: '2380', cls: 'S', d: d1, org: 'DEL', dst: dst, dt: '2235', at: '0700', eq: '321', stops: 0 },
+        { seg: 2, al: 'AI', fn: '2383', cls: 'S', d: d2, org: dst, dst: 'DEL', dt: '2300', at: '0230', eq: '321', stops: 0 },
+        { seg: 2, al: 'AI', fn: '227', cls: 'Q', d: new Date(d2.getTime() + 24*3600*1000), org: 'DEL', dst: dst2 || org, dt: '1110', at: '1410', eq: '320', stops: 0 }
+      ] : [
+        { seg: 1, al: 'AI', fn: '238', cls: 'S', d: d1, org: org, dst: 'DEL', dt: '1510', at: '1730', eq: '320', stops: 0 },
+        { seg: 1, al: 'AI', fn: '2380', cls: 'S', d: d1, org: 'DEL', dst: dst, dt: '2235', at: '0700', eq: '321', stops: 0 }
+      ],
+      fare: 28018
+    },
+    {
+      carrier: 'BS',
+      legs: isRT ? [
+        { seg: 1, al: 'BS', fn: '307', cls: 'S', d: d1, org: org, dst: dst, dt: '2215', at: '0430', eq: '738', stops: 0 },
+        { seg: 2, al: 'BS', fn: '308', cls: 'S', d: d2, org: dst, dst: dst2 || org, dt: '0530', at: '0745', eq: '738', stops: 0 }
+      ] : [
+        { seg: 1, al: 'BS', fn: '307', cls: 'S', d: d1, org: org, dst: dst, dt: '2215', at: '0430', eq: '738', stops: 0 }
+      ],
+      fare: 33044
+    },
+    {
+      carrier: 'SQ',
+      legs: isRT ? [
+        { seg: 1, al: 'SQ', fn: '447', cls: 'V', d: d1, org: org, dst: dst, dt: '2355', at: '0605', eq: '78X', stops: 0 },
+        { seg: 2, al: 'SQ', fn: '446', cls: 'V', d: d2, org: dst, dst: dst2 || org, dt: '2035', at: '2240', eq: '78X', stops: 0 }
+      ] : [
+        { seg: 1, al: 'SQ', fn: '447', cls: 'V', d: d1, org: org, dst: dst, dt: '2355', at: '0605', eq: '78X', stops: 0 }
+      ],
+      fare: 46250
+    }
+  ];
+
+  // For 3-6 requested cities, build each option from the entered city chain.
+  // The first two rows retain the existing one-way/return display, while a
+  // multi-city request now prices and sells every entered leg together.
+  if (requestedLegs.length > 2) {
+    const flightTimes = [
+      ['0810', '1025'], ['1200', '1420'], ['1615', '1845'],
+      ['2010', '2230'], ['0700', '0920'], ['1100', '1325']
+    ];
+    sampleOptions.forEach((opt, optionIndex) => {
+      opt.legs = requestedLegs.map((requestLeg, legIndex) => {
+        const [dt, at] = flightTimes[(legIndex + optionIndex) % flightTimes.length];
+        const d = parseDate(requestLeg.date);
+        return {
+          seg: requestLeg.index,
+          al: opt.carrier,
+          fn: String(200 + optionIndex * 100 + legIndex * 7),
+          cls: optionIndex === 3 ? 'V' : 'S',
+          d,
+          org: requestLeg.org,
+          dst: requestLeg.dst,
+          dt,
+          at,
+          eq: optionIndex === 2 ? '738' : '320',
+          stops: 0
+        };
+      });
+      // The displayed base fare is per passenger for the complete itinerary.
+      opt.fare = Math.round(opt.fare * (1 + (requestedLegs.length - 2) * 0.55));
+    });
+  }
+
+    // Store options in global & state so 0J1 / 01J1 sell command works
+  window._sbBfmOptions = sampleOptions;
+  if (typeof sbState !== 'undefined') {
+    sbState._bfmOptions = sampleOptions;
+  }
+
+  let outHtml = '';
+
+  sampleOptions.forEach((opt, idx) => {
+    outHtml += `<div class="jr-opt-block" onclick="sbSellBfmOption(${idx + 1}, ${seatCount})" style="margin-bottom: 16px; cursor: pointer;">`;
+    outHtml += `<div class="jr-opt-title" style="font-weight: 700; color: #ffffff; margin-bottom: 3px; font-size: 14px;">ITINERARY OPTION ${idx + 1}</div>`;
+
+    opt.legs.forEach(leg => {
+      const dtStr = String(leg.d.getDate()).padStart(2, '0') + months[leg.d.getMonth()];
+      const dayLet = dayLetters[leg.d.getDay()];
+      leg.dtStr = dtStr;
+      leg.dayLet = dayLet;
+      outHtml += `<div class="jr-flight-line" style="font-family: inherit; font-size: 13.5px; line-height: 1.5; color: #cfd6e0; white-space: pre;">` +
+        ` ${leg.seg} ${leg.al.padEnd(3)} ${leg.fn.padStart(5)}  ${leg.cls} ${dtStr} ${dayLet}  ${leg.org.padEnd(4)} ${leg.dst.padEnd(4)} ${leg.dt}  ${leg.at} ${leg.eq} ${leg.stops} /E` +
+        `</div>`;
+    });
+
+    // Calculate fare for every passenger type (ADT, CNN/CHD, INF) matching Sabre CERT screenshot
+    let grandTotal = 0;
+    const paxBreakdown = psgrList.map(p => {
+      let single = opt.fare;
+      let displayType = p.type;
+      const t = p.type;
+      if (t === 'INF') {
+        // Infant is ~15.5% of adult total fare (e.g. 5251 on 33865 adult fare in Sabre CERT)
+        single = Math.round(opt.fare * 0.155);
+      } else if (/^C\d{2}$/.test(t)) {
+        const age = parseInt(t.slice(1), 10);
+        if (age >= 2 && age <= 11) {
+          single = Math.round(opt.fare * 0.75);
+          displayType = t;
+        } else {
+          // If age >= 12 (e.g. C23 in live Sabre), Sabre automatically treats them as ADT (Adult)
+          single = opt.fare;
+          displayType = 'ADT';
+        }
+      } else if (t === 'CNN' || t === 'CHD' || t === 'ICHD' || t === 'ICNN') {
+        // Child is 75% of adult fare
+        single = Math.round(opt.fare * 0.75);
+        displayType = (t === 'CHD' || t === 'ICHD') ? 'CHD' : 'CNN';
+      } else {
+        single = opt.fare;
+        displayType = 'ADT';
+      }
+      const lineTotal = single * p.count;
+      grandTotal += lineTotal;
+      return { count: p.count, type: displayType, single, lineTotal };
+    });
+
+    opt.grandTotal = grandTotal;
+    opt.paxBreakdown = paxBreakdown;
+    opt.seatCount = seatCount;
+
+    // Render each passenger type row exactly as in Sabre screenshot media_1790760827328.png
+    paxBreakdown.forEach(pb => {
+      const paxLabel = (pb.count + pb.type).padEnd(5);
+      const singleStr = String(pb.single).padStart(5);
+      const lineTotalStr = String(pb.lineTotal).padStart(9);
+      outHtml += `<div class="jr-fare-line" style="font-family: inherit; font-size: 13.5px; line-height: 1.5; color: #cfd6e0; white-space: pre;">` +
+        `    ${paxLabel} ${singleStr}   ${lineTotalStr}` +
+        `</div>`;
+    });
+
+    outHtml += `<div class="jr-fare-line" style="font-family: inherit; font-size: 13.5px; line-height: 1.5; color: #cfd6e0; white-space: pre;">` +
+      ` TOTAL FARE - BDT    ${grandTotal}\n\n` +
+      `FORM OF PAYMENT FEES PER TICKET MAY APPLY\n` +
+      ` ADT - MAXIMUM AMOUNT PER PASSENGER -        0` +
+      `</div>`;
+
+    outHtml += `</div>`;
+  });
+
+  container.innerHTML = outHtml;
+}
+
+
+function _sbGetDefaultBfmOptions(dateStr) {
+  return [
+    {
+      carrier: 'AI',
+      fare: 28018,
+      legs: [
+        { seg: 1, al: 'AI', fn: '238', cls: 'T', dtStr: dateStr || '29NOV', dayNum: 1, org: 'DAC', dst: 'DEL', dt: '1510', at: '1730', eq: '320', stops: 0 },
+        { seg: 1, al: 'AI', fn: '2115', cls: 'T', dtStr: dateStr || '30NOV', dayNum: 2, org: 'DEL', dst: 'SIN', dt: '0340', at: '1210', eq: '321', stops: 0 }
+      ]
+    },
+    {
+      carrier: 'BS',
+      fare: 31313,
+      legs: [
+        { seg: 1, al: 'BS', fn: '315', cls: 'K', dtStr: dateStr || '29NOV', dayNum: 1, org: 'DAC', dst: 'KUL', dt: '0825', at: '1420', eq: '333', stops: 0 }
+      ]
+    },
+    {
+      carrier: 'MU',
+      fare: 33865,
+      legs: [
+        { seg: 1, al: 'MU', fn: '2036', cls: 'T', dtStr: dateStr || '12OCT', dayNum: 1, org: 'DAC', dst: 'KMG', dt: '1400', at: '1820', eq: '32Q', stops: 0 },
+        { seg: 1, al: 'MU', fn: '9647', cls: 'T', dtStr: dateStr || '12OCT', dayNum: 1, org: 'KMG', dst: 'SIN', dt: '2110', at: '0130', eq: '7M8', stops: 0, dayOver: '13OCT 2' }
+      ]
+    },
+    {
+      carrier: 'TG',
+      fare: 38830,
+      legs: [
+        { seg: 1, al: 'TG', fn: '340', cls: 'W', dtStr: dateStr || '12OCT', dayNum: 2, org: 'DAC', dst: 'BKK', dt: '0245', at: '0615', eq: '320', stops: 0 },
+        { seg: 1, al: 'TG', fn: '403', cls: 'W', dtStr: dateStr || '12OCT', dayNum: 2, org: 'BKK', dst: 'SIN', dt: '0800', at: '1115', eq: '359', stops: 0 }
+      ]
+    },
+    {
+      carrier: 'SQ',
+      fare: 46250,
+      legs: [
+        { seg: 1, al: 'SQ', fn: '447', cls: 'V', dtStr: dateStr || '29NOV', dayNum: 1, org: 'DAC', dst: 'SIN', dt: '2355', at: '0605', eq: '78X', stops: 0 }
+      ]
+    }
+  ];
+}
+
+/* ── Sell / Hold Segment from BFM / FareShop (JR01, JR02, JR03) ──
+   Exact match with Live Sabre CERT Screenshot media_1790762269195.png */
+function _sbPrintFareShopTicketDetails(opt, legs, al, org, paxBreakdown) {
+  const FARE_BASIS = {
+    AI: 'SU3YXSDC',
+    BS: 'SBDSGO',
+    SQ: 'VU3XSDC',
+    MH: 'SHB6XSDC',
+    MU: 'VU3YXSDC',
+    TG: 'WU3YXSDC',
+    CZ: 'VU3YXSDC'
+  };
+
+  const baseBasis = FARE_BASIS[al] || ((legs[0].cls || 'S') + 'U3YXSDC');
+
+  paxBreakdown.forEach((pb, pIdx) => {
+    const pNum = String(pIdx + 1).padStart(2, '0');
+    const type = pb.type;
+    const isInf = (type === 'INF');
+    const isChd = (type === 'CNN' || type === 'CHD' || type === 'ICHD' || type === 'ICNN' || /^C\d{2}$/.test(type));
+
+    const fareBasis = isInf ? (baseBasis.slice(0, 5) + 'ESDC/IN') : (isChd ? (baseBasis + '/CH') : baseBasis);
+    const bag = isInf ? '10K' : '30K';
+
+    const singleFare = pb.single;
+    const usdFare = Math.round(singleFare / 123.65 * 100) / 100;
+    const equivBdt = Math.round(usdFare * 123.65);
+    const taxBD = 500;
+    const taxUT = isInf ? 0 : 4000;
+    const taxXT = Math.max(singleFare - equivBdt - taxBD - taxUT, 0);
+
+    if (pIdx > 0) sbPrint('');
+
+    sbPrint(`PSGR TYPE  ${type.padEnd(3)} - ${pNum}`);
+    sbPrint('     CXR RES DATE  FARE BASIS      NVB   NVA    BG');
+    sbPrint(' ' + org);
+
+    legs.forEach((leg, i) => {
+      const isLast = (i === legs.length - 1);
+      const prefix = isLast ? ' ' : 'X';
+      const city = leg.dst;
+      const date = leg.dtStr || sbGetSabreDate();
+      const cls = leg.cls || 'S';
+      sbPrint(`${prefix}${city.padEnd(3)} ${leg.al}  ${cls}   ${date} ${fareBasis.padEnd(15)} ${date} ${date} ${bag}`);
+    });
+
+    const usdStr = String(usdFare.toFixed(2)).padStart(8);
+    const eqvStr = String(equivBdt).padStart(7);
+    sbPrint(`FARE  USD   ${usdStr} EQUIV BDT   ${eqvStr}`);
+
+    if (taxUT > 0) {
+      sbPrint(`TAX   BDT     ${taxBD}BD BDT   ${taxUT}UT BDT   ${String(taxXT).padStart(5)}XT`);
+    } else {
+      sbPrint(`TAX   BDT     ${taxBD}BD BDT   ${String(taxXT).padStart(5)}XT`);
+    }
+
+    sbPrint(`TOTAL BDT    ${singleFare}`);
+    sbPrint(`${type}-${pNum}  ${fareBasis}`);
+
+    let routeLine = ' ' + org;
+    legs.forEach((leg, i) => {
+      if (i < legs.length - 1) {
+        routeLine += ' ' + leg.al + ' X/' + leg.dst;
+      } else {
+        routeLine += ' ' + leg.al + ' ' + leg.dst;
+      }
+    });
+    routeLine += usdFare.toFixed(2) + 'NUC' + usdFare.toFixed(2) + 'END ROE1.00';
+    sbPrint(routeLine);
+
+    if (isInf) {
+      sbPrint('XT BDT3000W BDT447E5 BDT154P8');
+    } else {
+      sbPrint('XT BDT25000W BDT447E5 BDT414YR BDT6183YQ BDT1237P8 BDT1237P7');
+    }
+
+    const startSeg = sbState.booked.length - legs.length + 1;
+    const endSeg = sbState.booked.length;
+    const segRef = legs.length > 1 ? `${startSeg}/${endSeg}` : String(startSeg);
+    sbPrint(`ENDOS*SEG${segRef}*NON-END/CHANGE/CANCELLATION/NO-SHOW/PENALTY MAY`);
+    sbPrint('ENDOS*APPLY/AS PER FARE RULES');
+    sbPrint('RATE USED 1USD-123.65BDT');
+    sbPrint(`ATTN*VALIDATING CARRIER - ${al}`);
+  });
+}
+
+function sbSellBfmOption(optIndex, qty, terminalSell = false) {
+  if (qty === undefined) qty = 1;
+  let options = window._sbBfmOptions || (typeof sbState !== 'undefined' ? sbState._bfmOptions : null);
+
+  // If no options in memory yet, use realistic live Sabre options
+  if (!options || !options[optIndex - 1]) {
+    const today = sbGetSabreDate();
+    options = _sbGetDefaultBfmOptions(today);
+    window._sbBfmOptions = options;
+    if (typeof sbState !== 'undefined') sbState._bfmOptions = options;
+  }
+
+  if (!options || !options[optIndex - 1]) {
+    if (typeof sbWarn === 'function') sbWarn('NO AVAIL.');
+    return false;
+  }
+
+  const opt = options[optIndex - 1];
+  if (typeof sbState === 'undefined') return false;
+
+  const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const legs = opt.legs;
+  const al = opt.carrier || legs[0].al;
+  const org = legs[0].org;
+
+  // Add segments to sbState.booked
+  legs.forEach(leg => {
+    const dtStr = leg.dtStr || (leg.d ? (String(leg.d.getDate()).padStart(2,'0') + MON[leg.d.getMonth()]) : sbGetSabreDate());
+    const dayNum = leg.dayNum || leg.dayLet || (leg.d ? (leg.d.getDay() === 0 ? 1 : leg.d.getDay() + 1) : 1);
+
+    sbState.booked.push({
+      al: leg.al,
+      fn: leg.fn,
+      cls: leg.cls || 'S',
+      date: dtStr,
+      dep: leg.org,
+      arr: leg.dst,
+      status: 'SS' + qty,
+      depT: leg.dt,
+      arrT: leg.at,
+      eq: leg.eq || '738',
+      day: dayNum,
+      dayOver: leg.dayOver || 0
+    });
+  });
+
+  // A terminal long-sell command returns the compact segment response in
+  // Sabre. The interactive JR option selector still prints fare details.
+  if (terminalSell) {
+    legs.forEach((leg, index) => {
+      const depTime = String(leg.dt || '----');
+      const arrTime = String(leg.at || '----');
+      sbPrint(`${depTime} ${arrTime} SEG ${index + 1} SS ${leg.cls || 'S'} /DC${leg.al} /E`);
+      sbWarn(`SURNAME CHG NOT ALLOWED FOR ${leg.al}-${leg.cls || 'S'} FARECLASS`);
+    });
+    if (typeof sbSyncSidePanel === 'function') sbSyncSidePanel();
+    return true;
+  }
+
+  // Determine passenger breakdown
+  const paxBreakdown = opt.paxBreakdown || [{ count: qty, type: 'ADT', single: opt.fare, lineTotal: opt.fare * qty }];
+
+  // Output the exact Sabre ticket details from Screenshot media_1790762269195.png
+  _sbPrintFareShopTicketDetails(opt, legs, al, org, paxBreakdown);
+
+  // Store fare quote in sbState
+  if (typeof sbBuildFareQuote === 'function' && typeof sbGetFareForCarrier === 'function') {
+    const f = sbGetFareForCarrier(al);
+    const finalTotal = opt.grandTotal || (opt.fare * qty);
+    f.total = finalTotal;
+    f.baseBdt = Math.round(finalTotal * 0.85);
+    f.tax = finalTotal - f.baseBdt;
+    sbState.privateFare = f;
+    sbState.pqPriced = true;
+    sbState.fareQuote = sbBuildFareQuote(f);
+    sbState.fareQuote.breakdown = paxBreakdown.map((pb, i) => ({
+      index: i + 1,
+      type: pb.type,
+      count: pb.count,
+      base: Math.round(pb.lineTotal * 0.85),
+      tax: pb.lineTotal - Math.round(pb.lineTotal * 0.85),
+      total: pb.lineTotal
+    }));
+  }
+
+  if (typeof sbSyncSidePanel === 'function') sbSyncSidePanel();
+
+  return true;
+}
+
+
+
+if (typeof window !== 'undefined') {
+  window.cmdFareShopJR = cmdFareShopJR;
+  window.sbHandleJrSubmit = sbHandleJrSubmit;
+  window.sbCloseJrMask = sbCloseJrMask;
+  window.sbSellBfmOption = sbSellBfmOption;
+}

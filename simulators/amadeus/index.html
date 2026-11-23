@@ -1,0 +1,1242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Amadeus Selling Platform Connect — Training Simulator</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Amadeus Version Bar & Login High-Contrast Polish -->
+  <style>
+    .device-card {
+      margin-top: 18px !important;
+      padding: 12px 14px !important;
+      display: grid !important;
+      grid-template-columns: auto 1fr auto !important;
+      gap: 10px !important;
+      align-items: center !important;
+      border: 1.5px solid #005a9c !important;
+      border-radius: 8px !important;
+      background: #f0f7ff !important;
+      font-size: 13px !important;
+      color: #0c2d48 !important;
+      box-shadow: 0 2px 6px rgba(0, 90, 156, 0.08) !important;
+    }
+    .device-card-label {
+      font-weight: 700 !important;
+      color: #005a9c !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+    .device-card code {
+      color: #002d59 !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      font-size: 13.5px !important;
+    }
+    .device-copy-btn {
+      border: 1px solid #005a9c !important;
+      background: #005a9c !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      padding: 5px 12px !important;
+      border-radius: 5px !important;
+      cursor: pointer !important;
+      transition: background 0.2s !important;
+    }
+    .device-copy-btn:hover {
+      background: #003d6b !important;
+    }
+
+    .app-version-bar {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-top: 14px !important;
+      padding: 10px 14px !important;
+      background: #e8f4fc !important;
+      border: 1.5px solid #90caf9 !important;
+      border-radius: 8px !important;
+      gap: 10px !important;
+    }
+    .version-badge {
+      background: #003366 !important;
+      color: #64b5f6 !important;
+      border: 1px solid #1976d2 !important;
+      padding: 5px 12px !important;
+      border-radius: 99px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      letter-spacing: 0.3px !important;
+    }
+    .version-badge b {
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
+    .btn-check-update {
+      background: linear-gradient(135deg, #005a9c 0%, #003865 100%) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      font-size: 12px !important;
+      padding: 6px 14px !important;
+      border-radius: 99px !important;
+      border: 1px solid #0288d1 !important;
+      box-shadow: 0 2px 8px rgba(0, 90, 156, 0.25) !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+    .btn-check-update:hover {
+      background: linear-gradient(135deg, #0288d1 0%, #005a9c 100%) !important;
+      box-shadow: 0 4px 12px rgba(2, 136, 209, 0.4) !important;
+      transform: translateY(-1px) !important;
+    }
+
+    /* Eye toggle alignment */
+    .password-control {
+      display: flex !important;
+      align-items: center !important;
+      position: relative !important;
+    }
+    .password-control input {
+      border-radius: 6px 0 0 6px !important;
+      flex: 1 !important;
+    }
+    .password-toggle {
+      width: 44px !important;
+      min-width: 44px !important;
+      height: 42px !important;
+      border: 1px solid #cbd5e1 !important;
+      border-left: 0 !important;
+      border-radius: 0 6px 6px 0 !important;
+      background: #f1f5f9 !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: #475569 !important;
+      font-size: 16px !important;
+    }
+    .password-toggle:hover {
+      background: #e2e8f0 !important;
+      color: #1e293b !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Offline sign-in gate: keeps the training workspace unavailable until an account signs in. -->
+<main class="login-shell" id="loginShell" aria-live="polite">
+  <section class="login-brand-panel" aria-label="Amadeus Selling Platform Connect training">
+    <div class="login-brand-copy">
+      <div class="login-amadeus">Amadeus</div>
+      <div class="login-product">Selling Platform Connect</div>
+      <p>Training environment</p>
+    </div>
+  </section>
+  <section class="login-form-panel">
+    <div class="login-form-wrap">
+      <h1 id="authTitle">Sign in</h1>
+      <p class="mandatory-note"><b>*</b> Mandatory</p>
+
+      <form id="signInForm" class="auth-form" novalidate>
+        <label>
+          <span class="auth-field-label">Username <b>*</b><button type="button" class="field-info" aria-label="Username help" aria-describedby="usernameHelp">i</button><span id="usernameHelp" class="field-help" role="tooltip">Use the username created by your training supervisor. It is not your email address.</span></span>
+          <input id="loginUsername" autocomplete="username" required>
+        </label>
+        <label>Password <b>*</b><span class="password-control"><input id="loginPassword" type="password" autocomplete="current-password" required><button type="button" class="password-toggle" aria-label="Show password" data-password-toggle="loginPassword">◉</button></span></label>
+        <label class="remember-choice"><input id="rememberLogin" type="checkbox" checked> <span>Remember me on this device</span></label>
+        <p class="auth-error" id="loginError" role="alert"></p>
+        <button class="auth-primary" id="loginSubmit" type="submit">Sign in</button>
+        <button class="auth-link" type="button" onclick="showAuthView('forgot')">I forgot my password</button>
+        <button class="auth-link" type="button" onclick="showAuthView('username')">Forgot username?</button>
+      </form>
+
+      <form id="forgotPasswordForm" class="auth-form" hidden novalidate>
+        <p class="auth-intro">A password-reset link will be sent to the email registered by your supervisor.</p>
+        <label>Username <b>*</b><input id="resetUsername" required></label>
+        <div id="newPasswordFields" hidden>
+          <label>New password <b>*</b><input id="recoveryPassword" type="password" minlength="8" autocomplete="new-password"></label>
+          <label>Confirm new password <b>*</b><input id="recoveryPasswordConfirm" type="password" minlength="8" autocomplete="new-password"></label>
+        </div>
+        <p class="auth-error" id="resetError" role="alert"></p>
+        <button class="auth-primary" type="submit">Send reset link</button>
+        <button class="auth-link" type="button" onclick="showAuthView('signin')">Back to sign in</button>
+      </form>
+
+      <form id="forgotUsernameForm" class="auth-form" hidden novalidate>
+        <p class="auth-intro">If this is the verified email on an active account, we’ll send the username to it.</p>
+        <label>Email <b>*</b><input id="usernameRecoveryEmail" type="email" autocomplete="email" required></label>
+        <p class="auth-error" id="usernameRecoveryError" role="alert"></p>
+        <button class="auth-primary" type="submit">Send username</button>
+        <button class="auth-link" type="button" onclick="showAuthView('signin')">Back to sign in</button>
+      </form>
+
+      <div class="device-card">
+        <span class="device-card-label">&#128187; Device ID</span>
+        <code id="deviceIdDisplay">Loading…</code>
+        <button type="button" class="device-copy-btn" onclick="copyDeviceId()">Copy</button>
+      </div>
+      <div class="app-version-bar">
+        <span class="version-badge">&#9881; Version <b data-app-version>v1.0.16</b></span>
+        <button type="button" id="loginCheckUpdateBtn" class="btn-check-update" onclick="amaCheckForUpdates()">&#8635; Refresh web app</button>
+      </div>
+      <p class="first-login-note">Your supervisor creates and manages your training account.</p>
+    </div>
+  </section>
+</main>
+
+<div class="login-loading" id="loginLoading" hidden role="status" aria-live="assertive" aria-label="Signing you in">
+  <div class="login-loading-card">
+    <div class="login-flight-track"><span class="login-flight-plane">&#9992;</span></div>
+    <div class="login-spinner" aria-hidden="true"></div>
+    <strong>Signing you in</strong>
+    <span>Verifying your account and device…</span>
+  </div>
+</div>
+
+<div class="account-menu" id="accountMenu" hidden>
+  <div class="account-menu-title" id="accountMenuName">Account</div>
+  <div class="account-menu-detail">Device ID: <code id="accountDeviceId"></code></div>
+  <button type="button" onclick="showChangePassword()">Change password</button>
+  <button type="button" onclick="signOut()">Sign out</button>
+</div>
+
+<div class="auth-modal" id="changePasswordModal" hidden role="dialog" aria-modal="true" aria-labelledby="changePasswordTitle">
+  <form class="change-password-card" id="changePasswordForm" novalidate>
+    <button type="button" class="auth-modal-close" onclick="closeChangePassword()" aria-label="Close">×</button>
+    <h2 id="changePasswordTitle">Change password</h2>
+    <p>Use at least 8 characters.</p>
+    <label>Current password<input id="currentPassword" type="password" autocomplete="current-password" required></label>
+    <label>New password<input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+    <label>Confirm new password<input id="confirmNewPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+    <p class="auth-error" id="changePasswordError" role="alert"></p>
+    <button class="auth-primary" type="submit">Update password</button>
+  </form>
+</div>
+
+<!-- 1. Amadeus Top Nav -->
+<div class="amad-header">
+  <div class="amad-header-left">
+    <div class="amad-logo">amadeus <span>TRAINING</span></div>
+    <div class="amad-nav-item">File ▾</div>
+    <div class="amad-nav-item" onclick="toggleSmartKeys()" style="cursor:pointer;" title="Smart Keys Toolbar (Show/Hide)">⚡ Smart Keys / Flows ▾</div>
+    <div class="amad-nav-item">Apps ▾</div>
+  </div>
+  <div class="amad-header-right">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="Search solutions, learning and support">
+    </div>
+    <div class="amad-nav-item">About ▾</div>
+    <button class="user-badge" id="userBadge" type="button" onclick="toggleAccountMenu()">Account ▾</button>
+  </div>
+</div>
+
+<!-- 2. Warning Pink Banner -->
+<div class="phishing-banner">
+  <div><b>Beware of phishing scams</b> &nbsp;|&nbsp; Amadeus Selling Platform Connect Training Environment</div>
+  <div style="cursor:pointer;" onclick="this.parentElement.style.display='none'">✕</div>
+</div>
+
+<!-- 3. Sub Action Bar (Matches Screenshot 2 & 3) -->
+<div class="action-bar">
+  <div class="amad-start-wrap">
+    <button class="start-btn" id="startBtn" onclick="toggleStartMenu(event)" title="Open Start Menu">
+      <span>Start</span> <span id="startArrow">▾</span>
+    </button>
+    <!-- Start Dropdown Menu (Matches Screenshot 2) -->
+    <div class="start-dropdown-menu" id="startDropdownMenu">
+      <div class="start-menu-item" onclick="switchToTab('cmd')">
+        <span class="start-menu-icon">&gt;_</span>
+        <span class="start-menu-label">Command page</span>
+        <span class="start-menu-shortcut">Ctrl+Alt+Shift+C</span>
+      </div>
+      <div class="start-menu-item has-submenu" id="bookingMenuItem" onmouseenter="showBookingSubmenu(true)" onmouseleave="showBookingSubmenu(false)">
+        <span class="start-menu-icon">📋</span>
+        <span class="start-menu-label">Booking</span>
+        <span class="start-menu-arrow">›</span>
+        <!-- Booking Submenu -->
+        <div class="booking-submenu" id="bookingSubmenu">
+          <div class="start-menu-item" onclick="switchToTab('air')">
+            <span class="start-menu-icon">✈️</span>
+            <span class="start-menu-label">Air</span>
+            <span class="start-menu-shortcut">Ctrl+Alt+Shift+A</span>
+          </div>
+          <div class="start-menu-item" onclick="alert('Amadeus Hotel Booking module')">
+            <span class="start-menu-icon">🏨</span>
+            <span class="start-menu-label">Hotel</span>
+            <span class="start-menu-shortcut">Ctrl+Alt+Shift+H</span>
+          </div>
+          <div class="start-menu-item" onclick="alert('Amadeus Car Rental module')">
+            <span class="start-menu-icon">🚗</span>
+            <span class="start-menu-label">Car</span>
+            <span class="start-menu-shortcut">Ctrl+Alt+Shift+K</span>
+          </div>
+          <div class="start-menu-item" onclick="switchToTab('air'); openQuickPaxModal();">
+            <span class="start-menu-icon">👤</span>
+            <span class="start-menu-label">Passengers</span>
+            <span class="start-menu-shortcut">Ctrl+Alt+Shift+B</span>
+          </div>
+          <div class="start-menu-item" onclick="alert('Amadeus Group Booking module')">
+            <span class="start-menu-icon">👥</span>
+            <span class="start-menu-label">Group booking</span>
+          </div>
+        </div>
+      </div>
+      <div class="start-menu-item" onclick="alert('Amadeus Profiles module')">
+        <span class="start-menu-icon">🪪</span>
+        <span class="start-menu-label">Profiles</span>
+        <span class="start-menu-arrow">›</span>
+      </div>
+      <div class="start-menu-item" onclick="window.print()">
+        <span class="start-menu-icon">🖨️</span>
+        <span class="start-menu-label">Print</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="icon-nav-btn" onclick="alert('Amadeus Apps Catalogue')" title="Apps">
+    <span>Apps ▾</span>
+  </button>
+  <button class="icon-nav-btn" onclick="toggleSmartKeys()" title="Toggle Smart Keys Toolbar" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-size:11.5px;font-weight:700;color:#005a9c;border:1px solid #cbd5e1;background:#f0f9ff;border-radius:3px;cursor:pointer;">
+    <span>⚡ Smart Keys</span>
+  </button>
+  <button class="icon-nav-btn" onclick="switchToTab('cmd')" title="Command page">
+    <span>&gt;_</span>
+  </button>
+  <button class="icon-nav-btn primary-air-btn" onclick="switchToTab('air')" title="Air Search (Graphical Mode)">
+    <span>✈️</span>
+  </button>
+  <button class="icon-nav-btn" onclick="openNewTab()" title="New tab">
+    <span>+</span>
+  </button>
+  <button class="icon-nav-btn" onclick="switchToTab('cmd')" title="Home">
+    <span>🏠</span>
+  </button>
+
+  <div class="action-input-wrap">
+    <input type="text" id="actionSearchInput" placeholder='Enter an action (example: "Retrieve" or "Launch Smart Flow")'>
+  </div>
+  <div class="action-bar-pnr-info">
+    <span id="topPnrStatus" class="muted"></span>
+    <span>Office ID: <b id="mainOfficeId">DACVS33GT</b></span>
+  </div>
+</div>
+
+<!-- 4. Command Page Header / Tabs (Matches Screenshot 2 & 3) -->
+<div class="page-header-tabs">
+  <div class="tabs-container">
+    <div class="page-tab page-tab-active" id="tabCmd" onclick="switchToTab('cmd')">
+      <span class="tab-icon">📄</span>
+      <span id="tabTitleText">Command page 1</span>
+      <span class="page-tab-close" title="Reset Session" onclick="resetSimulator(); event.stopPropagation();">✕</span>
+    </div>
+    <div class="page-tab" id="tabAir" onclick="switchToTab('air')">
+      <span class="tab-icon">✈️</span>
+      <span id="airTabTitle">Bookin...</span>
+      <span class="page-tab-close" title="Close Air Search" onclick="closeAirTab(event)">✕</span>
+    </div>
+  </div>
+  <div class="page-tools">
+    <button type="button" class="tab-action-btn" onclick="runSmartCmd('IG')" title="Ignore Current Transaction (IG)">Ignore (IG)</button>
+    <button type="button" class="tab-action-btn primary" onclick="runSmartCmd('ET')" title="Save &amp; End Transaction (ET)">Save (ET)</button>
+    <span>Owned by <b>DACVS33GT</b></span>
+    <span class="tool-icon" id="historyBtn" title="Command History" onclick="openCommandHistory()" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center;" aria-label="Command History">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+        <path d="M3 3v5h5"/>
+        <path d="M12 7v5l3.5 2"/>
+      </svg>
+    </span>
+    <span class="tool-icon" id="btnSplitHoriz" title="Split Screen Horizontal" onclick="toggleSplit('horizontal')" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="2"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+      </svg>
+    </span>
+    <span class="tool-icon" id="btnSplitVert" title="Split Screen Vertical" onclick="toggleSplit('vertical')" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="2"/>
+        <line x1="12" y1="4" x2="12" y2="20"/>
+      </svg>
+    </span>
+  </div>
+</div>
+
+<!-- 5. Main Area (Terminal + Graphical Air Search + Right Sidebar) -->
+<div class="main-container">
+
+  <!-- Graphical Air Search View (Matches Screenshot 3) -->
+  <div class="air-search-view" id="airSearchView" style="display:none;">
+    <div class="gui-sub-bar">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:13px;">📄</span>
+        <span style="font-weight:600; color:#005a9c;">Booking file 3</span>
+        <span style="color:#64748b;">Owned by DACVS33GT</span>
+      </div>
+      <div class="gui-sub-tools">
+        <button type="button" class="tab-action-btn" onclick="runSmartCmd('IG')">Ignore (IG)</button>
+        <button type="button" class="tab-action-btn primary" onclick="runSmartCmd('ER')">Save (ER)</button>
+      </div>
+    </div>
+
+    <div class="gui-search-content">
+      <div class="gui-main-header">
+        <h1 class="gui-title">Your air search</h1>
+        <div class="gui-search-by-wrap">
+          <span>Search by</span>
+          <select class="gui-select-fares">
+            <option>All Fares</option>
+            <option>Published Fares</option>
+            <option>Corporate Fares</option>
+          </select>
+          <span class="mandatory-hint">*Mandatory</span>
+        </div>
+      </div>
+
+      <!-- Search Type Radios -->
+      <div class="gui-radios-row">
+        <label class="gui-radio-label">
+          <input type="radio" name="guiSearchType" value="bound" checked onchange="toggleReturnBound(true)">
+          <span>Shop by bound</span>
+        </label>
+        <label class="gui-radio-label">
+          <input type="radio" name="guiSearchType" value="standard" onchange="toggleReturnBound(true)">
+          <span>Standard search</span>
+        </label>
+        <label class="gui-radio-label">
+          <input type="radio" name="guiSearchType" value="flexible" onchange="toggleReturnBound(false)">
+          <span>Flexible Dates</span>
+        </label>
+      </div>
+
+      <!-- Accordion: Itinerary -->
+      <div class="gui-section-card">
+        <div class="gui-section-header">
+          <div class="gui-section-title">Itinerary</div>
+          <span class="gui-toggle-icon">▲</span>
+        </div>
+        <div class="gui-section-body">
+          <!-- Bound 1 (Outbound) -->
+          <div class="gui-bound-row">
+            <div class="gui-field-group" style="position:relative;">
+              <label>From*</label>
+              <div class="gui-input-icon-wrap">
+                <input type="text" id="guiFrom1" value="Dhaka (DAC)" placeholder="City or Airport" autocomplete="off">
+                <span class="input-tag">A</span>
+              </div>
+              <div class="ac-dropdown" id="acFrom1"></div>
+            </div>
+            <div class="gui-field-group" style="position:relative;">
+              <label>To*</label>
+              <div class="gui-input-icon-wrap">
+                <input type="text" id="guiTo1" value="Bangkok (BKK)" placeholder="City or Airport" autocomplete="off">
+                <span class="input-tag">A</span>
+              </div>
+              <div class="ac-dropdown" id="acTo1"></div>
+            </div>
+            <div class="gui-field-group" style="max-width:140px;">
+              <label>Date*</label>
+              <div class="gui-input-icon-wrap">
+                <input type="text" id="guiDate1" value="26JAN26" placeholder="DDMMMYY">
+                <span class="input-tag">📅</span>
+              </div>
+            </div>
+            <div class="gui-field-group" style="max-width:160px;">
+              <label>Time</label>
+              <select id="guiTimeType1" class="gui-sub-select">
+                <option>Departure after</option>
+                <option>Arrival by</option>
+              </select>
+            </div>
+            <div class="gui-field-group" style="max-width:110px;">
+              <label>&nbsp;</label>
+              <input type="text" id="guiTime1" value="00:00" placeholder="00:00">
+            </div>
+            <div class="gui-delete-col" title="Clear bound" onclick="document.getElementById('guiFrom1').value=''; document.getElementById('guiTo1').value='';">
+              <span>🗑</span>
+            </div>
+          </div>
+
+          <!-- Sub-options Row -->
+          <div class="gui-bound-sub-row">
+            <div class="gui-field-group" style="max-width:200px;">
+              <label>Cabin</label>
+              <select id="guiCabin">
+                <option value="lowest">By price (lowest)</option>
+                <option value="economy">Economy</option>
+                <option value="premium">Premium Economy</option>
+                <option value="business">Business</option>
+                <option value="first">First</option>
+              </select>
+            </div>
+            <div class="gui-field-group" style="flex:1;">
+              <label>Airlines and alliances <span class="info-icon">ⓘ</span></label>
+              <input type="text" id="guiAirlines" placeholder="Add or exclude airlines and alliances (e.g. TG, SV, QR)">
+            </div>
+            <div class="gui-field-group check-group">
+              <label class="gui-chk-label">
+                <input type="checkbox" id="guiDirectOnly">
+                <span>No connections <span class="info-icon">ⓘ</span></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Bound 2 (Inbound / Return) -->
+          <div class="gui-bound-row return-bound" id="guiBound2">
+            <div class="gui-field-group" style="position:relative;">
+              <label>From*</label>
+              <div class="gui-input-icon-wrap">
+                <input type="text" id="guiFrom2" value="Bangkok (BKK)" placeholder="City or Airport" autocomplete="off">
+                <span class="input-tag">A</span>
+              </div>
+              <div class="ac-dropdown" id="acFrom2"></div>
+            </div>
+            <div class="gui-field-group" style="position:relative;">
+              <label>To*</label>
+              <div class="gui-input-icon-wrap">
+                <input type="text" id="guiTo2" value="Dhaka (DAC)" placeholder="City or Airport" autocomplete="off">
+                <span class="input-tag">A</span>
+              </div>
+              <div class="ac-dropdown" id="acTo2"></div>
+            </div>
+            <div class="gui-field-group" style="max-width:140px;">
+              <label>Date*</label>
+              <div class="gui-input-icon-wrap">
+                <input type="text" id="guiDate2" value="30JAN26" placeholder="DDMMMYY">
+                <span class="input-tag">📅</span>
+              </div>
+            </div>
+            <div class="gui-field-group" style="max-width:160px;">
+              <label>Time</label>
+              <select id="guiTimeType2" class="gui-sub-select">
+                <option>Departure after</option>
+                <option>Arrival by</option>
+              </select>
+            </div>
+            <div class="gui-field-group" style="max-width:110px;">
+              <label>&nbsp;</label>
+              <input type="text" id="guiTime2" value="00:00" placeholder="00:00">
+            </div>
+            <div class="gui-delete-col" title="Remove return flight" onclick="toggleReturnBound(false)">
+              <span>🗑</span>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <button type="button" class="btn-add-bound" id="btnAddBound" style="display:none;" onclick="toggleReturnBound(true)">
+              <span>+ Add bound</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion: Passengers -->
+      <div class="gui-section-card">
+        <div class="gui-section-header">
+          <div class="gui-section-title">Passengers</div>
+          <span class="gui-toggle-icon">▲</span>
+        </div>
+        <div class="gui-section-body">
+          <div style="font-size:11px; font-weight:600; color:#334155; margin-bottom:6px;">
+            Passenger Type Codes (PTCs)*
+          </div>
+          <div style="margin-bottom:10px;">
+            <label class="gui-chk-label">
+              <input type="checkbox">
+              <span>IT PTC</span>
+            </label>
+          </div>
+
+          <div class="pax-counters-grid">
+            <div class="pax-counter-pill">
+              <button type="button" class="pax-btn" onclick="adjustPax('adt', -1)">−</button>
+              <span class="pax-count-val" id="guiPaxAdt">1</span>
+              <button type="button" class="pax-btn" onclick="adjustPax('adt', 1)">+</button>
+              <span class="pax-code-label">ADT</span>
+            </div>
+
+            <div class="pax-counter-pill">
+              <button type="button" class="pax-btn" onclick="adjustPax('chd', -1)">−</button>
+              <span class="pax-count-val" id="guiPaxChd">0</span>
+              <button type="button" class="pax-btn" onclick="adjustPax('chd', 1)">+</button>
+              <span class="pax-code-label">CHD</span>
+            </div>
+
+            <div class="pax-counter-pill">
+              <button type="button" class="pax-btn" onclick="adjustPax('inf', -1)">−</button>
+              <span class="pax-count-val" id="guiPaxInf">0</span>
+              <button type="button" class="pax-btn" onclick="adjustPax('inf', 1)">+</button>
+              <span class="pax-code-label">INF</span>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <span class="gui-add-pax-link" onclick="openQuickPaxModal()">+ Add passengers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion: Fares and fees -->
+      <div class="gui-section-card">
+        <div class="gui-section-header">
+          <div class="gui-section-title">Fares and fees</div>
+          <span class="gui-toggle-icon">▲</span>
+        </div>
+        <div class="gui-section-body">
+          <div class="fares-pill-row">
+            <span class="fare-filter-pill active">Public</span>
+            <span class="fare-filter-pill active">Negotiated</span>
+            <span class="fare-filter-pill active">BDT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Big Search Button -->
+      <div class="gui-search-action-wrap">
+        <button type="button" class="btn-primary-search" onclick="handleGuiSearch()">
+          <span>🔍 Search</span>
+        </button>
+      </div>
+
+      <!-- Graphical Search Results Container -->
+      <div id="airSearchResults" class="air-search-results-container" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Main Terminal Page (Command page) -->
+  <div class="terminal-view">
+    <!-- Smart Keys Bar (Matches Amadeus Selling Platform Connect) -->
+    <div class="smart-keys-bar" id="smartKeysBar">
+      <span class="smart-keys-label">Smart Keys:</span>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('ET')" title="End Transaction">ET</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('ER')" title="End and Retrieve">ER</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('RT')" title="Retrieve PNR">RT</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('IG')" title="Ignore Transaction">IG</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('IR')" title="Ignore and Retrieve">IR</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('RL')" title="Display Airline Record Locator (RL)">RL</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('NM1SHAKIB/APON MR')" title="Insert Passenger Name: NM1SURNAME/FIRSTNAME TITLE">NM1</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('TKOK')" title="Ticketing OK Immediate (Screenshot 2)">TKOK</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('TKTL')" title="Ticketing Time Limit">TKTL</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('FM7')" title="Add Commission 7% (Screenshot 1)">FM7</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('HE/MEAL')" title="Meal Codes Index (Screenshot 1)">HE/MEAL</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('MS22')" title="Meal Codes in SSR (Screenshot 2)">MS22</button>
+      <button type="button" class="smart-btn active-key" onclick="runVipMessage()" title="Add VIP Minister OSI message for Passenger 1">VIP</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('SRMOML/P2')" title="Muslim Meal for P2 (Screenshot 3)">SRMOML/P2</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('TQT')" title="Ticket Quote Table (Display TST)">TQT</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('TRDC/L1')" title="Void first electronic ticket (same-day only)">VOID</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('XI')" title="Cancel PNR">XI</button>
+      <button type="button" class="smart-btn" onclick="runSmartCmd('MD')" title="Move Down">MD</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('DM1')" title="Display Minimum Connecting Time (Transit Time)">DM1</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('FXDDAC/D10FEBLHR/D25FEBDAC')" title="Fare Shop / Master Pricer (FXD)">FXD</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('FXR')" title="Fare Quote Best Buy with Rebook (FXR)">FXR</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('FXB')" title="Best Buy Pricing with Rebook">FXB</button>
+      <button type="button" class="smart-btn active-key" onclick="runSmartCmd('FPINV')" title="Form of Payment Invoice">FPINV</button>
+      <button type="button" class="smart-btn highlight-key" onclick="runSmartCmd('TTP')" title="Issue Electronic Ticket">TTP</button>
+      <button type="button" class="smart-btn-close" id="smartKeysCloseBtn" onclick="toggleSmartKeys()" title="Smart Keys bar লুকান">✕</button>
+    </div>
+    <!-- Smart Keys collapsed restore strip -->
+    <div class="smart-keys-restore" id="smartKeysRestore" style="display:none;" onclick="toggleSmartKeys()" title="Smart Keys bar দেখান">
+      <span style="display:inline-flex;align-items:center;gap:6px;color:#0284c7;font-weight:bold;cursor:pointer;padding:3px 8px;background:#e0f2fe;border:1px solid #bae6fd;border-radius:4px;">⚡ Smart Keys Toolbar লুকানো আছে — এখানে ক্লিক করে দেখান (Click to Show Smart Keys)</span>
+    </div>
+    <!-- Multi-Pane Terminal Workspace -->
+    <div class="terminal-workspace split-none" id="terminalWorkspace">
+      <!-- Top Row (Contains Pane 1 and Pane 2 when vertically split) -->
+      <div class="workspace-row" id="rowTop">
+        <!-- Pane 1 (Main terminal) -->
+        <div class="term-pane active-pane" id="pane1" onclick="setActivePane(1)">
+          <div class="term-scroll" id="term">
+            <!-- Lines rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Vertical Splitter Top -->
+        <div class="splitter-v" id="splitterVTop" style="display:none;">
+          <div class="splitter-handle-v"></div>
+        </div>
+
+        <!-- Pane 2 (Top Right) -->
+        <div class="term-pane" id="pane2" onclick="setActivePane(2)" style="display:none;">
+          <div class="term-scroll" id="term2">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal Splitter -->
+      <div class="splitter-h" id="splitterH" style="display:none;">
+        <div class="splitter-handle-h"></div>
+      </div>
+
+      <!-- Bottom Row (Contains Pane 3 and Pane 4 when split) -->
+      <div class="workspace-row" id="rowBottom" style="display:none;">
+        <!-- Pane 3 (Bottom Left) -->
+        <div class="term-pane" id="pane3" onclick="setActivePane(3)">
+          <div class="term-scroll" id="term3">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Vertical Splitter Bottom -->
+        <div class="splitter-v" id="splitterVBottom" style="display:none;">
+          <div class="splitter-handle-v"></div>
+        </div>
+
+        <!-- Pane 4 (Bottom Right) -->
+        <div class="term-pane" id="pane4" onclick="setActivePane(4)" style="display:none;">
+          <div class="term-scroll" id="term4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Tool Rail (Matches Screenshot 4: Help, Quality Monitor, Smart Flows) -->
+  <div class="right-tool-rail" id="rightToolRail">
+    <div class="rail-item" id="railHelpBtn" onclick="toggleHelpFlyout()" title="Help">
+      <div class="rail-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <div class="rail-label">Help</div>
+    </div>
+
+    <div class="rail-item" id="railQualityMonitor" onclick="toggleQualityMonitorFlyout()" title="Quality Monitor">
+      <div class="rail-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+      </div>
+      <div class="rail-label">Quality<br>Monitor</div>
+    </div>
+
+    <div class="rail-item" id="railSmartFlows" onclick="toggleSmartFlowsFlyout()" title="Smart Flows">
+      <div class="rail-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      </div>
+      <div class="rail-label">Smart<br>Flows</div>
+    </div>
+  </div>
+
+  <!-- Quality Monitor Flyout Panel -->
+  <div class="rail-flyout" id="qualityMonitorFlyout" style="display:none;">
+    <div class="rail-flyout-header">
+      <span>Quality Monitor</span>
+      <button type="button" class="rail-flyout-close" onclick="toggleQualityMonitorFlyout(false)">✕</button>
+    </div>
+    <div class="rail-flyout-body">
+      <div style="color:#64748b; font-size:12px; padding:16px;">No Quality Monitor items to check</div>
+    </div>
+  </div>
+
+  <!-- Smart Flows Flyout Panel -->
+  <div class="rail-flyout" id="smartFlowsFlyout" style="display:none;">
+    <div class="rail-flyout-header">
+      <span>Smart Flows</span>
+      <button type="button" class="rail-flyout-close" onclick="toggleSmartFlowsFlyout(false)">✕</button>
+    </div>
+    <div class="rail-flyout-body">
+      <div style="color:#64748b; font-size:12px; padding:16px;">No Smart Flows available in current context</div>
+    </div>
+  </div>
+
+  <!-- Help Flyout Panel -->
+  <div class="rail-flyout" id="helpFlyout" style="display:none;">
+    <div class="rail-flyout-header">
+      <span>Amadeus Help &amp; Shortcuts</span>
+      <button type="button" class="rail-flyout-close" onclick="toggleHelpFlyout(false)">✕</button>
+    </div>
+    <div class="rail-flyout-body" style="padding:14px; font-size:12px; line-height:1.6; color:#334155;">
+      <b>Basic Commands:</b><br>
+      • <code>AN[Date][Origin][Dest]</code> (e.g. <code>AN15NOVDACBKK</code>)<br>
+      • <code>SS1Y1</code> (Sell flight seat from line 1)<br>
+      • <code>NM1[Surname]/[Name] [Title]</code><br>
+      • <code>AP [Phone]</code><br>
+      • <code>TKTL</code> / <code>TKOK</code><br>
+      • <code>RF [Sign] ; ER</code> (Save PNR)<br>
+      • <code>RT</code> (Retrieve active PNR)<br>
+      • <code>IG</code> (Ignore transaction)<br><br>
+      <b>Queue Management:</b><br>
+      • <code>QS</code> (Queue Summary — view all queues)<br>
+      • <code>QT1</code>, <code>QT2</code>, <code>QT3</code>, <code>QT8</code> (Enter Queue)<br>
+      • <code>QN</code> (Queue Next — keep &amp; next PNR)<br>
+      • <code>QR</code> (Queue Remove — processed &amp; remove)<br>
+      • <code>QD</code> (Queue Delay — delay PNR)<br>
+      • <code>QI</code> (Queue Ignore — exit queue mode)<br>
+      • <code>QE 1</code> (Place active PNR in Queue 1)
+    </div>
+  </div>
+</div> <!-- End of .main-container -->
+
+  <!-- 6. SEAT MAP OVERLAY (Amadeus Selling Platform Connect Replica) -->
+  <div class="seatmap-overlay" id="seatmapOverlay">
+    <!-- Top subbar with close button and tabs -->
+    <div class="seatmap-top-bar">
+      <div class="seatmap-top-left">
+        <a class="close-seatmap-link" onclick="closeSeatMap()">
+          <span>&lt;</span> Close seat map
+        </a>
+        <div class="seatmap-tabs">
+          <div class="sm-tab active" id="smTabSeatMap" onclick="switchSmTab('seatmap')">Seat map</div>
+          <div class="sm-tab" id="smTabServices" onclick="switchSmTab('services')">Service catalogue</div>
+        </div>
+      </div>
+      <div class="seatmap-top-right">
+        <div class="segment-selector-wrap">
+          <span>Segment:</span>
+          <select id="segmentSelect" onchange="onSegmentChange(this.value)">
+            <!-- Populated dynamically from segments -->
+          </select>
+        </div>
+        <button class="legend-btn" onclick="toggleLegend()">
+          <span>â“</span> Legend
+        </button>
+      </div>
+    </div>
+
+    <!-- Seat map body: 2 columns -->
+    <div class="seatmap-body">
+      <!-- Left: Aircraft Cabin -->
+      <div class="cabin-pane">
+        <div class="aircraft-fuselage">
+          <div class="cockpit-indicator">â–² COCKPIT / FRONT â–²</div>
+          <div class="cabin-class-header" id="cabinClassHeader">
+            Economy Class â€” Turkish Airlines (Boeing 777-300ER)
+          </div>
+
+          <!-- Column headers: A B C   D E F   H J K -->
+          <div class="cabin-columns-header">
+            <div class="row-num-spacer"></div>
+            <div class="col-label">A</div>
+            <div class="col-label">B</div>
+            <div class="col-label">C</div>
+            <div class="aisle-gap"></div>
+            <div class="col-label">D</div>
+            <div class="col-label">E</div>
+            <div class="col-label">F</div>
+            <div class="aisle-gap"></div>
+            <div class="col-label">H</div>
+            <div class="col-label">J</div>
+            <div class="col-label">K</div>
+            <div class="row-num-spacer"></div>
+          </div>
+
+          <!-- Seat Rows Container -->
+          <div id="seatRowsContainer" style="width:100%;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Passenger Selection & Flight Info -->
+      <div class="details-pane">
+        <div class="details-tabs">
+          <div class="dt-tab active" id="dtTabPax" onclick="switchDetailsTab('passengers')">Passengers</div>
+          <div class="dt-tab" id="dtTabFeatures" onclick="switchDetailsTab('features')">Seat features</div>
+          <div class="dt-tab" id="dtTabAmenities" onclick="switchDetailsTab('amenities')">Amenities</div>
+        </div>
+
+        <div class="details-content" id="detailsContent">
+          <!-- Passengers Tab Content -->
+          <div id="paxTabPane">
+            <div class="pax-table-header">
+              <div class="pax-th-check"><input type="checkbox" checked disabled></div>
+              <div class="pax-th-name">Passengers</div>
+              <div class="pax-th-seats">Seats</div>
+              <div class="pax-th-status">Status</div>
+            </div>
+            <div id="paxListContainer">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Seat Features Tab Content -->
+          <div id="featuresTabPane" style="display:none;" class="tab-pane-content">
+            <div class="feature-card">
+              <h4>Standard Economy Seat</h4>
+              <p><b>Pitch:</b> 31 - 32 in (79 - 81 cm)<br>
+              <b>Width:</b> 18 in (46 cm)<br>
+              <b>Recline:</b> 6 in (15 cm)<br>
+              <b>Configuration:</b> 3-3-3 layout with ergonomic 4-way adjustable headrest.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Extra Legroom / Chargeable ($)</h4>
+              <p><b>Pitch:</b> 34 - 36 in (86 - 91 cm)<br>
+              Located at emergency exit rows and front bulkhead (Rows 6-10). Priority disembarkation.</p>
+            </div>
+          </div>
+
+          <!-- Amenities Tab Content -->
+          <div id="amenitiesTabPane" style="display:none;" class="tab-pane-content">
+            <div class="feature-card">
+              <h4>In-Flight Entertainment (IFE)</h4>
+              <p>13.3" HD touch screen with live TV, over 600 movies, games, and noise-reducing headsets.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Power & Connectivity</h4>
+              <p>Universal 110V AC power socket and 5V USB Type-A port at every seat. High-speed satellite Wi-Fi onboard.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Catering & Baggage</h4>
+              <p>Complimentary Turkish Do&Co hot meal with Turkish mezze. 2x 23kg checked bags included.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-footer">
+          <div class="price-summary">
+            <span>Price for <span id="selectedSeatsCount">0</span> seat(s) selected:</span>
+            <b>0 USD</b>
+          </div>
+          <button class="book-seats-btn" id="bookSeatsBtn" onclick="confirmBookSeats()">
+            Book Seats
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend Popup -->
+    <div class="legend-modal" id="legendModal">
+      <h4>
+        <span>Seat Map Legend</span>
+        <span class="legend-close" onclick="toggleLegend()">âœ•</span>
+      </h4>
+      <div class="legend-item">
+        <div class="legend-sample seat-tile dollar">$</div>
+        <span>Chargeable / Preferred seat</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-sample seat-tile"></div>
+        <span>Standard vacant seat</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-sample seat-tile occupied">âœ•</div>
+        <span>Occupied / Blocked seat</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-sample seat-tile selected" style="color:#fff;">âœ“</div>
+        <span>Selected seat for passenger</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Hover Tooltip -->
+<div class="seat-tooltip" id="seatTooltip">
+  <div class="tooltip-badge" id="tooltipBadge">06A</div>
+  <div class="tooltip-section-title">Seat Characteristics</div>
+  <div class="tooltip-item" id="tooltipChar">Chargeable seat<br>Leg space seat</div>
+  <div class="tooltip-section-title">Seat Occupation</div>
+  <div class="tooltip-item" id="tooltipOcc">Seat is vacant</div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast-notification" id="toastNotification">Seats booked successfully!</div>
+
+<!-- Amadeus electronic ticket itinerary receipt -->
+<div class="ticket-modal-backdrop" id="ticketModalBackdrop" onclick="if(event.target===this) closeTicketModal()">
+  <div class="ticket-modal-card" id="ticketModalCard">
+    <div class="ticket-modal-logo-header">
+      <div class="ticket-modal-brand">
+        <span class="ticket-brand-name">amadeus</span>
+        <span class="ticket-brand-sub">Selling Platform Connect &bull; Training Environment</span>
+      </div>
+      <img src="images/logo.png" alt="Amaduce Training logo" class="ticket-modal-logo">
+    </div>
+    <div class="ticket-receipt-heading">
+      <div><span class="ticket-eyebrow">AMADEUS ITINERARY</span><h3 class="ticket-modal-title">Electronic Ticket Receipt</h3></div>
+      <div class="ticket-issued-label">E-TICKET<br><span id="tktModalIssueDate">—</span></div>
+    </div>
+    <div class="ticket-modal-body">
+      <section class="ticket-section">
+        <h4>Passenger Information</h4>
+        <div class="ticket-table-wrap"><table class="ticket-data-table"><thead><tr><th>Passenger</th><th>Passport / Document No.</th><th>Ticket Number</th></tr></thead><tbody id="tktModalPassengers"></tbody></table></div>
+      </section>
+      <section class="ticket-reference-grid">
+        <div><span>Amadeus PNR</span><strong id="tktModalPNR">—</strong></div>
+        <div id="tktModalAirlinePNRRow"><span>Airline PNR / Reference</span><strong id="tktModalAirlinePNR">—</strong></div>
+        <div><span>Ticket Status</span><strong id="tktModalStatus">OPEN</strong></div>
+        <div><span>Form of Payment</span><strong id="tktModalFOP">CASH</strong></div>
+        <div id="tktModalOrigRow" style="display:none;"><span>Original Ticket</span><strong id="tktModalOrig"></strong></div>
+      </section>
+      <section class="ticket-itinerary" aria-label="Flight itinerary">
+        <h4>Itinerary Information</h4>
+        <div id="tktModalItinerary"></div>
+      </section>
+      <section class="ticket-fare-row ticket-fare-summary"><span>Total Fare</span><strong id="tktModalFare">BDT 30000</strong><span>Route: <b id="tktModalRoute">—</b></span></section>
+    </div>
+    <div class="ticket-modal-footer">
+      <label class="ticket-hide-fare"><input type="checkbox" id="tktHideFare"> Hide fare on print</label>
+      <button type="button" class="ticket-btn-close" onclick="closeTicketModal()">Close</button>
+      <button type="button" class="ticket-btn-print" onclick="printTicketFromModal()">Print</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Status Footer -->
+<div class="status-footer">
+  <div class="footer-left">
+    <span>Main Page</span>
+    <span style="color:#005a9c; font-weight:bold;" id="bottomPaxName"></span>
+  </div>
+  <div class="footer-right">
+    <span>4505 input</span>
+    <span>Line: 1</span>
+    <span>Column: 1</span>
+    <span class="help-avatar-badge">Hi, can I help you? ▲</span>
+    <span>Office ID: <b id="footerOfficeId">DACVS33GT</b></span>
+    <button id="amaCheckUpdateBtn" onclick="amaCheckForUpdates()" style="background:#003366; border:1px solid #005a9c; color:#d9eeff; border-radius:3px; padding:2px 8px; font-size:11px; font-weight:600; cursor:pointer; margin-left:8px; display:inline-flex; align-items:center; gap:4px; font-family:inherit; transition:all 0.2s;" onmouseover="this.style.background='#004d99'" onmouseout="this.style.background='#003366'">&#x1F504; Refresh web app</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     COMMAND HISTORY MODAL — matches original Amadeus UI
+═══════════════════════════════════════════════════════ -->
+<div id="cmdHistoryOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:6px; width:580px; max-width:94vw; box-shadow:0 8px 32px rgba(0,0,0,0.35); font-family:'Segoe UI',Arial,sans-serif; overflow:hidden;">
+
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px 8px;">
+      <h2 style="margin:0; font-size:19px; font-weight:700; color:#111;">Command History</h2>
+      <button onclick="closeCommandHistory()" style="background:none; border:none; font-size:22px; cursor:pointer; color:#555; line-height:1;" title="Close">&times;</button>
+    </div>
+    <p style="margin:0 24px 12px; font-size:14px; color:#444; text-align:center;">Select commands in your history</p>
+
+    <!-- History List Box (matching original Amadeus with bullets & clean border) -->
+    <div style="margin:0 24px;">
+      <ul id="cmdHistoryList" style="list-style:none; margin:0; padding:6px 0; border:1px solid #777; border-radius:2px; height:240px; max-height:240px; overflow-y:auto; background:#fff; font-family:'Consolas','Courier New',monospace; font-size:14px;">
+      </ul>
+      <div style="text-align:right; margin-top:8px;">
+        <button onclick="clearCommandHistory()" style="background:none; border:none; color:#005a9c; font-size:13px; cursor:pointer; text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Clear history</button>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex; gap:10px; justify-content:center; padding:18px 24px 22px;">
+      <button id="histBtnEdit"   onclick="historyAction('edit')"   style="padding:7px 22px; background:#0066cc; color:#fff; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer;">Edit</button>
+      <button id="histBtnFlow"   onclick="historyAction('flow')"   style="padding:7px 22px; background:#0066cc; color:#fff; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer;">Create Smart Flow</button>
+      <button id="histBtnCopy"   onclick="historyAction('copy')"   style="padding:7px 22px; background:#0066cc; color:#fff; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer;">Copy</button>
+      <button id="histBtnSend"   onclick="historyAction('send')"   style="padding:7px 22px; background:#0066cc; color:#fff; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer;">Send</button>
+    </div>
+  </div>
+</div>
+
+  <script src="js/airports.js"></script>
+  <script src="js/flights.js"></script>
+  <script src="js/airSearch.js?v=1.0.5"></script>
+  <script src="js/fareShop.js"></script>
+  <script src="js/reissueRefund.js"></script>
+  <script src="js/app.js?v=1.0.5"></script>
+  <script src="js/demo-override.js"></script>
+  <script src="js/auth.js?v=1.2"></script>
+
+<!-- ══ Amadeus In-App Update Modal ══ -->
+<style>
+#amaUpdateModal {
+  position: fixed; inset: 0; z-index: 999999;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 20, 45, 0.85); backdrop-filter: blur(6px);
+}
+#amaUpdateModal[hidden] { display: none !important; }
+.ama-update-card {
+  width: min(420px, 92vw);
+  padding: 30px 28px 26px;
+  border-radius: 12px;
+  background: linear-gradient(150deg, #002d59, #001833);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+  color: #eef5fc;
+  text-align: center;
+  display: grid;
+  gap: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.ama-update-icon { font-size: 42px; line-height: 1; }
+.ama-update-title { font-size: 19px; font-weight: 700; margin: 0; color: #fff; }
+.ama-update-sub { font-size: 13px; color: #9bbcdb; margin: 0; }
+.ama-update-bar-wrap { background: rgba(255, 255, 255, 0.12); border-radius: 99px; height: 9px; overflow: hidden; }
+.ama-update-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #0066cc, #00c3ff);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+.ama-update-pct { font-size: 13px; color: #00d0ff; font-weight: 600; }
+.ama-update-speed { font-size: 12px; color: #78a3c8; }
+.ama-update-btn {
+  padding: 11px 22px; border-radius: 6px; border: none;
+  background: linear-gradient(90deg, #0066cc, #0052a3);
+  color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.ama-update-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.ama-update-btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500; font-size: 13px; color: #d0e4f7;
+}
+.ama-update-btn.secondary:hover { background: rgba(255, 255, 255, 0.14); }
+</style>
+
+<div id="amaUpdateModal" hidden role="dialog" aria-modal="true">
+  <div class="ama-update-card">
+    <div class="ama-update-icon" id="amaUpdateIcon">&#x1F504;</div>
+    <p class="ama-update-title" id="amaUpdateTitle">Checking for updates&#x2026;</p>
+    <p class="ama-update-sub" id="amaUpdateSub">Please wait.</p>
+    <div class="ama-update-bar-wrap" id="amaUpdateBarWrap" hidden>
+      <div class="ama-update-bar" id="amaUpdateBar"></div>
+    </div>
+    <div class="ama-update-pct" id="amaUpdatePct" hidden></div>
+    <div class="ama-update-speed" id="amaUpdateSpeed" hidden></div>
+    <button class="ama-update-btn" id="amaUpdateAction" hidden onclick="amaUpdateAction()"></button>
+    <button class="ama-update-btn secondary" id="amaUpdateClose" onclick="document.getElementById('amaUpdateModal').hidden=true">Close</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var _unsubs = [];
+
+  function fmtBytes(b) {
+    if (!b || isNaN(b)) return '';
+    if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    return Math.round(b / 1024) + ' KB';
+  }
+
+  function setState(icon, title, sub, showBar, pct, speed, actionLabel, showClose) {
+    var iconEl  = document.getElementById('amaUpdateIcon');
+    var titleEl = document.getElementById('amaUpdateTitle');
+    var subEl   = document.getElementById('amaUpdateSub');
+    var barWrap = document.getElementById('amaUpdateBarWrap');
+    var barEl   = document.getElementById('amaUpdateBar');
+    var pctEl   = document.getElementById('amaUpdatePct');
+    var spdEl   = document.getElementById('amaUpdateSpeed');
+    var actBtn  = document.getElementById('amaUpdateAction');
+    var clsBtn  = document.getElementById('amaUpdateClose');
+
+    if (iconEl)  iconEl.textContent  = icon;
+    if (titleEl) titleEl.textContent = title;
+    if (subEl)   subEl.textContent   = sub;
+
+    if (barWrap) barWrap.hidden = !showBar;
+    if (pctEl)   pctEl.hidden   = !showBar;
+    if (spdEl)   spdEl.hidden   = !showBar;
+
+    if (showBar && barEl) {
+      barEl.style.width = (pct || 0) + '%';
+      if (pctEl) pctEl.textContent = (pct || 0) + '% downloaded';
+      if (spdEl) spdEl.textContent = speed ? fmtBytes(speed) + '/s' : '';
+    }
+
+    if (actBtn) {
+      if (actionLabel) { actBtn.textContent = actionLabel; actBtn.hidden = false; }
+      else { actBtn.hidden = true; }
+    }
+    if (clsBtn) clsBtn.hidden = !showClose;
+  }
+
+  window.amaCheckForUpdates = function () {
+    if (!window.amaduceUpdater) {
+      window.location.reload();
+      return;
+    }
+    _unsubs.forEach(function (fn) { try { fn(); } catch (_) {} });
+    _unsubs = [];
+
+    var modal = document.getElementById('amaUpdateModal');
+    if (modal) modal.hidden = false;
+    setState('🔄', 'Checking for updates…', 'Connecting to update server.', false, 0, 0, null, false);
+
+    _unsubs.push(
+      window.amaduceUpdater.on('updater:checking', function () {
+        setState('🔄', 'Checking for updates…', 'Connecting to update server.', false, 0, 0, null, false);
+      }),
+      window.amaduceUpdater.on('updater:not-available', function (data) {
+        setState('✅', 'You are up to date!', 'v' + ((data && data.version) || '') + ' is the latest version.', false, 0, 0, null, true);
+      }),
+      window.amaduceUpdater.on('updater:available', function (data) {
+        setState('⬇️', 'Update available!', 'Downloading v' + ((data && data.version) || '') + '…', true, 0, 0, null, false);
+      }),
+      window.amaduceUpdater.on('updater:progress', function (data) {
+        if (!data) return;
+        setState('⬇️', 'Downloading update…', 'Please wait. Do not close the app.', true, data.percent, data.bytesPerSecond, null, false);
+      }),
+      window.amaduceUpdater.on('updater:downloaded', function (data) {
+        setState('🎉', 'Ready to install!', 'v' + ((data && data.version) || '') + ' downloaded successfully.', false, 100, 0, '⚡ Restart & Install Now', true);
+      }),
+      window.amaduceUpdater.on('updater:error', function (data) {
+        setState('❌', 'Update check failed', (data && data.message) || 'Check your internet connection.', false, 0, 0, null, true);
+      })
+    );
+
+    window.amaduceUpdater.checkForUpdates();
+  };
+
+  window.amaUpdateAction = function () {
+    if (window.amaduceUpdater) window.amaduceUpdater.quitAndInstall();
+  };
+
+  // Background listener to update footer button state
+  if (window.amaduceUpdater) {
+    window.amaduceUpdater.on('updater:available', function (data) {
+      ['amaCheckUpdateBtn', 'loginCheckUpdateBtn'].forEach(function(id) {
+        var btn = document.getElementById(id);
+        if (btn) {
+          btn.innerHTML = '⬇ Update available';
+          btn.style.background = '#0066cc';
+          btn.style.color = '#ffffff';
+          btn.style.borderColor = '#00c3ff';
+        }
+      });
+      if (data && data.version) {
+        document.querySelectorAll('[data-app-version]').forEach(function(el) {
+          el.textContent = 'v' + data.version;
+        });
+      }
+    });
+    window.amaduceUpdater.on('updater:downloaded', function () {
+      var btn = document.getElementById('amaCheckUpdateBtn');
+      if (btn) {
+        btn.innerHTML = '🎉 Restart to install';
+        btn.style.background = '#00875a';
+        btn.style.color = '#ffffff';
+        btn.style.borderColor = '#57d9a3';
+        btn.onclick = function () { if (window.amaduceUpdater) window.amaduceUpdater.quitAndInstall(); };
+      }
+    });
+  }
+
+  if (window.electronAPI && typeof window.electronAPI.getVersion === 'function') {
+    window.electronAPI.getVersion().then(function(version) {
+      if (!version) return;
+      document.querySelectorAll('[data-app-version]').forEach(function(el) {
+        el.textContent = 'v' + version;
+      });
+    }).catch(function() {});
+  }
+})();
+</script>
+
+</body>
+</html>
+
+

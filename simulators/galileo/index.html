@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gellelio — Galileo GDS Training Simulator</title>
+  <meta name="description" content="Offline Galileo/Travelport GDS practice simulator for aviation students. Educational tool by Wings Fly Aviation Academy.">
+  <link rel="icon" type="image/svg+xml" href="images/gellelio-icon.svg">
+  <link rel="stylesheet" href="css/style.css?v=4.3">
+</head>
+<body>
+  <main class="login-shell" id="loginShell" aria-live="polite">
+    <div class="tp-login-card">
+      <div class="tp-brand-header">
+        <div class="tp-brand-logo-row">
+          <svg class="tp-brand-icon" viewBox="0 0 36 36" width="36" height="36" aria-hidden="true">
+            <circle cx="18" cy="18" r="18" fill="#0077c8" />
+            <path d="M10 12.5h16v4h-5.8v10h-4.4v-10H10v-4z" fill="#fff" />
+          </svg>
+          <span class="tp-brand-name">TRAVELPORT</span>
+        </div>
+        <div class="login-academy-badge">&#9992; Wings Fly Aviation Academy &bull; Galileo GDS</div>
+      </div>
+
+      <!-- STEP 1: Username input (Welcome) -->
+      <form id="signInForm" class="tp-auth-form" novalidate>
+        <h1 class="tp-card-title">Welcome</h1>
+        <div class="tp-floating-field">
+          <input id="loginEmail" type="text" autocomplete="username" placeholder=" " required>
+          <label for="loginEmail">Username*</label>
+        </div>
+        <p class="auth-error" id="loginError" role="alert"></p>
+        <button class="tp-btn-primary" id="gltSignInBtn" type="submit">Continue</button>
+        <div class="tp-card-links"><a href="#" onclick="showAuthView('recover-username');return false;">Forgot Username?</a></div>
+        <p class="tp-card-footer">Need an account? Contact your supervisor.</p>
+      </form>
+
+      <!-- STEP 2: Password input (Enter Your Password) -->
+      <form id="passwordForm" class="tp-auth-form" hidden novalidate>
+        <h1 class="tp-card-title">Enter Your Password</h1>
+        <div class="tp-email-pill">
+          <span id="emailDisplay"></span>
+          <button type="button" id="editEmailBtn" class="tp-edit-link">Edit</button>
+        </div>
+        <div class="tp-floating-field">
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder=" " required>
+          <label for="loginPassword">Password*</label>
+          <button type="button" class="tp-password-eye" id="gltPasswordEye" aria-label="Toggle password">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="tp-card-links">
+          <a href="#" onclick="showAuthView('forgot');return false;">Forgot Password?</a>
+          <a href="#" onclick="showAuthView('recover-username');return false;">Forgot Username?</a>
+        </div>
+        <label class="remember-choice" style="margin-bottom:12px;font-size:13px;color:#555"><input id="rememberLogin" type="checkbox" checked><span>Remember me on this device</span></label>
+        <p class="auth-error" id="loginError2" role="alert"></p>
+        <button class="tp-btn-primary" id="gltPasswordBtn" type="submit">Continue</button>
+        <p class="tp-card-footer">Need an account? Contact your supervisor.</p>
+      </form>
+
+      <form id="recoverUsernameForm" class="tp-auth-form" hidden novalidate>
+        <h1 class="tp-card-title">Recover Username</h1>
+        <p class="auth-intro">Enter the email registered to your account. If it matches an active account, we will send the username to that email.</p>
+        <div class="tp-floating-field"><input id="recoveryEmail" type="email" autocomplete="email" placeholder=" " required><label for="recoveryEmail">Registered email*</label></div>
+        <p class="auth-error" id="usernameRecoveryMessage" role="status" aria-live="polite"></p>
+        <button class="tp-btn-primary" id="recoverUsernameBtn" type="submit">Send username</button>
+        <button class="tp-btn-primary" type="button" onclick="showAuthView('signin')">&#8592; Back to Sign in</button>
+      </form>
+
+      <!-- Help form -->
+      <form id="forgotPasswordForm" class="tp-auth-form" hidden novalidate>
+        <h1 class="tp-card-title">Reset Password</h1>
+        <p class="auth-intro">Enter your username. A password-reset link will be sent to the email registered for that account.</p>
+        <div class="tp-floating-field"><input id="resetUsername" type="text" autocomplete="username" placeholder=" " required><label for="resetUsername">Username*</label></div>
+        <p class="auth-error" id="resetError" role="alert"></p>
+        <button class="tp-btn-primary" id="resetPasswordBtn" type="submit">Send reset link</button>
+        <p class="tp-card-footer"><a href="#" onclick="showAuthView('recover-username');return false;">Forgot your username?</a></p>
+        <p style="font-size:13px;line-height:1.6;color:#4a5568;margin:0 0 14px">
+          Supervisor creates student accounts and authorizes training devices. If you forgot your password or need a device replacement:
+        </p>
+        <div style="background:#f8f9fa;padding:12px 14px;border-radius:4px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:13px;line-height:1.6">
+          <div><strong>Supervisor:</strong> Shakib</div>
+          <div><strong>Helpline:</strong> <a href="tel:01757208244" style="color:#0077c8;font-weight:700">01757208244</a></div>
+          <div><strong>Academy:</strong> Wings Fly Aviation Academy</div>
+        </div>
+        <button class="tp-btn-primary" type="button" onclick="showAuthView('signin')">← Back to Sign in</button>
+      </form>
+
+            <!-- High-Contrast System Panel (Device ID & Version) -->
+      <div class="login-system-panel">
+        <div class="device-card">
+          <span class="device-card-label">&#128187; Device ID</span>
+          <code id="deviceIdDisplay">Loading…</code>
+          <button type="button" class="device-copy-btn" onclick="copyDeviceId()">Copy</button>
+        </div>
+        <div class="app-version-bar">
+          <span class="version-badge">&#9881; Version <b data-app-version>v0.1.14</b></span>
+          <button type="button" id="checkUpdateBtn" class="btn-check-update" onclick="gltCheckForUpdates()">&#8635; Check for updates</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Flying plane login loading overlay -->
+  <div class="glt-login-loading" id="gltLoginLoading" hidden role="status" aria-live="assertive">
+    <div class="glt-loading-card">
+      <div class="glt-flight-track"><span class="glt-flight-plane">&#9992;</span></div>
+      <div class="glt-spinner" aria-hidden="true"></div>
+      <strong>Signing you in…</strong>
+      <span>Verifying your account and device.</span>
+    </div>
+  </div>
+
+  <style>
+  /* ---- Password eye button fix ---- */
+  .password-control {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .password-control input {
+    border-radius: 6px 0 0 6px;
+    flex: 1;
+  }
+  .password-toggle {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    border: 1px solid #8d9aae;
+    border-left: 0;
+    border-radius: 0 6px 6px 0;
+    background: #f2f7fb;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #526273;
+    transition: background 0.15s, color 0.15s;
+    padding: 0;
+    font-size: 0;
+  }
+  .password-toggle:hover {
+    background: #e0f0ff;
+    color: #0877b9;
+  }
+  /* ---- Helpline ---- */
+  .glt-helpline {
+    margin-top: 16px;
+    padding: 10px 13px;
+    border-radius: 7px;
+    background: #eaf4fb;
+    border: 1px solid #b8d9f0;
+    font-size: 13px;
+    color: #1a4d72;
+  }
+  .glt-helpline strong {
+    color: #0877b9;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+  }
+  .login-brand-copy .glt-helpline {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 7px 10px;
+    border-color: rgba(105, 194, 236, 0.45);
+    background: rgba(4, 30, 51, 0.72);
+    color: #d7efff;
+  }
+  .login-brand-copy .glt-helpline strong,
+  .login-brand-copy .glt-helpline a {
+    color: #75d0ff;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .login-brand-copy .glt-helpline a:hover { text-decoration: underline; }
+  /* ---- Flying plane loading overlay ---- */
+  .glt-login-loading {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(2, 18, 50, 0.78);
+    backdrop-filter: blur(4px);
+  }
+  .glt-login-loading[hidden] { display: none !important; }
+  .glt-loading-card {
+    width: min(370px, 92vw);
+    padding: 30px 28px 26px;
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    border: 1px solid rgba(100, 185, 255, 0.35);
+    border-radius: 16px;
+    background: linear-gradient(145deg, #083068, #021230);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    color: #fff;
+    text-align: center;
+  }
+  .glt-loading-card strong { font-size: 20px; letter-spacing: 0.1px; }
+  .glt-loading-card > span { color: #a9d7f0; font-size: 13.5px; }
+  .glt-flight-track {
+    position: relative;
+    width: 230px;
+    height: 42px;
+    overflow: hidden;
+    border-bottom: 2px dashed rgba(120, 200, 255, 0.75);
+  }
+  .glt-flight-plane {
+    position: absolute;
+    top: 2px;
+    left: -32px;
+    color: #ffffff;
+    font-size: 30px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45));
+    animation: glt-flight 1.8s linear infinite;
+  }
+  .glt-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(255,255,255,0.25);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: glt-spin 0.75s linear infinite;
+  }
+  @keyframes glt-flight {
+    from { transform: translateX(0) translateY(6px) rotate(-8deg); }
+    45%  { transform: translateX(115px) translateY(0) rotate(-8deg); }
+    to   { transform: translateX(275px) translateY(-9px) rotate(-8deg); }
+  }
+  @keyframes glt-spin { to { transform: rotate(360deg); } }
+
+  /* ══ Update Progress Modal ══ */
+  #gltUpdateModal {
+    position: fixed; inset: 0; z-index: 999999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(2,18,50,0.82); backdrop-filter: blur(5px);
+  }
+  #gltUpdateModal[hidden] { display: none !important; }
+  .glt-update-card {
+    width: min(400px, 92vw);
+    padding: 30px 28px 26px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #0a3572, #021230);
+    border: 1px solid rgba(100,185,255,0.35);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    color: #fff;
+    text-align: center;
+    display: grid;
+    gap: 14px;
+  }
+  .glt-update-icon { font-size: 42px; line-height: 1; }
+  .glt-update-title { font-size: 20px; font-weight: 700; letter-spacing: 0.2px; margin: 0; }
+  .glt-update-sub   { font-size: 13.5px; color: #a9d7f0; margin: 0; }
+  .glt-update-bar-wrap {
+    background: rgba(255,255,255,0.12);
+    border-radius: 99px; height: 10px; overflow: hidden;
+  }
+  .glt-update-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #1a90ff, #00d4aa);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+  .glt-update-pct  { font-size: 13px; color: #75d0ff; font-weight: 600; }
+  .glt-update-speed { font-size: 12px; color: #7ba8c4; }
+  .glt-update-btn {
+    margin-top: 4px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(90deg, #1a90ff, #0050c8);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .glt-update-btn:hover { opacity: 0.88; }
+  .glt-update-btn.secondary {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-weight: 500;
+    font-size: 13px;
+  }
+  </style>
+  <div class="account-menu" id="accountMenu" hidden><div class="account-menu-title" id="accountMenuName"></div><div class="account-menu-detail">Device ID: <code id="accountDeviceId"></code></div><button type="button" onclick="showChangePassword()">Change password</button><button type="button" onclick="signOut()">Sign out</button></div>
+  <div class="auth-modal" id="changePasswordModal" hidden role="dialog" aria-modal="true"><form class="change-password-card" id="changePasswordForm" novalidate><button type="button" class="auth-modal-close" id="changePasswordClose" onclick="closeChangePassword()">×</button><h2 id="changePasswordTitle">Change password</h2><p id="changePasswordHint">Use at least 8 characters.</p><label id="currentPasswordRow">Current password<input id="currentPassword" type="password" required></label><label>New password<input id="newPassword" type="password" minlength="8" required></label><label>Confirm new password<input id="confirmNewPassword" type="password" minlength="8" required></label><p class="auth-error" id="changePasswordError" role="alert"></p><p class="recovery-complete-note" id="recoveryCompleteNote" hidden>Password reset is complete. Close this browser tab, then open the Gellelio desktop app and sign in there. Do not sign in from this browser.</p><button class="auth-primary" type="submit">Update password</button></form></div>
+  <header class="topbar">
+    <div class="window-title"><span class="title-icon">S</span> Gelelio — Galileo Training Simulator</div>
+    <div class="window-controls">
+      <span class="ctrl-tab">A</span><span class="ctrl-tab">B</span><span class="ctrl-tab">C</span><span class="ctrl-tab">D</span><span class="ctrl-tab">E</span>
+      <button class="user-badge" id="userBadge" type="button" onclick="toggleAccountMenu()">ACCOUNT</button><span class="ctrl-office" id="mainOfficeId">86JJ</span><b class="ctrl-on">ON</b><span class="ctrl-office2" id="footerOfficeId">86JJ</span>
+    </div>
+  </header>
+  <nav class="menu-bar">
+    <span>APPLICATION</span><span>TERMINAL</span><span id="historyMenu" class="menu-action">HISTORY</span><span id="windowMenu" class="menu-action" title="Toggle Fullscreen Terminal / Split View">WINDOW</span>
+    <span id="pnrMenu" class="menu-action" title="Display / Retrieve PNR">PNR</span><span>SEARCH</span><span>SELL</span><span id="toolsMenu" class="menu-action" title="Assisted Ticketing (Refund &amp; Exchange)">TOOLS</span><span>HELP</span>
+  </nav>
+  <main class="workspace split-view">
+
+    <section class="left-pane">
+      <div id="leftMessage" class="left-message">NO B.F. TO DISPLAY - CREATE OR RETRIEVE FIRST</div>
+      <div id="leftSegment" class="left-segment" hidden>
+        <div id="leftPnrHeader" class="left-pnr-header" hidden></div>
+        <div id="leftPassenger" class="left-passenger" hidden></div>
+        <div id="leftSegmentHeader" class="left-segment-header"></div>
+        <div id="leftSegmentNotes" class="left-segment-notes" hidden></div>
+        <div id="leftButtons" class="left-btns" style="display:none">
+          <button class="left-btn" data-cmd="*ALL">*ALL</button>
+          <button class="left-btn" data-cmd="*RV">*RV</button>
+        </div>
+        <div id="leftVendorBox" class="left-vendor-box" hidden>
+          <div id="vendorNotifications" class="vendor-notifications"></div>
+        </div>
+        <div id="leftDetails" class="left-details" hidden></div>
+        <div id="leftOsi" class="left-osi" hidden>NO OSI EXISTS</div>
+      </div>
+      <div class="left-tools">
+        <span title="Back">&#9698;</span>
+        <span title="Search">&#9741;</span>
+        <span title="Edit">&#9998;</span>
+        <span title="View">&#9635;</span>
+        <span title="Settings">&#9881;</span>
+        <span title="Refresh">&#8635;</span>
+        <span title="Font">&#7424;A</span>
+        <span title="Open">&#8599;</span>
+        <span title="Toggle Fullscreen Terminal / Split View (FS+)" id="btnToggleFs" class="fs-btn">FS+</span>
+      </div>
+    </section>
+
+    <section class="terminal-wrap">
+      <div class="terminal-tabs">
+        <span id="tabLabel">1-&gt;</span>
+        <b class="tab-add" title="New terminal">+</b>
+        <button id="copyTerminal" class="terminal-copy" type="button" title="Copy terminal output">Copy</button>
+      </div>
+      <div class="terminal-head">
+        <span id="sessionStatus">OFFLINE</span>
+        <span id="officeLabel">GALILEO TRAINING</span>
+      </div>
+      <div id="terminal" class="terminal" aria-live="polite" aria-label="Galileo terminal output">
+        <div id="terminalOutput"></div>
+        <form id="commandForm" class="command-line">
+          <label for="commandInput" class="prompt-gt">&gt;</label>
+          <input id="commandInput" type="text" autocomplete="off" spellcheck="false"
+                 aria-label="Enter Galileo command">
+        </form>
+      </div>
+      <div id="flightTip" class="gds-tip" hidden></div>
+    </section>
+
+    <aside class="details">
+      <div class="detail-card">
+        <div class="card-heading">CURRENT PNR <span id="locatorBadge">---</span></div>
+        <div id="pnrSummary" class="empty">No active booking</div>
+      </div>
+      <div class="detail-card">
+        <div class="card-heading">LESSON PROGRESS</div>
+        <ol id="progress">
+          <li data-step="login">Sign in</li>
+          <li data-step="availability">Display availability</li>
+          <li data-step="sell">Sell segment</li>
+          <li data-step="name">Add passenger</li>
+          <li data-step="contact">Add contact</li>
+          <li data-step="save">End &amp; retrieve</li>
+          <li data-step="price">Price PNR</li>
+          <li data-step="issue">Issue ticket</li>
+        </ol>
+      </div>
+      <div class="disclaimer">Educational simulator only. Not affiliated with or connected to Travelport or Galileo&#174;. No live GDS connection.</div>
+    </aside>
+
+    <div class="right-tools">
+      <span title="Queue">&#9673;</span>
+      <span id="historyTool" class="history-tool" title="Command History">&#128339;</span>
+      <span title="Refresh">&#8635;</span>
+      <b title="SmartButton">SB</b>
+      <span title="Workflows">&#9672;</span>
+      <span title="Toggle Split View / Fullscreen" id="toggleSplitBtn">&#9633;</span>
+      <em title="Travel Queue">TQ <b>0</b></em>
+      <span>MQ</span><span>QCT</span><span>P</span><span>O</span>
+      <button id="itineraryTool" class="itinerary-tool" type="button" title="Itinerary and print" aria-label="Itinerary and print">&#9992;</button>
+      <button id="assistedTicketingTool" class="assisted-ticketing-tool" type="button" title="Assisted Ticketing (Refund &amp; Exchange)" aria-label="Assisted Ticketing">&#8634;</button>
+      <span>&#8226;&#8226;&#8226;</span>
+    </div>
+  </main>
+
+  <section id="historyPanel" class="history-panel" hidden aria-labelledby="historyTitle">
+    <div class="history-window">
+      <div class="history-titlebar">
+        <span id="historyTitle">COMMAND HISTORY</span>
+        <button id="historyClose" class="history-close" type="button" aria-label="Close history">&#215;</button>
+      </div>
+      <div id="historyList" class="history-list" role="listbox" aria-label="Command history"></div>
+      <div class="history-actions">
+        <button id="historySend" class="history-btn primary" type="button">SEND</button>
+        <button id="historyOptions" class="history-btn" type="button">OPTIONS</button>
+        <button id="historyDelete" class="history-btn" type="button">DELETE SELECTED</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="brandPanel" class="brand-panel" hidden aria-labelledby="brandTitle">
+    <div class="brand-window" role="dialog" aria-modal="true">
+      <div class="brand-titlebar"><span id="brandTitle">Brands and Ancillaries</span><button id="brandClose" type="button" aria-label="Close">×</button></div>
+      <div class="brand-route"><b id="brandSegment">1 DAC&gt;BKK</b><span id="brandFlight"></span><label>Passengers: <select id="brandPax"><option>1</option><option>2</option><option>3</option></select></label></div>
+      <div class="brand-body">
+        <aside id="brandFamilies" class="brand-families"></aside>
+        <article class="brand-main"><div id="brandHero" class="brand-hero"></div><div id="brandDescription" class="brand-description"></div></article>
+        <aside class="brand-ancillary"><h3>Ancillaries</h3><p>Additional services available after booking.</p><div id="brandAncillaries"></div></aside>
+      </div>
+      <div class="brand-footer"><span>Note: Validate brands and ancillaries at Fare Quote.</span><button id="brandCloseFooter" type="button">CLOSE</button></div>
+    </div>
+  </section>
+
+  <section id="itineraryPanel" class="itinerary-panel" hidden aria-labelledby="itineraryTitle">
+    <div class="itinerary-window" role="dialog" aria-modal="true">
+      <header class="itinerary-titlebar"><span id="itineraryTitle">Gellelio Itinerary</span><button id="itineraryClose" type="button" aria-label="Close">&times;</button></header>
+      <div class="itinerary-body">
+        <aside class="itinerary-settings">
+          <label>Template<select id="itineraryTemplate"><option>Default</option><option>Academy Standard</option></select></label>
+          <label>Itinerary type<select id="itineraryType"><option>Print PDF</option><option>Email PDF Attachment</option><option>Email HTML</option><option>Print Word</option><option>Email Word Attachment</option></select></label>
+          <label>Email(s)<textarea id="itineraryEmails" placeholder="guest@email.com"></textarea></label>
+          <label>Passenger<select id="itineraryPassenger"><option>ALL</option></select></label>
+          <div class="itinerary-options"><label><input id="includeFare" type="checkbox" checked> Include fare?</label><label><input id="onePage" type="checkbox" checked> One page per pax?</label><label><input id="showFareBasis" type="checkbox"> Show fare basis?</label><label><input id="showClass" type="checkbox" checked> Show class?</label><label><input id="showCabin" type="checkbox" checked> Show cabin?</label><label><input id="showBaggage" type="checkbox" checked> Show baggage?</label></div>
+          <div class="itinerary-actions"><button id="itineraryPreview" type="button">1. Preview</button><button id="itineraryPrint" type="button" disabled>2. Print / Save PDF</button></div>
+          <p id="itineraryHint">Create or retrieve a booking to enable preview and print.</p>
+        </aside>
+        <article id="itineraryPreviewArea" class="itinerary-preview"><div class="preview-empty"><span>&#9992;</span><b>Itinerary preview</b><p>Retrieve or create a PNR, then select Preview.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="assistedTicketingPanel" class="assisted-ticketing-panel" hidden aria-labelledby="atTitle">
+    <div class="at-window" role="dialog" aria-modal="true">
+      <header class="at-titlebar">
+        <span id="atTitle"><span class="at-icon">&#8634;</span> Travelport Smartpoint &mdash; Assisted Ticketing (Refund &amp; Exchange)</span>
+        <button id="atClose" type="button" aria-label="Close">&times;</button>
+      </header>
+      <nav class="at-nav-tabs">
+        <button type="button" class="at-tab active" id="atTabRefund" data-target="atPaneRefund">&#127915; Ticket Refund</button>
+        <button type="button" class="at-tab" id="atTabExchange" data-target="atPaneExchange">&#128260; Ticket Exchange / Reissue</button>
+        <button type="button" class="at-tab" id="atTabVoid" data-target="atPaneVoid">&#128683; Ticket Void</button>
+      </nav>
+      <div class="at-body">
+        <!-- REFUND PANE -->
+        <div id="atPaneRefund" class="at-tab-pane active">
+          <div class="at-banner-info">
+            <b>Assisted Ticketing Refund Module:</b> Graphical automated electronic refund for unused and partially used tickets in compliance with airline CAT 16/33 penalty rules.
+          </div>
+          <div class="at-grid">
+            <div class="at-column">
+              <fieldset class="at-fieldset">
+                <legend>Ticket &amp; Passenger Selection</legend>
+                <div class="at-form-row">
+                  <label>PNR Locator <input id="atRefundPnr" readonly></label>
+                  <label>Ticket No <input id="atRefundTkt" placeholder="e.g. 99755555555555"></label>
+                </div>
+                <div class="at-form-row">
+                  <label>Passenger Name <input id="atRefundPax" readonly></label>
+                  <label>Issue Date <input id="atRefundDate" readonly></label>
+                </div>
+                <div class="at-form-row full">
+                  <label>Original Routing / Coupons <input id="atRefundRoute" readonly></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="at-fieldset">
+                <legend>Refund Category (Select Type)</legend>
+                <div class="at-radio-group">
+                  <label class="at-radio-label">
+                    <input type="radio" name="atRefundType" id="atTypeUnused" value="unused" checked>
+                    <span><strong>Unused Ticket Refund (Full Refund)</strong><br><small>Passenger did not travel on any flight segment. Base fare + all unused taxes refundable minus airline cancellation fee.</small></span>
+                  </label>
+                  <label class="at-radio-label">
+                    <input type="radio" name="atRefundType" id="atTypePartial" value="partial">
+                    <span><strong>Partially Used Ticket Refund (Partial Refund)</strong><br><small>Passenger completed 1st sector (e.g. Outbound flown). One-way flown fare and taxes deducted. Unused sector taxes and balance refundable.</small></span>
+                  </label>
+                </div>
+
+                <!-- Partial details (shown when Partial is selected) -->
+                <div id="atPartialControls" class="at-partial-box" hidden>
+                  <h4>&#9888; Partially Used Sector Deduction</h4>
+                  <div class="at-form-row">
+                    <label>Flown Coupon Status
+                      <select id="atPartialFlownSelect">
+                        <option value="cpn1">Coupon 1 (DAC-BKK) FLOWN / Coupon 2 (BKK-DAC) OPEN</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="at-form-row">
+                    <label>Flown Base Fare Deduction (BDT) <input id="atFlownFareInput" type="number" value="22000"></label>
+                    <label>Flown Taxes Retained (BDT) <input id="atFlownTaxInput" type="number" value="3500"></label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="at-fieldset">
+                <legend>Penalty &amp; Authority</legend>
+                <div class="at-form-row">
+                  <label>Cancellation Fee (CAT 16) <input id="atRefundPenaltyInput" type="number" value="1000"></label>
+                  <label>Waiver Code <input id="atRefundWaiverInput" type="text" placeholder="e.g. MEDICAL / CIR2026"></label>
+                </div>
+                <div class="at-form-row">
+                  <label>Form of Refund (FOP)
+                    <select id="atRefundFop">
+                      <option value="CASH">CASH (Original FOP)</option>
+                      <option value="CC">CREDIT CARD (Original Card)</option>
+                    </select>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Calculation summary column -->
+            <div class="at-column at-summary-col">
+              <div class="at-calc-card">
+                <h3>&#128181; Refund Calculation Summary</h3>
+                <table class="at-calc-table">
+                  <tbody>
+                    <tr><td>Total Gross Fare Paid</td><td id="atSumGross" class="num">BDT 0</td></tr>
+                    <tr id="atRowFlownFare" hidden><td>Less Used / Flown Base Fare</td><td id="atSumFlownFare" class="num neg">- BDT 0</td></tr>
+                    <tr><td>Refundable Base Fare</td><td id="atSumBase" class="num">BDT 0</td></tr>
+                    <tr><td>Total Taxes Paid</td><td id="atSumTax" class="num">BDT 0</td></tr>
+                    <tr><td>Original Tax Breakdown</td><td id="atSumTaxDetail" class="num">—</td></tr>
+                    <tr id="atRowFlownTax" hidden><td>Less Used / Flown Taxes</td><td id="atSumFlownTax" class="num neg">- BDT 0</td></tr>
+                    <tr><td>Refundable Taxes</td><td id="atSumRefTax" class="num">BDT 0</td></tr>
+                    <tr><td>Less Cancellation Penalty (CP)</td><td id="atSumPenalty" class="num neg">- BDT 0</td></tr>
+                    <tr class="total-row"><td><strong>Net Refund Payable to Passenger</strong></td><td id="atSumNet" class="num total"><strong>BDT 0</strong></td></tr>
+                  </tbody>
+                </table>
+                <div class="at-audit-note">
+                  <em>Training simulation:</em> review each ticket tax and coupon before confirming. This simulator does not send BSP/ARC transactions. Preview status: <strong id="atStatusPreview">RFND</strong>.
+                </div>
+                <div class="at-actions">
+                  <button id="atBtnCalcRefund" class="at-btn secondary" type="button">&#9889; Recalculate</button>
+                  <button id="atBtnProcessRefund" class="at-btn primary" type="button">&#10004; Process Refund (TRNE/OK)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXCHANGE PANE -->
+        <div id="atPaneExchange" class="at-tab-pane">
+          <div class="at-banner-info">
+            <b>Assisted Ticketing Exchange / Reissue Training:</b> Rapid Reprice prepares a simulated exchange quote from the ticket value that is still exchangeable. It is a training calculation, not a live airline/ATPCO quote.
+          </div>
+          <div class="at-grid">
+            <div class="at-column">
+              <fieldset class="at-fieldset">
+                <legend>Original Ticket &amp; Booking File</legend>
+                <div class="at-form-row">
+                  <label>PNR Locator <input id="atExchPnr" readonly></label>
+                  <label>Original Ticket No <input id="atExchTkt" placeholder="e.g. 2358910482910"></label>
+                </div>
+                <div class="at-form-row">
+                  <label>Passenger Name <input id="atExchPax" readonly></label>
+                  <label>Exchangeable Ticket Value <input id="atExchOrigPaid" readonly></label>
+                </div>
+                <div class="at-form-row full">
+                  <label>Original Tax Breakdown <input id="atExchTaxBreakdown" readonly></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="at-fieldset">
+                <legend>Reissue Category</legend>
+                <div class="at-radio-group">
+                  <label class="at-radio-label">
+                    <input type="radio" name="atExchType" id="atExchTypeUnused" value="unused" checked>
+                    <span><strong>Unused Ticket Reissue (Before Travel)</strong><br><small>Flight date or routing changed prior to outbound departure.</small></span>
+                  </label>
+                  <label class="at-radio-label">
+                    <input type="radio" name="atExchType" id="atExchTypePartial" value="partial">
+                    <span><strong>Partially Used Ticket Reissue (After 1st Sector Flown)</strong><br><small>1st leg flown; recalculates return date change using historical fare rules.</small></span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="at-fieldset">
+                <legend>New Fare &amp; Penalty Modifiers</legend>
+                <div class="at-form-row">
+                  <label>New Base Fare Required (BDT) <input id="atExchNewBase" type="number" value="48225"></label>
+                  <label>Fare Difference (+/-) <input id="atExchFareDiff" type="number" value="5000"></label>
+                </div>
+                <div class="at-form-row">
+                  <label>Reissue / Change Penalty (BDT) <input id="atExchPenalty" type="number" value="3000"></label>
+                  <label>Net Tax Difference (BDT) <input id="atExchTaxDiff" type="number" value="1500"></label>
+                </div>
+                <div class="at-form-row">
+                  <label>Payment Method
+                    <select id="atExchFop">
+                      <option value="EXCH + CASH">EXCH + CASH</option>
+                      <option value="EXCH + CC">EXCH + CREDIT CARD</option>
+                    </select>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="at-column at-summary-col">
+              <div class="at-calc-card">
+                <h3>&#128260; Reissue Calculation Summary</h3>
+                <table class="at-calc-table">
+                  <tbody>
+                    <tr><td>Exchangeable Ticket Value</td><td id="atSumExchOrig" class="num">BDT 53,225</td></tr>
+                    <tr><td>New Ticket Total</td><td id="atSumExchNew" class="num">BDT 62,725</td></tr>
+                    <tr><td>Base Fare Difference</td><td id="atSumExchFareDiff" class="num">BDT 5,000</td></tr>
+                    <tr><td>Tax Difference</td><td id="atSumExchTaxDiff" class="num">BDT 1,500</td></tr>
+                    <tr><td>Reissue Penalty Charge (CP)</td><td id="atSumExchPenalty" class="num">BDT 3,000</td></tr>
+                    <tr class="total-row"><td><strong>Net Exchange Settlement</strong></td><td id="atSumExchAddCollect" class="num total"><strong>BDT 9,500</strong></td></tr>
+                  </tbody>
+                </table>
+                <div class="at-audit-note">
+                  <em id="atExchQuoteStatus">Quote pending:</em> verify the new fare, tax difference, penalty, and payment before issue.
+                </div>
+                <div class="at-actions">
+                  <button id="atBtnCalcExchange" class="at-btn secondary" type="button">&#9889; Rapid Reprice (FXE)</button>
+                  <button id="atBtnProcessExchange" class="at-btn primary" type="button">&#10004; Issue Exchange Ticket (TKPDTD)</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!-- VOID PANE -->
+        <div id="atPaneVoid" class="at-tab-pane">
+          <div class="at-banner-info" style="border-left-color: #e11d48; background: #fff1f2; color: #9f1239;">
+            <b>Assisted Ticketing Void Module:</b> 100% full cancellation of tickets issued on the same day (BSP reporting cycle). Zero cancellation penalty applies.
+          </div>
+          <div class="at-grid">
+            <div class="at-column">
+              <fieldset class="at-fieldset">
+                <legend>Electronic Ticket to Void</legend>
+                <div class="at-form-row">
+                  <label>PNR Locator <input id="atVoidPnr" readonly></label>
+                  <label>Ticket Number <input id="atVoidTkt" placeholder="e.g. 99755555555555"></label>
+                </div>
+                <div class="at-form-row">
+                  <label>Passenger Name <input id="atVoidPax" readonly></label>
+                  <label>Ticket Issue Date <input id="atVoidDate" readonly></label>
+                </div>
+                <div class="at-form-row full">
+                  <label>Current Status <input id="atVoidStatus" readonly value="OPEN FOR USE"></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="at-fieldset">
+                <legend>Void Policy &amp; Reason</legend>
+                <div class="at-form-row full">
+                  <label>Reason for Void
+                    <select id="atVoidReason">
+                      <option value="AGENCY BOOKING ERROR">AGENCY BOOKING ERROR (Name / Date mistake)</option>
+                      <option value="CUSTOMER REQUEST WITHIN 24H">CUSTOMER CANCELLATION WITHIN 24H</option>
+                      <option value="DUPLICATE ISSUANCE">DUPLICATE TICKET ISSUED</option>
+                      <option value="PAYMENT DECLINED">PAYMENT TRANSACTION REVERSED</option>
+                    </select>
+                  </label>
+                </div>
+                <p style="font-size: 11px; color: #64748b; margin: 8px 0 0; line-height: 1.35;">
+                  <strong>Rule:</strong> E-Tickets may only be voided on the same calendar day of issuance prior to midnight (23:59). Once voided, the ticket cannot be reinstated.
+                </p>
+              </fieldset>
+            </div>
+
+            <div class="at-column at-summary-col">
+              <div class="at-calc-card">
+                <h3 style="color: #be123c;">&#128683; Void Summary &amp; Confirmation</h3>
+                <table class="at-calc-table">
+                  <tbody>
+                    <tr><td>Original Total Paid</td><td id="atSumVoidGross" class="num">BDT 0</td></tr>
+                    <tr><td>Cancellation Penalty (Void)</td><td class="num" style="color: #16a34a;">BDT 0 (NO PENALTY)</td></tr>
+                    <tr><td>Agency Commission Recall</td><td class="num">BDT 0</td></tr>
+                    <tr class="total-row" style="background: #fff1f2;"><td><strong>Full Amount Reversed (Voided)</strong></td><td id="atSumVoidTotal" class="num total" style="color: #be123c;"><strong>BDT 0</strong></td></tr>
+                  </tbody>
+                </table>
+                <div class="at-audit-note">
+                  <em>Notice:</em> All coupons will be permanently marked as <strong>VOID (V)</strong>. BSP sales report will be updated automatically.
+                </div>
+                <div class="at-actions">
+                  <button id="atBtnProcessVoid" class="at-btn primary" style="background: #e11d48;" type="button">&#10004; Process Void (TRV)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="at-footer">
+        <span>Travelport Smartpoint Assisted Ticketing &bull; Galileo GDS Training</span>
+        <button id="atCloseFooter" class="at-btn" type="button">Close Window</button>
+      </footer>
+    </div>
+  </section>
+
+  <script src="js/airports.js?v=4.1"></script>
+  <script src="js/flights.js?v=4.1"></script>
+  <script src="js/fareShop.js?v=4.1"></script>
+  <script src="js/lessons.js?v=4.1"></script>
+  <script src="js/commands.js?v=4.1"></script>
+  <script src="js/ticket-modal.js?v=4.1"></script>
+  <script src="js/app.js?v=4.1"></script>
+  <script src="js/demo-override.js"></script>
+  <script src="js/auth.js?v=4.4"></script>
+
+<!-- Ticket Modal (Electronic Ticket Matching Screenshot 2 & Multi-Pax Option) -->
+<div class="ticket-modal-backdrop" id="ticketModalBackdrop" onclick="if(event.target===this) closeTicketModal()">
+  <div class="ticket-modal-card" id="ticketModalCard">
+    <!-- Top Controls Toolbar (Hidden on print) -->
+    <div class="ticket-modal-toolbar">
+      <div class="ticket-mode-toggle" id="ticketModeToggle" style="display:none;">
+        <button type="button" class="btn-mode active" id="btnModeSeparate" onclick="switchTicketMode('separate')">&#128196; Separate Pages (1 per Pax)</button>
+        <button type="button" class="btn-mode" id="btnModeCombined" onclick="switchTicketMode('combined')">&#128203; Combined Ticket (1 Page)</button>
+      </div>
+      <button type="button" class="btn-close-modal" onclick="closeTicketModal()" title="Close">&times;</button>
+    </div>
+
+    <!-- Ticket Sheets Container (Dynamic Render: Screenshot 2 Format) -->
+    <div id="ticketSheetsContainer" class="ticket-sheets-container"></div>
+
+    <!-- Ticket Modal Footer (Hidden on print) -->
+    <div class="ticket-modal-footer">
+      <div class="ticket-modal-actions">
+        <button type="button" class="btn btn-primary" onclick="printTicketReceipt()">&#128438; Print Ticket Receipt</button>
+        <button type="button" class="btn btn-secondary" onclick="closeTicketModal()">Close</button>
+      </div>
+      <label class="hide-fare-toggle">
+        <input type="checkbox" id="hideFareCheckbox">
+        <span>Hide fare details in print</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- ══ In-App Update Progress Modal ══ -->
+<div id="gltUpdateModal" hidden role="dialog" aria-modal="true" aria-labelledby="gltUpdateTitle">
+  <div class="glt-update-card">
+    <div class="glt-update-icon" id="gltUpdateIcon">🔄</div>
+    <p class="glt-update-title" id="gltUpdateTitle">Checking for updates…</p>
+    <p class="glt-update-sub"  id="gltUpdateSub">Please wait.</p>
+    <div class="glt-update-bar-wrap" id="gltUpdateBarWrap" hidden>
+      <div class="glt-update-bar" id="gltUpdateBar"></div>
+    </div>
+    <div class="glt-update-pct"  id="gltUpdatePct"  hidden></div>
+    <div class="glt-update-speed" id="gltUpdateSpeed" hidden></div>
+    <button class="glt-update-btn" id="gltUpdateAction" hidden onclick="gltUpdateAction()"></button>
+    <button class="glt-update-btn secondary" id="gltUpdateClose" onclick="document.getElementById('gltUpdateModal').hidden=true">Close</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var _unsubscribers = [];
+
+  function fmtBytes(b) {
+    if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    return Math.round(b / 1024) + ' KB';
+  }
+
+  function setState(icon, title, sub, showBar, pct, speed, actionLabel, showClose) {
+    document.getElementById('gltUpdateIcon').textContent   = icon;
+    document.getElementById('gltUpdateTitle').textContent  = title;
+    document.getElementById('gltUpdateSub').textContent    = sub;
+    var barWrap = document.getElementById('gltUpdateBarWrap');
+    var pctEl   = document.getElementById('gltUpdatePct');
+    var spdEl   = document.getElementById('gltUpdateSpeed');
+    var actBtn  = document.getElementById('gltUpdateAction');
+    var clsBtn  = document.getElementById('gltUpdateClose');
+    barWrap.hidden = !showBar;
+    pctEl.hidden   = !showBar;
+    spdEl.hidden   = !showBar;
+    if (showBar) {
+      document.getElementById('gltUpdateBar').style.width = (pct || 0) + '%';
+      pctEl.textContent  = (pct || 0) + '% downloaded';
+      spdEl.textContent  = speed ? fmtBytes(speed) + '/s' : '';
+    }
+    if (actionLabel) {
+      actBtn.textContent = actionLabel;
+      actBtn.hidden = false;
+    } else {
+      actBtn.hidden = true;
+    }
+    clsBtn.hidden = !showClose;
+  }
+
+  window.gltCheckForUpdates = function () {
+    if (window.gellelioUpdater && window.gellelioUpdater.platform === 'darwin') {
+      window.open('https://github.com/shakibapon1234-maker/Gellelio-Training-Mode-Releases/releases/latest', '_blank');
+      return;
+    }
+    if (!window.gellelioUpdater) {
+      // Not in Electron — open GitHub releases page
+      window.open('https://github.com/shakibapon1234-maker/Gellelio-Training-Mode-Releases/releases/latest', '_blank');
+      return;
+    }
+    _unsubscribers.forEach(function (fn) { try { fn(); } catch (_) {} });
+    _unsubscribers = [];
+
+    var modal = document.getElementById('gltUpdateModal');
+    modal.hidden = false;
+    setState('🔄', 'Checking for updates…', 'Please wait.', false, 0, 0, null, false);
+
+    _unsubscribers.push(
+      window.gellelioUpdater.on('updater:checking', function () {
+        setState('🔄', 'Checking for updates…', 'Connecting to update server.', false, 0, 0, null, false);
+      }),
+      window.gellelioUpdater.on('updater:not-available', function (data) {
+        setState('✅', 'You are up to date!', 'Version v' + (data && data.version || '') + ' is the latest.', false, 0, 0, null, true);
+      }),
+      window.gellelioUpdater.on('updater:available', function (data) {
+        setState('⬇️', 'Update available!', 'Downloading version v' + (data && data.version || '') + '…', true, 0, 0, null, false);
+      }),
+      window.gellelioUpdater.on('updater:progress', function (data) {
+        if (!data) return;
+        setState('⬇️', 'Downloading update…', 'Do not close the app.', true, data.percent, data.bytesPerSecond, null, false);
+      }),
+      window.gellelioUpdater.on('updater:downloaded', function (data) {
+        setState('🎉', 'Update ready to install!', 'Version v' + (data && data.version || '') + ' has been downloaded.', false, 100, 0, '⚡ Restart & Install Now', true);
+      }),
+      window.gellelioUpdater.on('updater:error', function (data) {
+        setState('❌', 'Update failed', (data && data.message) || 'Could not download the update. Check your internet connection.', false, 0, 0, null, true);
+      })
+    );
+
+    window.gellelioUpdater.checkForUpdates();
+  };
+
+  window.gltUpdateAction = function () {
+    if (window.gellelioUpdater) window.gellelioUpdater.quitAndInstall();
+  };
+
+  // If main process fires an update-available event on startup (background check)
+  if (window.gellelioUpdater) {
+    window.gellelioUpdater.on('updater:available', function (data) {
+      // Show a subtle toast/notification without opening the modal automatically
+      var btn = document.getElementById('checkUpdateBtn');
+      if (btn) {
+        btn.textContent = '⬇ Update available — click to download';
+        btn.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+        btn.style.color = '#ffffff';
+        btn.style.borderColor = '#34d399';
+        btn.style.boxShadow = '0 0 12px rgba(16, 185, 129, 0.6)';
+      }
+    });
+    window.gellelioUpdater.on('updater:downloaded', function () {
+      var btn = document.getElementById('checkUpdateBtn');
+      if (btn) {
+        btn.textContent = '🎉 Ready to install — click to restart';
+        btn.style.background = 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)';
+        btn.style.color = '#ffffff';
+        btn.style.borderColor = '#fbbf24';
+        btn.style.boxShadow = '0 0 14px rgba(245, 158, 11, 0.7)';
+        btn.onclick = function () { if (window.gellelioUpdater) window.gellelioUpdater.quitAndInstall(); };
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

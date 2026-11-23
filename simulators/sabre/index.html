@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agency Workspace (CERT) — Sabre Training Simulator</title>
+<style>
+  :root, body.theme-sabre-original {
+    --os-titlebar:#f3f3f3;
+    --os-titlebar-text:#2b2b2b;
+    --menubar-bg:#ffffff;
+    --menubar-text:#3a3a3a;
+    --menubar-border:#e2e3e6;
+    --ws-tabs-bg:#e2e5e9;
+    --ws-tab-bg:#d7dbe1;
+    --ws-tab-text:#2b3340;
+    --ws-tab-border:#c2c7cf;
+    --ws-tab-letter-bg:#ffffff;
+    --ws-tab-letter-text:#2b3340;
+    --active-tab:#c0392b;
+    --active-tab-dark:#a8391f;
+    --active-tab-text:#ffffff;
+    --cmd-bar-bg:#232c35;
+    --cmd-input-bg:#182027;
+    --cmd-input-border:#35424f;
+    --teal:#00828a;
+    --teal-dark:#006c73;
+    --pill-btn-bg:#35424f;
+    --pill-btn-hover:#435363;
+    --term-bg:#1e2630;
+    --row-bg-odd:#242d34;
+    --row-bg-even:#384653;
+    --row-border:#1c242c;
+    --row-hover:#435362;
+    --panel-bg:#1c2025;
+    --panel-border:#14171a;
+    --footer-bg:#14171a;
+    --text-light:#eef0f3;
+    --text-dim:#8b96a5;
+    --text-faint:#616c7c;
+    --fkey-bg:#182027;
+    --fkey-chip:#e9eaec;
+    --fkey-chip-text:#26282c;
+    --font-ui:"Segoe UI","Noto Sans Bengali",Arial,sans-serif;
+    --font-mono:"Consolas","Courier New",monospace;
+  }
+
+  body.theme-sabre-dark {
+    --os-titlebar:#20252e;
+    --os-titlebar-text:#d8dde6;
+    --menubar-bg:#1a212b;
+    --menubar-text:#d0d7e2;
+    --menubar-border:#2a3342;
+    --ws-tabs-bg:#1b2330;
+    --ws-tab-bg:#1b2330;
+    --ws-tab-text:#8992a3;
+    --ws-tab-border:#0f141c;
+    --ws-tab-letter-bg:transparent;
+    --ws-tab-letter-text:#8992a3;
+    --active-tab:#c8472f;
+    --active-tab-dark:#a8391f;
+    --active-tab-text:#ffffff;
+    --cmd-bar-bg:#232c3b;
+    --cmd-input-bg:#1b2330;
+    --cmd-input-border:#2b3547;
+    --teal:#13a3a0;
+    --teal-dark:#0d817e;
+    --pill-btn-bg:#2b3547;
+    --pill-btn-hover:#37455a;
+    --term-bg:#141a24;
+    --row-bg-odd:#1b2330;
+    --row-bg-even:#232c3b;
+    --row-border:#2e3849;
+    --row-hover:#2b3648;
+    --panel-bg:#1c2431;
+    --panel-border:#0f141c;
+    --footer-bg:#0e1218;
+    --text-light:#eef0f3;
+    --text-dim:#8992a3;
+    --text-faint:#5c6579;
+    --fkey-bg:#101418;
+    --fkey-chip:#e9eaec;
+    --fkey-chip-text:#26282c;
+  }
+
+  body.theme-sabre-light {
+    --os-titlebar:#eef1f5;
+    --os-titlebar-text:#2b2b2b;
+    --menubar-bg:#ffffff;
+    --menubar-text:#333c48;
+    --menubar-border:#d5dae2;
+    --ws-tabs-bg:#e9edf2;
+    --ws-tab-bg:#f0f3f6;
+    --ws-tab-text:#333c48;
+    --ws-tab-border:#d0d6de;
+    --ws-tab-letter-bg:#ffffff;
+    --ws-tab-letter-text:#333c48;
+    --active-tab:#c0392b;
+    --active-tab-dark:#a8391f;
+    --active-tab-text:#ffffff;
+    --cmd-bar-bg:#2a333d;
+    --cmd-input-bg:#1d242c;
+    --cmd-input-border:#3b4754;
+    --teal:#00828a;
+    --teal-dark:#006c73;
+    --pill-btn-bg:#3b4754;
+    --pill-btn-hover:#485666;
+    --term-bg:#f4f6f9;
+    --row-bg-odd:#ffffff;
+    --row-bg-even:#edf1f5;
+    --row-border:#dde2e8;
+    --row-hover:#e1e7ee;
+    --panel-bg:#ffffff;
+    --panel-border:#d9dee4;
+    --footer-bg:#e2e6eb;
+    --text-light:#1f2630;
+    --text-dim:#556070;
+    --text-faint:#8894a3;
+    --fkey-bg:#eaedf1;
+    --fkey-chip:#ffffff;
+    --fkey-chip-text:#20252c;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:var(--font-ui);
+    background:var(--term-bg);
+    color:var(--text-light);
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    overflow:hidden;
+    font-size:13px;
+  }
+
+  /* ===== OS-style title bar ===== */
+  .os-titlebar{
+    background:var(--os-titlebar);
+    color:var(--os-titlebar-text);
+    height:34px;
+    display:flex;
+    align-items:center;
+    padding:0 10px;
+    flex-shrink:0;
+    border-bottom:1px solid #dcdcdc;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .os-titlebar .app-icon{
+    width:38px;height:24px;border-radius:2px;
+    background:var(--active-tab);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:7px;font-weight:800;line-height:1;
+    margin-right:8px;
+    text-align:center;
+  }
+  .os-titlebar .app-title{font-size:13px;color:#333;flex:1;}
+  .win-controls{display:flex;gap:2px;}
+  .win-controls span{
+    width:34px;height:26px;display:flex;align-items:center;justify-content:center;
+    color:#555;cursor:pointer;font-size:12px;border-radius:2px;
+  }
+  .win-controls span:hover{background:#e4e4e4;}
+  .win-controls .close-c:hover{background:var(--active-tab);color:#fff;}
+  /* Electron already provides the real Windows title bar. */
+  body.electron-app .os-titlebar{display:none;}
+
+  /* ===== Menu bar ===== */
+  .menu-bar{
+    background:var(--menubar-bg);
+    color:var(--menubar-text);
+    display:flex;
+    gap:20px;
+    padding:6px 14px;
+    font-size:12.5px;
+    border-bottom:1px solid var(--menubar-border);
+    flex-shrink:0;
+  }
+  .menu-bar span{cursor:pointer;user-select:none;}
+  .menu-bar span:hover{color:var(--active-tab);}
+
+  /* ===== "Sabre" secondary tab strip ===== */
+  .brand-strip{
+    background:var(--menubar-bg);
+    border-bottom:1px solid var(--menubar-border);
+    padding:4px 14px 0 14px;
+    flex-shrink:0;
+  }
+  .brand-tab{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--menubar-text);
+    padding:6px 16px;
+    border:1px solid var(--menubar-border);
+    border-bottom:none;
+    border-radius:5px 5px 0 0;
+    background:#fbfbfc;
+  }
+  .brand-tab .dot{
+    width:14px;height:14px;border-radius:3px;
+    background:var(--active-tab);
+    display:inline-block;
+  }
+
+  /* ===== Workspace lettered tabs (A-F) ===== */
+  .workspace-tabs{
+    background:var(--ws-tabs-bg);
+    display:flex;
+    align-items:stretch;
+    border-bottom:1px solid var(--ws-tab-border);
+    flex-shrink:0;
+  }
+  .ws-tab{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px;
+    border-right:1px solid var(--ws-tab-border);
+    cursor:pointer;
+    background:var(--ws-tab-bg);
+    color:var(--ws-tab-text);
+    font-size:13px;
+    min-width:0;
+    transition:background .15s;
+  }
+  .ws-tab .letter{
+    width:20px;height:20px;
+    border-radius:50%;
+    background:var(--ws-tab-letter-bg);
+    border:1px solid var(--ws-tab-border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--ws-tab-letter-text);
+    flex-shrink:0;
+  }
+  .ws-tab .code{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .ws-tab.active{
+    background:var(--active-tab);
+    color:var(--active-tab-text);
+    font-weight:700;
+  }
+  .ws-tab.active .letter{
+    background:#fff;
+    color:var(--active-tab);
+    border-color:#fff;
+  }
+  .ws-tab.empty{opacity:0.75;}
+
+  /* ===== Command bar ===== */
+  .command-bar{
+    background:var(--cmd-bar-bg);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--navy-border);
+    flex-shrink:0;
+  }
+  .avatar-btn{
+    width:32px;height:32px;border-radius:50%;
+    background:var(--navy-600);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-dim);
+    flex-shrink:0;
+    font-size:14px;
+  }
+  .cmd-input-wrap{
+    flex:1;
+    background:#fff;
+    border:1px solid #aeb8c4;
+    border-radius:5px;
+    display:flex;
+    align-items:center;
+    padding:0 12px;
+  }
+  .cmd-input-wrap input{
+    flex:1;
+    background:transparent;
+    border:none;outline:none;
+    color:#20252c;
+    font-family:var(--font-mono);
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:10px 0;
+  }
+  .cmd-input-wrap input::placeholder{color:#737d88;letter-spacing:2px;}
+  .cmd-icon-btn{
+    width:36px;height:36px;
+    border-radius:5px;
+    background:var(--navy-600);
+    border:none;
+    color:var(--text-dim);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    font-size:14px;
+  }
+  .cmd-icon-btn:hover{color:#fff;}
+  .send-btn{
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    font-weight:700;
+    font-size:13px;
+    padding:0 26px;
+    height:36px;
+    border-radius:5px;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .send-btn:hover{background:var(--teal-dark);}
+  .pill-btn{
+    background:var(--pill-btn-bg);
+    color:var(--text-light);
+    border:none;
+    font-size:12.5px;
+    font-weight:600;
+    padding:0 16px;
+    height:36px;
+    border-radius:5px;
+    cursor:pointer;
+    display:flex;align-items:center;gap:7px;
+    flex-shrink:0;
+    white-space:nowrap;
+  }
+  .pill-btn:hover{background:var(--pill-btn-hover);}
+
+  /* ===== Function key row ===== */
+  .fkey-bar{
+    background:var(--fkey-bg);
+    display:flex;
+    align-items:center;
+    gap:5px;
+    max-width:35%;
+    min-width:0;
+    padding:4px 8px;
+    overflow-x:auto;
+    flex-shrink:1;
+  }
+  .fkey-bar[hidden]{display:none;}
+  .fkey-chip{
+    background:var(--fkey-chip);
+    color:var(--fkey-chip-text);
+    font-size:11px;
+    font-weight:600;
+    padding:6px 10px;
+    border-radius:4px;
+    cursor:pointer;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .fkey-chip:hover{background:#dfe0e2;}
+  .fkey-more{
+    color:var(--text-dim);
+    font-size:16px;
+    cursor:pointer;
+    padding:6px 10px;
+    flex-shrink:0;
+  }
+  .fkey-more:hover{color:#fff;}
+
+  /* ===== Main split area ===== */
+  .main-split{
+    flex:1;
+    display:flex;
+    overflow:hidden;
+    min-width:0;
+  }
+
+  .term-area{
+    flex:1 1 0;
+    min-width:0;
+    background:var(--term-bg);
+    padding:14px;
+    font-family:var(--font-mono);
+    font-size:14px;
+    color:var(--text-light);
+    overflow:auto;
+    line-height:1.6;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+  }
+  .term-area .ph{color:var(--text-faint);}
+  .term-area .line-ok{color:#7fd9a0;border-bottom:1px dashed rgba(255,255,255,0.22);padding:2px 0;}
+  .term-area .line-pnr{color:#cfd6e0;border-bottom:1px dashed rgba(255,255,255,0.22);padding:2px 0;}
+  .term-area .line-warn{color:#e8b95f;border-bottom:1px dashed rgba(255,255,255,0.22);padding:2px 0;}
+  .term-area .line-echo{color:#8fd0f0;border-bottom:1px dashed rgba(255,255,255,0.22);padding:2px 0;}
+  .term-area .fare-command{color:#cfd6e0;border:0;padding:0;line-height:1.48;}
+  .term-area .line-display{color:var(--text-light);font-weight:700;border-bottom:1px dashed rgba(255,255,255,0.22);padding:2px 0;}
+  /* Pricing replies are one continuous host response, not separate result rows. */
+  .term-area .fare-output{color:#cfd6e0;border:0;padding:0;line-height:1.48;}
+  .term-area .sb-booking-status{color:#fff;font-family:var(--font-mono);font-size:24px;line-height:1.4;font-weight:800;letter-spacing:.5px;margin:10px 0 6px;padding:8px 0 6px;border-top:1px dashed rgba(255,255,255,.22);border-bottom:1px dashed rgba(255,255,255,.22);display:block;}
+  .term-area .sb-command-success{display:flex;align-items:center;gap:20px;color:#fff;font:700 16px/1.2 Arial,sans-serif;border:0;padding:14px 0;margin:4px 0 10px;}
+  .term-area .sb-command-success::before{content:'✓';display:inline-flex;align-items:center;justify-content:center;flex:0 0 56px;width:56px;height:56px;border-radius:50%;background:#78ad12;color:#fff;font:700 42px/1 Arial,sans-serif;}
+  .sb-exchange-screen{max-width:100%;min-width:760px;padding:4px 10px 8px;color:var(--text-light);font:18px/1.2 var(--font-mono);}
+  .sb-exchange-title{display:flex;justify-content:space-between;max-width:850px;padding:2px 8px;border-bottom:1px dashed rgba(255,255,255,.2);}
+  .sb-exchange-place{padding:3px 8px;}
+  .sb-exchange-base-usd{padding:3px 8px;}
+  .sb-exchange-matrix{display:grid;grid-template-columns:140px repeat(3,minmax(130px,170px));width:max-content;max-width:100%;margin:7px 0 5px 8px;text-align:right;}
+  .sb-exchange-matrix>div{padding:1px 8px;white-space:nowrap;}
+  .sb-exchange-matrix>div:first-child,.sb-exchange-total-label{text-align:left;}
+  .sb-exchange-total{border-top:1px dashed rgba(255,255,255,.32);padding-top:3px!important;}
+  .sb-exchange-fields{display:grid;gap:2px;max-width:850px;margin:2px 0 0 8px;}
+  .sb-exchange-field-row{display:flex;align-items:center;gap:9px;min-height:30px;white-space:nowrap;}
+  .sb-exchange-field-row>span:first-child{min-width:245px;}
+  .sb-ticketing-total{padding:5px 8px 8px;}
+  .sb-ticketing-row{display:flex;align-items:center;gap:9px;min-height:30px;padding:1px 8px;white-space:nowrap;}
+  .sb-ticketing-actions{margin-top:6px;}
+  .sb-exchange-input{display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:28px;padding:0 7px;border:1px solid #aaa;border-radius:4px;background:#f7f7f7;color:#222;font:16px/1.1 var(--font-mono);box-shadow:inset 0 1px 2px rgba(0,0,0,.15);}
+  .sb-exchange-edit-check{appearance:auto;-webkit-appearance:auto;text-align:center;cursor:text;padding:0;}
+  .sb-exchange-edit-check:focus{outline:2px solid #00a5b5;outline-offset:1px;}
+  .sb-exchange-check{width:36px;min-width:36px;padding:0;}
+  .sb-exchange-wide{width:130px;}
+  .sb-exchange-grand-total{display:flex;justify-content:flex-end;gap:45px;max-width:700px;padding:3px 22px;border-top:1px dashed rgba(255,255,255,.3);}
+  .sb-exchange-options,.sb-exchange-actions{display:flex;flex-wrap:wrap;align-items:center;gap:24px;margin:4px 0 0 8px;}
+  .sb-exchange-options>span,.sb-exchange-actions>span{display:inline-flex;align-items:center;gap:10px;}
+  .sb-exchange-warning,.sb-exchange-prompt{max-width:850px;padding:3px 8px;border-bottom:1px dashed rgba(255,255,255,.2);}
+  @media(max-width:900px){.sb-exchange-screen{min-width:0;font-size:15px;overflow-x:auto}.sb-exchange-field-row{gap:7px}.sb-exchange-field-row>span:first-child{min-width:190px}.sb-exchange-options,.sb-exchange-actions{gap:12px}}
+  .sb-avail-board{
+    color:var(--text-light);
+    font-family:var(--font-mono);
+    margin-top:6px;
+    width:100%;
+    min-width:0;
+    border:1px solid var(--row-border);
+    border-radius:4px;
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+  .sb-avail-header{
+    padding:8px 12px;
+    background:rgba(0,0,0,0.18);
+    border-bottom:1px solid var(--row-border);
+    color:var(--text-light);
+    font-size:13.5px;
+    font-weight:700;
+    letter-spacing:.5px;
+  }
+  .sb-avail-row{
+    display:grid;
+    grid-template-columns:58px 48px minmax(340px,1fr) 86px 72px 82px 48px 28px 96px 36px;
+    min-width:1010px;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-bottom:1px solid var(--row-border);
+    font-size:13px;
+    line-height:1.45;
+    transition:background .12s;
+  }
+  .sb-avail-row.sb-row-odd{
+    background:var(--row-bg-odd);
+  }
+  .sb-avail-row.sb-row-even{
+    background:var(--row-bg-even);
+  }
+  .sb-avail-row:hover{
+    background:var(--row-hover);
+  }
+  .sb-avail-num-air{
+    font-weight:700;
+    color:#fff;
+    white-space:nowrap;
+  }
+  .sb-avail-flight{
+    color:#fff;
+    font-weight:600;
+  }
+  .sb-avail-classes{
+    display:flex;
+    flex-wrap:wrap;
+    gap:2px 4px;
+    font-family:var(--font-mono);
+  }
+  .sb-class-bucket{
+    font:inherit;
+    color:#d2dbe5;
+    background:transparent;
+    border:0;
+    padding:1px 2px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .sb-class-bucket:hover,.sb-class-bucket:focus{
+    color:#35c6bb;
+    background:rgba(53,198,187,0.15);
+    outline:none;
+  }
+  .sb-avail-route{
+    color:#fff;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .sb-avail-time{
+    color:#fff;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .sb-avail-eq{
+    color:#98acbf;
+    white-space:nowrap;
+  }
+  .sb-avail-stops{
+    color:#cfd8e2;
+    text-align:center;
+  }
+  .sb-avail-dur{
+    color:#ffffff;
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .sb-connection-note{padding:5px 12px 5px 18px;color:var(--text-light);font-family:var(--font-mono);font-size:13px;line-height:1.4;border-bottom:1px solid var(--row-border);}
+  .sb-avail-arrow{
+    color:#fff;
+    background:transparent;
+    border:0;
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    padding:4px;
+    border-radius:3px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .sb-avail-arrow:hover{
+    color:#35c6bb;
+    background:rgba(255,255,255,0.1);
+  }
+  .sb-avail-board.sb-hold-locked .sb-class-bucket,.sb-avail-board.sb-hold-locked .sb-avail-arrow{pointer-events:none;opacity:.42;}
+
+  /* ===== Sabre Expanded Flight Detail & Seat Hold Panel ===== */
+  .sb-seat-hold{
+    display:none;
+    background:#ffffff;
+    color:#22262a;
+    font-family:var(--font-ui);
+    border-bottom:1px solid #c9cdd2;
+    padding:8px 14px 10px 14px;
+    font-size:11.5px;
+    line-height:1.45;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .sb-seat-hold.open{display:block;}
+  .sb-hold-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .sb-detail-line1, .sb-detail-line2{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 16px;
+    align-items:baseline;
+    color:#2b333e;
+  }
+  .sb-detail-item{
+    white-space:nowrap;
+  }
+  .sb-detail-lbl{
+    font-weight:700;
+    color:#1a2028;
+    margin-right:4px;
+  }
+  .sb-detail-val{
+    color:#333d4b;
+  }
+  .sb-hold-controls{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:16px;
+    padding-top:4px;
+    border-top:1px solid #eaedf0;
+    margin-top:4px;
+  }
+  .sb-hold-ctrl-group{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:11.5px;
+    font-weight:600;
+    color:#262d36;
+  }
+  .sb-hold-ctrl-group select{
+    height:26px;
+    min-width:60px;
+    padding:2px 8px;
+    border:1px solid #b8bec8;
+    border-radius:3px;
+    background:#ffffff;
+    color:#1c232d;
+    font-size:12px;
+    font-weight:600;
+    outline:none;
+    cursor:pointer;
+  }
+  .sb-hold-ctrl-group select:focus{
+    border-color:#00828a;
+  }
+  .sb-hold-actions{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .sb-hold-sell{
+    height:26px;
+    background:#202020;
+    color:#ffffff;
+    border:0;
+    border-radius:3px;
+    padding:0 18px;
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    transition:background .12s;
+  }
+  .sb-hold-sell:hover{
+    background:#00828a;
+  }
+  .sb-hold-close{
+    height:26px;
+    width:28px;
+    background:#202020;
+    color:#ffffff;
+    border:0;
+    border-radius:3px;
+    font-size:13px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .12s;
+  }
+  .sb-hold-close:hover{
+    background:#c0392b;
+  }
+
+  /* ===== Right side panel ===== */
+  .side-panel{
+    width:350px;
+    background:var(--panel-bg);
+    border-left:1px solid var(--panel-border);
+    display:flex;
+    flex-direction:column;
+    flex-shrink:0;
+    transition:width .15s ease;
+  }
+  .side-panel.collapsed{width:0;overflow:hidden;border-left:none;}
+  .panel-status{
+    padding:16px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--text-dim);
+    border-bottom:1px solid var(--panel-border);
+  }
+  .panel-status .pnr-line{color:var(--text-light);word-break:break-all;}
+  .panel-status .no-msg{color:var(--text-faint);margin-top:8px;letter-spacing:.5px;}
+  .panel-menu{padding:8px 0;flex:0;}
+  .panel-menu-item{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 18px;
+    color:var(--text-light);
+    font-size:13px;
+    cursor:pointer;
+  }
+  .panel-menu-item:hover,.panel-menu-item.active{background:var(--navy-700);}
+  .panel-menu-item .ic{width:18px;text-align:center;color:var(--text-dim);}
+  .panel-view-content{min-height:0;overflow:auto;border-top:1px solid var(--panel-border);flex:1;}
+  .panel-view-heading{padding:12px 14px;font-size:15px;font-weight:700;color:var(--text-light);border-bottom:1px solid var(--panel-border);}
+  .panel-summary-group{border-bottom:1px solid var(--panel-border);}
+  .panel-summary-group summary{padding:10px 12px;cursor:pointer;color:var(--text-light);font-size:12px;font-weight:700;list-style:none;}
+  .panel-summary-group summary::-webkit-details-marker{display:none;}
+  .panel-summary-group summary::before{content:'›';display:inline-block;width:18px;color:var(--text-dim);}
+  .panel-summary-group[open] summary::before{content:'⌄';}
+  .panel-summary-body{padding:0 12px 10px;color:var(--text-dim);font-size:11px;line-height:1.5;overflow-wrap:anywhere;}
+  .panel-summary-row{padding:5px 0;border-top:1px solid rgba(255,255,255,.06);}
+  .panel-workflow-row{display:flex;align-items:center;gap:9px;width:100%;padding:7px 12px;border:0;background:none;color:var(--text-light);font-size:11px;text-align:left;}
+  button.panel-workflow-row{cursor:pointer;}
+  button.panel-workflow-row:hover{background:var(--navy-700);}
+  .panel-workflow-row.disabled{color:var(--text-faint);cursor:not-allowed;}
+  .panel-workflow-row .ic{color:var(--text-dim);}
+  .panel-footer{border-top:1px solid var(--panel-border);padding:8px 0;}
+  .sb-doc-dialog{width:min(850px,94vw);max-height:86vh;background:#f8f8f8;color:#24272b;border-radius:6px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 16px 50px rgba(0,0,0,.45);}
+  .sb-doc-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #d3d6d9;font-size:18px;font-weight:700;}
+  .sb-doc-head button{border:0;background:transparent;font-size:20px;cursor:pointer;color:#525960;}
+  .sb-doc-body{overflow:auto;padding:12px 20px 18px;}
+  .sb-doc-section{padding:8px 0 14px;border-bottom:1px solid #d5d8dc;}
+  .sb-doc-section h3{margin:0 0 10px;font-size:14px;}
+  .sb-doc-choice{display:inline-flex;align-items:center;gap:7px;margin-right:14px;font-size:13px;}
+  .sb-doc-recipient{display:grid;grid-template-columns:90px minmax(130px,1fr) minmax(120px,1fr) 125px auto;gap:8px;align-items:center;margin:8px 0;}
+  .sb-doc-recipient input,.sb-doc-recipient select{min-width:0;height:34px;padding:6px 8px;border:1px solid #c8cdd2;border-radius:4px;background:#fff;color:#24272b;}
+  .sb-doc-add,.sb-doc-actions button{border:1px solid #b9bec4;border-radius:4px;background:#fff;color:#24272b;padding:8px 12px;font-weight:700;cursor:pointer;}
+  .sb-doc-add{padding:5px 10px;}
+  .sb-doc-actions{display:flex;justify-content:space-between;gap:8px;padding:12px 20px;border-top:1px solid #d3d6d9;}
+  .sb-doc-actions-right{display:flex;gap:8px;}
+  .sb-doc-actions .primary{border-color:#be4631;background:#be4631;color:white;}
+  .sb-doc-status{min-height:18px;margin:8px 0 0;color:#49525b;font-size:12px;}
+  @media(max-width:760px){.side-panel{width:300px}.sb-doc-recipient{grid-template-columns:1fr 1fr}.sb-doc-recipient .sb-doc-recipient-type{grid-column:1}.sb-doc-actions{flex-wrap:wrap}}
+
+  /* ===== Bottom disclaimer ===== */
+  .app-footer{
+    background:var(--footer-bg);
+    color:var(--text-faint);
+    font-size:10.5px;
+    text-align:center;
+    padding:4px;
+    flex-shrink:0;
+  }
+
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-track{background:rgba(0,0,0,0.3);}
+  ::-webkit-scrollbar-thumb{background:#5a6b80;border-radius:5px;border:1px solid rgba(255,255,255,0.08);}
+  ::-webkit-scrollbar-thumb:hover{background:#7d8f9f;}
+
+  /* ===== Command Helper modal ===== */
+  .sb-help-overlay{
+    position:fixed;inset:0;background:rgba(10,13,18,.55);
+    display:none;align-items:center;justify-content:center;z-index:50;
+  }
+  .sb-help-overlay.open{display:flex;}
+  .sb-help-modal{
+    width:560px;max-width:92vw;max-height:80vh;
+    background:var(--panel-bg);border:1px solid var(--panel-border);
+    border-radius:8px;display:flex;flex-direction:column;overflow:hidden;
+    box-shadow:0 12px 40px rgba(0,0,0,.4);
+  }
+  .sb-help-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;border-bottom:1px solid var(--panel-border);
+    color:var(--text-light);font-weight:700;font-size:14px;
+  }
+  .sb-help-head span.x{cursor:pointer;color:var(--text-dim);font-size:16px;}
+  .sb-help-head span.x:hover{color:#fff;}
+  .sb-help-body{overflow-y:auto;padding:6px 0;}
+  .sb-help-row{
+    display:flex;gap:14px;align-items:baseline;
+    padding:9px 18px;cursor:pointer;
+  }
+  .sb-help-row:hover{background:var(--navy-700);}
+  .sb-help-cmd{
+    font-family:var(--font-mono);color:var(--teal);
+    min-width:190px;flex-shrink:0;font-size:12.5px;
+  }
+  .sb-help-desc{color:var(--text-dim);font-size:12.5px;}
+  .sb-help-foot{
+    padding:10px 18px;border-top:1px solid var(--panel-border);
+    color:var(--text-faint);font-size:11px;
+  }
+  .sb-history-modal{width:600px;max-width:92vw;max-height:76vh;background:#f6f6f6;color:#24272b;border-radius:5px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.45);}
+  .sb-history-title{text-align:center;font-size:21px;padding:16px;border-bottom:1px solid #c9c9c9;}
+  .sb-history-list{overflow-y:auto;min-height:160px;max-height:52vh;}
+  .sb-history-row{display:flex;align-items:center;gap:12px;width:100%;border:0;border-bottom:1px solid #d1d1d1;background:transparent;color:#25272b;padding:12px 28px;font-family:var(--font-mono);font-size:16px;text-align:left;cursor:pointer;}
+  .sb-history-row:hover,.sb-history-row.selected{background:#e2e7eb;}
+  .sb-history-row span{font-family:var(--font-ui);}
+  .sb-history-empty{padding:28px;text-align:center;color:#6d747b;}
+  .sb-history-actions{display:flex;justify-content:center;gap:26px;padding:14px;border-top:1px solid #c9c9c9;}
+  .sb-history-actions button{min-width:190px;padding:12px;border:2px solid #252525;border-radius:4px;background:#fff;color:#252525;font-size:16px;font-weight:700;cursor:pointer;}
+  .sb-history-actions button:last-child{background:#202020;color:#fff;}
+
+  /* ===== PF Keys modal ===== */
+  #sbPfModal{
+    position:fixed;inset:0;z-index:150;
+    background:#f0f2f4;flex-direction:column;
+    font-family:var(--font-ui);color:#1d2733;
+  }
+  .pf-topbar{
+    background:#e8eaed;padding:10px 18px;
+    border-bottom:1px solid #c9cdd2;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-shrink:0;
+  }
+  .pf-topbar-title{font-size:15px;font-weight:700;color:#1d2733;}
+  .pf-close-btn{
+    background:transparent;border:0;font-size:20px;
+    cursor:pointer;color:#555;line-height:1;padding:2px 8px;border-radius:4px;
+  }
+  .pf-close-btn:hover{background:#d8dadd;}
+  .pf-body{
+    flex:1;overflow-y:auto;
+    padding:24px 28px 12px;
+    max-width:960px;width:100%;margin:0 auto;
+  }
+  .pf-body h2{margin:0 0 20px;font-size:18px;font-weight:700;}
+  .pf-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .pf-form-group{display:flex;flex-direction:column;gap:6px;}
+  .pf-form-group label{font-size:12px;font-weight:600;color:#3a3a3a;}
+  .pf-form-group input,.pf-form-group textarea{
+    border:1px solid #b8c2cd;border-radius:4px;
+    padding:9px 11px;font-size:14px;font-family:var(--font-mono);
+    background:#fff;color:#1d2733;resize:vertical;
+  }
+  .pf-form-group input:focus,.pf-form-group textarea:focus{
+    outline:none;border-color:#13a3a0;
+  }
+  .pf-cmd-group{margin-bottom:12px;}
+  .pf-cmd-group label{display:block;font-size:12px;font-weight:600;color:#3a3a3a;margin-bottom:6px;}
+  .pf-cmd-group textarea{
+    width:100%;min-height:80px;border:1px solid #b8c2cd;border-radius:4px;
+    padding:9px 11px;font-size:14px;font-family:var(--font-mono);
+    background:#fff;color:#1d2733;resize:vertical;
+  }
+  .pf-add-enter{
+    margin-top:8px;background:transparent;border:0;
+    color:#0e7490;font-size:13px;font-weight:600;cursor:pointer;padding:0;
+    text-align:left;display:inline-block;
+  }
+  .pf-add-enter:hover{text-decoration:underline;color:#085b73;}
+  .pf-actions{display:flex;justify-content:flex-end;gap:10px;margin-bottom:18px;}
+  .pf-btn-cancel{
+    padding:9px 22px;border:1px solid #9aa0aa;border-radius:4px;
+    background:#fff;color:#3a3a3a;font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .pf-btn-cancel:hover{background:#e8eaed;}
+  .pf-btn-save{
+    padding:9px 22px;border:0;border-radius:4px;
+    background:#202020;color:#fff;font-size:14px;font-weight:700;cursor:pointer;
+  }
+  .pf-btn-save:hover{background:#0d817e;}
+  #sbPfKeyGrid{
+    background:#101418;flex-shrink:0;
+    padding:10px 12px 14px;border-top:2px solid #c9cdd2;
+  }
+  .pf-row{display:flex;gap:4px;margin-bottom:4px;overflow-x:auto;}
+  .pf-key-chip{
+    min-width:68px;flex:1;padding:6px 5px 5px;border-radius:3px;
+    background:#1e2530;border:1px solid #2d3748;
+    cursor:pointer;user-select:none;display:flex;flex-direction:column;
+    transition:background .12s;
+  }
+  .pf-key-chip:hover{background:#2b3547;}
+  .pf-key-chip.pf-selected{background:#0d5f5c;border-color:#13a3a0;}
+  .pf-chip-key{font-size:10px;color:#8992a3;font-weight:600;margin-bottom:2px;}
+  .pf-chip-lbl{font-size:11px;color:#eef0f3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* ===== Sabre JR - CREATE Fare Shop mask (Ultra-compact) ===== */
+  .cmd-text-btn {
+    background: transparent;
+    border: none;
+    color: #cfd6e0;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 12px;
+    height: 36px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .cmd-text-btn:hover { color: #ffffff; }
+
+  .sb-jr-mask {
+    background: transparent;
+    color: #cfd6e0;
+    font-family: var(--font-mono);
+    padding: 0;
+    margin: 4px 0 10px;
+    line-height: 1.35;
+    font-size: 13px;
+  }
+  .jr-line {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    margin: 1px 0;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: #cfd6e0;
+  }
+  .jr-hdr  { color: #eef2f6; font-weight: 700; font-size: 13.5px; }
+  .jr-dash { color: #4a5a73; user-select: none; font-size: 12px; letter-spacing: -0.5px; }
+  .jr-col-hdr { color: #8b99ad; font-weight: 700; font-size: 12.5px; }
+
+  /* Label widths */
+  .jr-lbl-w6  { display: inline-block; width: 68px; }
+  .jr-lbl-w10 { display: inline-block; width: 116px; }
+  .jr-lbl-w4  { display: inline-block; width: 54px; }
+  .jr-lbl-w9  { display: inline-block; width: 104px; }
+
+  /* Column headers */
+  .jr-col-h-date  { display: inline-block; width: 62px; text-align: center; margin-left: 12px; }
+  .jr-col-h-time  { display: inline-block; width: 92px; text-align: center; margin-left: 6px; }
+  .jr-col-h-cxr   { display: inline-block; width: 60px; text-align: center; margin-left: 6px; }
+  .jr-col-h-cabin { display: inline-block; width: 26px; text-align: center; margin-left: 6px; }
+
+  /* Leg rows */
+  .jr-legs { display: flex; flex-direction: column; gap: 0; }
+  .jr-leg-row { display: flex; align-items: center; }
+  .jr-leg-idx  { display: inline-block; width: 18px; text-align: left; color: #cfd6e0; font-weight: 600; }
+  .jr-leg-star { display: inline-block; width: 10px; text-align: center; color: #ffffff; font-weight: bold; }
+
+  /* All inputs: exact rounded white-box style from live Sabre */
+  .jr-inp {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    height: 22px;
+    box-sizing: border-box;
+    padding: 0 3px;
+    outline: none;
+    margin: 0 3px;
+    vertical-align: middle;
+  }
+  .jr-inp:focus {
+    border-color: #0088cc;
+    box-shadow: 0 0 0 1px #0088cc;
+    background: #f0fdf4;
+  }
+
+  /* Input sizes */
+  .jr-inp-sm    { width: 26px; }
+  .jr-inp-code  { width: 44px; }
+  .jr-inp-date  { width: 62px; }
+  .jr-inp-time  { width: 92px; }
+  .jr-inp-cxr   { width: 60px; }
+  .jr-inp-psgr  { width: 54px; }
+  .jr-inp-corp  { width: 84px; }
+  .jr-inp-tprid { width: 170px; text-align: left; padding: 0 6px; }
+
+  /* Results area */
+  .jr-results-area {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #cfd6e0;
+  }
+
+  /* ===== CHD / INF DOB Prompt Modal (小孩嬰兒生日) ===== */
+  /* ===== CHD / INF DOB Prompt Modal (小孩嬰兒生日) ===== */
+  #sbChdInfModal {
+    position: fixed;
+    top: 7vh;
+    right: 1vw;
+    width: min(760px, 50vw);
+    height: 82vh;
+    min-width: min(540px, 94vw);
+    min-height: min(420px, 75vh);
+    max-width: 96vw;
+    max-height: 88vh;
+    background: #f0f3f6;
+    border: 1px solid #7ea7d8;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+    z-index: 2500;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #222;
+    border-radius: 2px;
+  }
+  .sb-dob-titlebar {
+    background: linear-gradient(to bottom, #ffffff, #d8e3ef);
+    border-bottom: 1px solid #a3bde0;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: move;
+    user-select: none;
+  }
+  .sb-dob-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #102a45;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .sb-dob-win-btns {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .sb-dob-win-btns button {
+    background: #e6edf5;
+    border: 1px solid #9cb8d9;
+    width: 20px;
+    height: 18px;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .sb-dob-win-btns button:hover {
+    background: #cce0f5;
+  }
+  .sb-dob-body {
+    padding: 8px 12px 10px;
+    font-size: 12px;
+    height: calc(100% - 26px);
+    overflow-y: auto;
+  }
+  .sb-dob-auto-lbl {
+    color: #d9230f;
+    font-weight: 700;
+    font-size: 12.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    margin-bottom: 6px;
+  }
+  .sb-dob-sec-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 3px;
+  }
+  .sb-dob-sec-title {
+    color: #d9230f;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .sb-dob-ex-btn {
+    background: #e8ecef;
+    border: 1px solid #8d9ba8;
+    border-radius: 2px;
+    padding: 1px 7px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #222;
+  }
+  .sb-dob-ex-btn:hover {
+    background: #d4dde6;
+  }
+  .sb-dob-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border: 1px solid #7ea7d8;
+    margin-bottom: 4px;
+    font-size: 11.5px;
+  }
+  .sb-dob-table th {
+    background: #bddbf7;
+    border: 1px solid #95bde6;
+    color: #0d335f;
+    font-weight: 600;
+    padding: 3px 5px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .sb-dob-table td {
+    border: 1px solid #95bde6;
+    padding: 3px 5px;
+    text-align: center;
+    color: #111;
+    background: #ffffff;
+  }
+  .sb-dob-inp-box {
+    background: #ffffff;
+    border: 1px solid #7f9db9;
+    border-radius: 1px;
+    height: 22px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 2px 4px;
+    outline: none;
+  }
+  .sb-dob-inp-box:focus {
+    border-color: #2b78d4;
+    box-shadow: 0 0 0 1px #2b78d4;
+  }
+  .sb-dob-date-wrap{position:relative;}
+  .sb-dob-hidden-date{
+    position:absolute;left:0;top:0;width:calc(100% - 23px);height:22px;
+    margin:0;padding:0;opacity:0;pointer-events:none;
+  }
+  .sb-dob-seg-col {
+    white-space: nowrap;
+    padding: 2px 6px !important;
+    text-align: left !important;
+  }
+  .sb-dob-seg-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 11px;
+  }
+  .sb-dob-seg-sub {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+  .sb-dob-seg-note {
+    color: #d9230f;
+    font-size: 11.5px;
+    font-weight: 700;
+    margin: 6px 0 8px;
+  }
+  .sb-dob-send-btn {
+    background: #e4e7ea;
+    border: 1px solid #707070;
+    border-radius: 2px;
+    padding: 3px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #111;
+  }
+  .sb-dob-send-btn:hover {
+    background: #cce0f5;
+    border-color: #2b78d4;
+  }
+
+  /* Sabre SSR Error Banner (Screenshot 3 match) */
+  .sb-ssr-error-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 14px 0 16px 20px;
+  }
+  .sb-ssr-error-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .sb-ssr-error-text {
+    color: #cfd6e0;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.55;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  /* Sabre Direct Connect Info Banner (Screenshot 1 match) */
+  .sb-dc-msg-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 10px 16px;
+  }
+  .sb-dc-msg-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .sb-dc-msg-text {
+    color: #cfd6e0;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+
+  /* Prominent Ticket Fare Row & Real-time Hide */
+  .ticket-fare-row {
+    background: #f0fdf4 !important;
+    border: 1.5px solid #86efac !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    margin: 8px 0 !important;
+    align-items: center !important;
+    box-shadow: 0 1px 4px rgba(22, 163, 74, 0.12) !important;
+  }
+  .ticket-fare-row .detail-label {
+    color: #166534 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+  }
+  .ticket-fare-row .detail-value {
+    color: #15803d !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+  }
+  .hide-fare-active .ticket-fare-row,
+  .hide-fare-on-print .ticket-fare-row {
+    display: none !important;
+  }
+  /* Print-ready e-ticket itinerary, styled to match the familiar GDS document layout. */
+  .ticket-modal-card { width:min(1040px, 100%); border-radius:4px; }
+  .ticket-modal-logo-header { border-bottom-color:#0d6f88; }
+  .ticket-modal-logo { width:92px; height:76px; }
+  .ticket-brand-name { color:#102a43; font-size:21px; }
+  .ticket-modal-title { color:#102a43; font-size:23px; padding-top:20px; }
+  .ticket-section-title, .ticket-itinerary h4 { color:#102a43; font-size:17px; margin:20px 0 8px; }
+  .ticket-passenger-table, .ticket-itinerary-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .ticket-passenger-table th, .ticket-passenger-table td, .ticket-itinerary-table th, .ticket-itinerary-table td { padding:8px; border:1px solid #aebfc4; text-align:left; vertical-align:top; }
+  .ticket-passenger-table th, .ticket-itinerary-table th { background:#b8e1e8; color:#17313a; font-weight:800; }
+  .ticket-itinerary-table td strong { display:block; color:#142c3a; }
+  .ticket-itinerary-table td small { display:block; color:#60737b; margin-top:3px; }
+  .ticket-confirmed { display:inline-block; margin-top:4px; color:#157347; font-weight:700; font-size:11px; }
+  .ticket-meta-grid { display:grid; grid-template-columns:repeat(3, 1fr); margin-top:16px; border:1px solid #aebfc4; }
+  .ticket-meta-grid > div { padding:8px; border-right:1px solid #aebfc4; }
+  .ticket-meta-grid > div:last-child { border-right:0; }
+  .ticket-meta-grid span { display:block; font-size:11px; color:#46606a; font-weight:700; }
+  .ticket-meta-grid strong { display:block; margin-top:3px; color:#172033; }
+  .ticket-fare-summary { width:min(440px,100%); margin-top:20px; border:1px solid #aebfc4; }
+  .ticket-fare-summary h4 { margin:0; padding:8px; background:#b8e1e8; color:#17313a; }
+  .ticket-fare-summary div { display:flex; justify-content:space-between; padding:8px; border-top:1px solid #d4e1e4; }
+  .hide-booking-class .ticket-booking-class { display:none; }
+
+  /* ===== Electronic ticket receipt =====
+     The receipt stays out of the GDS workspace until the user opens it. */
+  .ticket-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(9, 15, 25, .68);
+    overflow: auto;
+  }
+  .ticket-modal-backdrop.show { display: flex; }
+  .ticket-modal-card {
+    width: min(780px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    background: #fff;
+    color: #172033;
+    border-radius: 10px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, .45);
+  }
+  .ticket-modal-logo-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px;
+    border-bottom: 2px solid #c8472f;
+  }
+  .ticket-modal-logo {
+    display: block;
+    width: 74px;
+    height: 52px;
+    object-fit: contain;
+    flex: 0 0 auto;
+  }
+  .ticket-modal-brand { display: grid; gap: 3px; }
+  .ticket-brand-name { color: #c8472f; font-size: 18px; font-weight: 800; letter-spacing: .4px; }
+  .ticket-brand-sub { color: #64748b; font-size: 12px; }
+  .ticket-modal-title { margin: 0; padding: 16px 22px 8px; color: #172033; font-size: 19px; }
+  .ticket-modal-body { padding: 8px 22px 18px; }
+  .ticket-detail-row { display: flex; justify-content: space-between; gap: 18px; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+  .detail-label { color: #475569; font-weight: 700; }
+  .detail-value { color: #172033; text-align: right; }
+  .ticket-itinerary h4 { margin: 20px 0 8px; color: #172033; }
+  .ticket-itinerary-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ticket-itinerary-table th, .ticket-itinerary-table td { padding: 7px; border: 1px solid #dbe2ea; text-align: left; }
+  .ticket-itinerary-table th { background: #f1f5f9; color: #334155; }
+  .ticket-modal-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; padding: 14px 22px; border-top: 1px solid #e5e7eb; }
+  .ticket-modal-actions { display: flex; gap: 8px; }
+  .ticket-modal-footer .btn { border: 0; border-radius: 5px; padding: 9px 14px; font-weight: 700; cursor: pointer; }
+  .ticket-modal-footer .btn-primary { background: #c8472f; color: #fff; }
+  .ticket-modal-footer .btn-secondary { background: #e2e8f0; color: #172033; }
+  .hide-fare-toggle { color: #475569; font-size: 12px; }
+  @media print {
+    body > :not(#ticketModalBackdrop) { display: none !important; }
+    .ticket-modal-backdrop, .ticket-modal-backdrop.show { position: static; display: block; padding: 0; background: #fff; overflow: visible; }
+    .ticket-modal-card { width: 100%; max-height: none; overflow: visible; border-radius: 0; box-shadow: none; }
+    .ticket-modal-footer { display: none; }
+  }
+  @media (max-width: 560px) {
+    .ticket-modal-backdrop { padding: 10px; align-items: flex-start; }
+    .ticket-modal-logo-header, .ticket-modal-body, .ticket-modal-footer { padding-left: 14px; padding-right: 14px; }
+    .ticket-detail-row { display: grid; gap: 3px; }
+    .detail-value { text-align: left; }
+    .ticket-meta-grid { grid-template-columns:1fr; }
+    .ticket-meta-grid > div { border-right:0; border-bottom:1px solid #aebfc4; }
+  }
+
+</style>
+</head>
+<body class="theme-sabre-original">
+
+  <!-- OS-style title bar -->
+  <div class="os-titlebar">
+    <div class="app-icon">GDS<br>HUB</div>
+    <div class="app-title">Agency Workspace (CERT) — Sabre Training Simulator</div>
+    <div class="win-controls">
+      <span>—</span>
+      <span>▢</span>
+      <span class="close-c">✕</span>
+    </div>
+  </div>
+
+  <!-- Menu bar -->
+  <div class="menu-bar">
+    <span>File</span><span>Edit</span><span onclick="sbOpenThemeModal()" title="Switch Theme">View</span><span onclick="sbOpenThemeModal()" title="Switch Theme">🎨 Theme</span><span>Tools</span>
+    <span>Favorites</span><span>Window</span>
+    <span onclick="sbOpenCommandHelper()" title="Command Reference">Help</span>
+    <span onclick="sbOpenAboutModal()" style="font-weight: 600; color: #c8102e;" title="About Wings Fly Aviation Academy">About Us</span>
+    <span onclick="sbOpenAboutModal()" title="Helpline & Contact">Contact Us</span>
+    <span onclick="window.open('Security_Admin.html','_blank')" title="Supervisor Dashboard">Admin</span>
+    <span onclick="sabreLogout()" style="margin-left:auto;color:#ff4d4f;font-weight:700;cursor:pointer;padding:2px 10px;border-radius:4px;background:rgba(255,77,79,0.12);border:1px solid rgba(255,77,79,0.3);display:inline-flex;align-items:center;gap:4px;" title="Sign out / Switch account">&#128682; Sign out</span>
+  </div>
+
+  <!-- Sabre brand tab -->
+  <div class="brand-strip">
+    <div class="brand-tab"><span class="dot"></span> Sabre</div>
+  </div>
+
+  <!-- Lettered workspace tabs A-F -->
+  <div class="workspace-tabs">
+    <div class="ws-tab active" id="wsA" onclick="selectWs('A')"><span class="letter">A</span><span class="code">3MUL</span></div>
+    <div class="ws-tab empty" onclick="selectWs('B')"><span class="letter">B</span><span class="code"></span></div>
+    <div class="ws-tab" onclick="selectWs('C')"><span class="letter">C</span><span class="code">3MUL</span></div>
+    <div class="ws-tab empty" onclick="selectWs('D')"><span class="letter">D</span><span class="code"></span></div>
+    <div class="ws-tab empty" onclick="selectWs('E')"><span class="letter">E</span><span class="code"></span></div>
+    <div class="ws-tab empty" onclick="selectWs('F')"><span class="letter">F</span><span class="code"></span></div>
+    <div class="fkey-bar" id="fkeyBar" hidden></div>
+  </div>
+
+  <!-- Command bar -->
+  <div class="command-bar">
+    <div class="avatar-btn">👤</div>
+    <div class="cmd-input-wrap">
+      <input type="text" id="cmdInput" placeholder="TYPE COMMAND HERE" autocomplete="off">
+    </div>
+    <button class="cmd-icon-btn" title="Expand">⤢</button>
+    <button class="cmd-text-btn" type="button" onclick="sbClearTerminal()" title="Clear Terminal (Alt+Backspace)">Clear</button>
+    <button class="cmd-text-btn" type="button" onclick="if(typeof sbCloseJrMask==='function') sbCloseJrMask();">Esc</button>
+    <button class="send-btn" onclick="sendCmd()">Send</button>
+    <button class="pill-btn" id="historyBtn" title="History">↺</button>
+    <button class="pill-btn" onclick="sbOpenPfKeys()">⌨ PF Keys</button>
+    <button class="pill-btn" onclick="sbOpenCommandHelper()">🪄 Command Helper</button>
+  </div>
+
+  <!-- PF Keys modal -->
+  <div id="sbPfModal" style="display:none;">
+    <div class="pf-topbar">
+      <span class="pf-topbar-title">⌨ Edit PF Keys</span>
+      <button class="pf-close-btn" onclick="sbClosePfKeys()" title="Close">✕</button>
+    </div>
+    <div class="pf-body">
+      <h2>Edit PF Keys</h2>
+      <div class="pf-form-grid">
+        <div class="pf-form-group">
+          <label>PF Key label</label>
+          <input id="sbPfLabel" type="text" placeholder="e.g. Contact">
+        </div>
+        <div class="pf-form-group">
+          <label>Description</label>
+          <input id="sbPfDesc" type="text" placeholder="Describe what command does">
+        </div>
+      </div>
+      <div class="pf-cmd-group">
+        <label>Command</label>
+        <textarea id="sbPfCmd" rows="4" placeholder="Type Sabre command(s). Use *Enter to chain multiple commands."></textarea>
+        <button class="pf-add-enter" type="button" onclick="sbPfAddEnter()">Add ^Enter</button>
+      </div>
+      <div class="pf-actions">
+        <button class="pf-btn-cancel" onclick="sbClosePfKeys()">Cancel</button>
+        <button class="pf-btn-save" id="sbPfSaveBtn" onclick="sbPfSaveKey()">Save</button>
+      </div>
+    </div>
+    <div id="sbPfKeyGrid"></div>
+  </div>
+
+  <!-- Main split: terminal + side panel -->
+  <div class="main-split">
+    <div class="term-area" id="termArea"><span class="ph">— কমান্ড টাইপ করে Send চাপুন —</span></div>
+
+    <div class="side-panel" id="sidePanel">
+      <div class="panel-status">
+        <div class="pnr-line" id="panelPnrLine">3MUL.3MUL</div>
+        <div class="no-msg" id="panelMsg">NO MESSAGE</div>
+      </div>
+      <div class="panel-menu">
+        <div class="panel-menu-item active" data-panel-view="summary" onclick="sbShowPanelView('summary')"><span class="ic">📊</span> Trip Summary</div>
+        <div class="panel-menu-item" data-panel-view="profiles" onclick="sbShowPanelView('profiles')"><span class="ic">📌</span> Profiles</div>
+        <div class="panel-menu-item" data-panel-view="workflows" onclick="sbShowPanelView('workflows')"><span class="ic">▶</span> Workflows</div>
+        <div class="panel-menu-item" data-panel-view="applications" onclick="sbShowPanelView('applications')"><span class="ic">▦</span> Applications</div>
+      </div>
+      <div class="panel-view-content" id="panelViewContent"></div>
+      <div class="panel-footer">
+        <div class="panel-menu-item"><span class="ic">🪪</span> Agency Admin</div>
+        <div class="panel-menu-item" onclick="sbOpenThemeModal()"><span class="ic">⚙</span> Settings</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-footer" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+    <span>স্বাধীন এডুকেশনাল ট্রেনিং টুল — Sabre Corporation-এর সাথে কোনো অ্যাফিলিয়েশন নেই। কোনো লাইভ GDS-এর সাথে কানেক্টেড না। · Wings Fly Aviation Academy</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button type="button" id="sbCheckUpdateBtn" onclick="sbCheckForUpdates()" style="background:rgba(0,130,138,0.15);border:1px solid #00828a;color:#00d4aa;border-radius:4px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">&#x1F504; Check for updates</button>
+      <button type="button" onclick="sabreLogout()" style="background:rgba(255,77,79,0.15);border:1px solid #ff4d4f;color:#ff6b6b;border-radius:4px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">&#128682; Sign out</button>
+    </div>
+  </div>
+
+  <!-- Child & Infant DOB prompt modal (小孩嬰兒生日) -->
+  <div id="sbChdInfModal" style="display:none;">
+    <div class="sb-dob-titlebar">
+      <div class="sb-dob-title">
+        <span style="font-size:12px;">📄</span> 小孩嬰兒生日
+      </div>
+      <div class="sb-dob-win-btns">
+        <button type="button" onclick="sbToggleMinChdInfPrompt()" title="Minimize">-</button>
+        <button type="button" onclick="sbCloseChdInfPrompt()" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="sb-dob-body">
+      <div>
+        <label class="sb-dob-auto-lbl">
+          <input type="checkbox" id="sbDobAutoPromptChk" checked onchange="sbToggleAutoPromptDob(this.checked)">
+          Enable auto prompt for CHD/INF DOB
+        </label>
+      </div>
+
+      <!-- Child section -->
+      <div id="sbDobChildSection" style="display:none;">
+        <div class="sb-dob-sec-head">
+          <span class="sb-dob-sec-title">Please input correct format for Child.</span>
+          <button type="button" class="sb-dob-ex-btn" onclick="sbFillDobExample('CHD')">Example</button>
+        </div>
+        <table class="sb-dob-table">
+          <thead>
+            <tr>
+              <th style="width:28px;"><input type="checkbox" checked disabled></th>
+              <th style="width:75px;">Pax Name</th>
+              <th style="width:65px;">Pax Type</th>
+              <th>DOB(ddMMMyy)</th>
+            </tr>
+          </thead>
+          <tbody id="sbDobChildTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Infant section -->
+      <div id="sbDobInfantSection" style="display:none;">
+        <div class="sb-dob-sec-head">
+          <span class="sb-dob-sec-title">Please input : 3INFT</span>
+          <button type="button" class="sb-dob-ex-btn" onclick="sbFillDobExample('INF')">Example</button>
+        </div>
+        <table class="sb-dob-table">
+          <thead>
+            <tr>
+              <th style="width:28px;"><input type="checkbox" checked disabled></th>
+              <th style="width:175px;">Pax Name : Surname/GivenNameTitle</th>
+              <th style="width:65px;">Pax Type</th>
+              <th style="width:75px;">Pax Name/Select</th>
+              <th style="width:145px;">DOB(ddMMMyy)</th>
+              <th style="width:90px;">Seg NO</th>
+            </tr>
+          </thead>
+          <tbody id="sbDobInfantTbody"></tbody>
+        </table>
+      </div>
+
+      <div class="sb-dob-seg-note">If new seg(s) added , please select segment(s)</div>
+      <button type="button" class="sb-dob-send-btn" onclick="sbSendChdInfDob()">Send</button>
+    </div>
+  </div>
+
+  <!-- Command history modal -->
+  <div class="sb-help-overlay" id="sbHistoryModal" onclick="if(event.target===this) sbCloseHistory()">
+    <div class="sb-history-modal">
+      <div class="sb-history-title">History</div>
+      <div class="sb-history-list" id="sbHistoryList"></div>
+      <div class="sb-history-actions">
+        <button type="button" onclick="sbUseHistory(true)">Send</button>
+        <button type="button" onclick="sbUseHistory(false)">Modify</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Helper modal -->
+  <div class="sb-help-overlay" id="sbHelpModal" onclick="if(event.target===this) sbCloseCommandHelper()">
+    <div class="sb-help-modal">
+      <div class="sb-help-head">
+        <span>🪄 Command Helper — Phase 1 (Issue পর্যন্ত)</span>
+        <span class="x" onclick="sbCloseCommandHelper()">✕</span>
+      </div>
+      <div class="sb-help-body" id="sbHelpList"></div>
+      <div class="sb-help-foot">যেকোনো লাইনে ক্লিক করলে সেটা কমান্ড ইনপুটে বসে যাবে</div>
+    </div>
+  </div>
+
+  <!-- About Us modal -->
+  <div class="sb-help-overlay" id="sbAboutModal" onclick="if(event.target===this) sbCloseAboutModal()">
+    <div class="sb-help-modal" style="width: 500px;">
+      <div class="sb-help-head" style="background: linear-gradient(135deg, #180306, #3e0b12); border-bottom: 2px solid #c8102e;">
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span style="color:#ff3355; font-size:18px;">✈</span>
+          <span>About Us — Sabre Training Simulator</span>
+        </span>
+        <span class="x" onclick="sbCloseAboutModal()">✕</span>
+      </div>
+      <div class="sb-help-body" style="padding: 24px 26px; color: var(--text-light); line-height: 1.6;">
+        <div style="font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">Wings Fly Aviation Academy</div>
+        <div style="font-size: 13px; color: #ffccd3; margin-bottom: 18px;">Sabre GDS Training Simulator (Agency Workspace CERT)</div>
+        
+        <div style="background: rgba(200, 16, 46, 0.12); border: 1px solid rgba(200, 16, 46, 0.35); border-radius: 10px; padding: 16px 18px; margin-bottom: 18px;">
+          <div style="font-size: 13.5px; color: #ffffff; margin-bottom: 6px;">📞 <strong>হেল্পলাইন ও কন্টাক্ট সাপোর্ট:</strong></div>
+          <div style="font-size: 19px; font-weight: 800; color: #ff4763; letter-spacing: 0.5px;">
+            01757208244 <span style="font-size: 15px; font-weight: 700; color: #ffffff;">(Shakib)</span>
+          </div>
+          <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 6px;">ট্রেনিং অ্যাকাউন্ট অ্যাক্টিভেশন, ডিভাইস অনুমোদন ও কারিগরি সহায়তার জন্য সরাসরি যোগাযোগ করুন।</div>
+        </div>
+
+        <div style="font-size: 12px; color: var(--text-dim); line-height: 1.55;">
+          এটি একটি স্বাধীন এডুকেশনাল সিমুলেটর। বাস্তব Sabre Red 360-এর এনকোড/ডিকোড, এভেইলিবিলিটি, সেগমেন্ট বুকিং, PNR ক্রিয়েশন ও টিকেটিং প্রশিক্ষণের জন্য প্রস্তুতকৃত।
+        </div>
+      </div>
+      <div class="sb-help-foot" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px;">
+        <span style="color: var(--text-dim); font-size: 12px;">Instructor & Developer: <strong style="color: #ffffff;">Shakib</strong></span>
+        <button type="button" onclick="sbCloseAboutModal()" style="padding: 6px 18px; border: 0; border-radius: 5px; background: linear-gradient(180deg, #d81635 0%, #b80f27 100%); color: #fff; font-weight: 700; cursor: pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script src="js/sb-airports.js"></script>
+<script src="js/sb-availability.js"></script>
+<script src="js/sb-pnr.js"></script>
+<script src="js/sb-commands.js"></script>
+<script src="js/sb-dob-prompt.js"></script>
+<script src="js/ticket-modal.js"></script>
+<script src="js/sb-app.js"></script>
+<script src="js/sb-pfkeys.js"></script>
+<script src="js/sb-fareshop.js"></script>
+<script src="js/demo-override.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof sbCheckUrlHash === 'function') sbCheckUrlHash();
+  });
+</script>
+
+
+
+<!-- Ticket Modal -->
+<div class="ticket-modal-backdrop" id="ticketModalBackdrop" onclick="if(event.target===this) closeTicketModal()">
+  <div class="ticket-modal-card" id="ticketModalCard">
+    <!-- Sabre-branded itinerary header -->
+    <div class="ticket-modal-logo-header">
+      <img src="images/gds-training-hub-logo.jpg" alt="Sabre Training Simulator logo" class="ticket-modal-logo" onerror="this.src='images/logo.png'">
+      <div class="ticket-modal-brand">
+        <span class="ticket-brand-name">SABRE TRAINING SIMULATOR</span>
+        <span class="ticket-brand-sub">Wings Fly Aviation Academy &bull; Electronic Ticket</span>
+      </div>
+    </div>
+    <h3 class="ticket-modal-title" id="tktModalTitle">Electronic Ticket</h3>
+    <div class="ticket-modal-body">
+      <h4 class="ticket-section-title">Passenger Information</h4>
+      <div id="tktModalPassengers"></div>
+      <div class="ticket-meta-grid">
+        <div><span>Airline PNR</span><strong id="tktModalAirlinePNR">—</strong></div>
+        <div><span>Sabre PNR</span><strong id="tktModalPNR">—</strong></div>
+        <div><span>Date of Issue</span><strong id="tktModalIssueDate">—</strong></div>
+      </div>
+      <section class="ticket-itinerary" aria-label="Flight itinerary">
+        <h4>Itinerary Information</h4>
+        <div id="tktModalItinerary"></div>
+      </section>
+      <div class="ticket-fare-summary ticket-fare-row">
+        <h4>Fare Data</h4>
+        <div><span>Fare basis</span><strong id="tktModalFareBasis">—</strong></div>
+        <div><span>Base fare</span><strong id="tktModalBaseFare">—</strong></div>
+        <div><span>Total fare</span><strong id="tktModalFare">—</strong></div>
+      </div>
+      <div class="ticket-detail-row" style="display:none"><span id="tktModalPax"></span><span id="tktModalNumber"></span><span id="tktModalFlight"></span><span id="tktModalDate"></span><span id="tktModalDest"></span><span id="tktModalRoute"></span><span id="tktModalFOP"></span><span id="tktModalStatus"></span></div>
+      <div class="ticket-detail-row" id="tktModalOrigRow" style="display:none">
+        <span class="detail-label">Original Ticket:</span><span class="detail-value" id="tktModalOrig"></span>
+      </div>
+      <div class="ticket-detail-row" id="tktModalAirlinePNRRow" style="display:none"></div>
+      <div class="ticket-detail-row" id="tktModalPNRRow" style="display:none"></div>
+    </div>
+    <div class="ticket-modal-footer">
+      <div class="ticket-modal-actions">
+        <button type="button" class="btn btn-primary" onclick="printTicketReceipt()">&#128438; Print Ticket Receipt</button>
+        <button type="button" class="btn btn-secondary" onclick="saveTicketReceiptPdf()">&#128190; Save as PDF</button>
+        <button type="button" class="btn btn-secondary" onclick="sbOpenDocumentsModal()">Email Document</button>
+        <button type="button" class="btn btn-secondary" onclick="closeTicketModal()">Close</button>
+      </div>
+      <label class="hide-fare-toggle">
+        <input type="checkbox" id="hideFareCheckbox">
+        <span>Hide fare details in print</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="sb-help-overlay" id="sbDocumentsModal" onclick="if(event.target===this) sbCloseDocumentsModal()">
+  <section class="sb-doc-dialog" role="dialog" aria-modal="true" aria-labelledby="sbDocumentsTitle">
+    <header class="sb-doc-head"><span id="sbDocumentsTitle">Documents and Messaging</span><button type="button" aria-label="Close" onclick="sbCloseDocumentsModal()">×</button></header>
+    <div class="sb-doc-body">
+      <section class="sb-doc-section">
+        <h3>Document type</h3>
+        <label class="sb-doc-choice"><input type="radio" name="sbDocumentType" value="itinerary" checked> Itinerary</label>
+        <label class="sb-doc-choice"><input type="radio" name="sbDocumentType" value="eticket"> eTicket</label>
+        <label class="sb-doc-choice"><input type="radio" name="sbDocumentType" value="embedded"> Embedded eTicket</label>
+        <label class="sb-doc-choice"><input type="radio" name="sbDocumentType" value="invoice"> eInvoice</label>
+      </section>
+      <section class="sb-doc-section">
+        <h3>Document options</h3>
+        <label class="sb-doc-choice"><input type="checkbox" id="sbDocHideClass"> Hide booking class</label>
+      </section>
+      <section class="sb-doc-section">
+        <h3>Sender information</h3>
+        <label class="sb-doc-choice"><input type="checkbox" id="sbDocIncludeSender"> Include sender information</label>
+      </section>
+      <section class="sb-doc-section">
+        <h3>Recipients</h3>
+        <div id="sbDocRecipientList">
+          <div class="sb-doc-recipient">
+            <select class="sb-doc-recipient-type" aria-label="Recipient type"><option>To</option><option>CC</option><option>BCC</option></select>
+            <input type="email" class="sb-doc-email" placeholder="Email address" aria-label="Email address">
+            <input type="text" class="sb-doc-note" placeholder="Free text" aria-label="Free text">
+            <select class="sb-doc-language" aria-label="Language"><option>English</option><option>বাংলা</option></select>
+            <button class="sb-doc-add" type="button" onclick="sbAddDocumentRecipient()" aria-label="Add recipient">+</button>
+          </div>
+        </div>
+      </section>
+      <p class="sb-doc-status" id="sbDocStatus" role="status"></p>
+    </div>
+    <footer class="sb-doc-actions">
+      <button type="button" onclick="sbSaveDocumentSelectionsAndEnd()">Save Selections &amp; ER</button>
+      <div class="sb-doc-actions-right">
+        <button type="button" onclick="sbCloseDocumentsModal()">Cancel</button>
+        <button type="button" onclick="sbPreviewDocument()">Preview</button>
+        <button type="button" class="primary" onclick="sbEmailDocument()">Send Email</button>
+      </div>
+    </footer>
+  </section>
+</div>
+
+
+<!-- Sabre Workspace Theme Switcher Modal -->
+<div class="sb-help-overlay" id="sbThemeModal" onclick="if(event.target===this) sbCloseThemeModal()">
+  <div class="sb-help-modal" style="width: 500px; max-width: 95vw;">
+    <div class="sb-help-head">
+      <span>🎨 Sabre Workspace Themes</span>
+      <span class="x" onclick="sbCloseThemeModal()">✕</span>
+    </div>
+    <div class="sb-help-body" style="padding: 18px 22px;">
+      <p style="margin: 0 0 14px; font-size: 13px; color: var(--text-dim); line-height: 1.5;">
+        আপনার কাজের জন্য পছন্দের থিমটি নির্বাচন করুন। এটি স্বয়ংক্রিয়ভাবে সংরক্ষিত থাকবে:
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--row-border); border-radius: 6px; cursor: pointer;">
+          <input type="radio" name="sb_theme_choice" value="theme-sabre-original" onchange="sbSetTheme(this.value)" style="margin-top: 3px;">
+          <div>
+            <strong style="color: #fff; font-size: 13.5px; display: block;">Sabre Original Slate (অরিজিনাল Sabre - ডিফল্ট)</strong>
+            <small style="color: #9ab0c4; display: block; margin-top: 3px;">বাস্তব Sabre Red 360-এর অল্টারনেটিং স্লেট-ব্লু (#242d34 ও #384653) রো, ডার্ক চারকোল কমান্ড বার এবং লাইট গ্রে ট্যাব স্ট্রিপ।</small>
+          </div>
+        </label>
+        <label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--row-border); border-radius: 6px; cursor: pointer;">
+          <input type="radio" name="sb_theme_choice" value="theme-sabre-dark" onchange="sbSetTheme(this.value)" style="margin-top: 3px;">
+          <div>
+            <strong style="color: #fff; font-size: 13.5px; display: block;">Sabre Dark Navy</strong>
+            <small style="color: #8992a3; display: block; margin-top: 3px;">গাঢ় নেভি ব্লু ডার্ক থিম।</small>
+          </div>
+        </label>
+        <label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--row-border); border-radius: 6px; cursor: pointer;">
+          <input type="radio" name="sb_theme_choice" value="theme-sabre-light" onchange="sbSetTheme(this.value)" style="margin-top: 3px;">
+          <div>
+            <strong style="color: #fff; font-size: 13.5px; display: block;">Sabre Classic Light</strong>
+            <small style="color: #8992a3; display: block; margin-top: 3px;">হাই-কনট্রাস্ট লাইট মোড ইন্টারফেস।</small>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="sb-help-foot" style="display: flex; justify-content: flex-end; padding: 12px 20px;">
+      <button type="button" onclick="sbCloseThemeModal()" style="padding: 7px 22px; border: 0; border-radius: 4px; background: var(--teal); color: #fff; font-weight: 700; cursor: pointer;">Apply & Close</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function sbInitTheme() {
+    const saved = localStorage.getItem('sabre_theme') || 'theme-sabre-original';
+    document.body.classList.remove('theme-sabre-original', 'theme-sabre-dark', 'theme-sabre-light');
+    document.body.classList.add(saved);
+  }
+  function sbOpenThemeModal() {
+    const current = localStorage.getItem('sabre_theme') || 'theme-sabre-original';
+    document.querySelectorAll('input[name="sb_theme_choice"]').forEach(r => {
+      r.checked = (r.value === current);
+    });
+    const m = document.getElementById('sbThemeModal');
+    if (m) m.classList.add('open');
+  }
+  function sbCloseThemeModal() {
+    const m = document.getElementById('sbThemeModal');
+    if (m) m.classList.remove('open');
+  }
+  function sbSetTheme(name) {
+    document.body.classList.remove('theme-sabre-original', 'theme-sabre-dark', 'theme-sabre-light');
+    document.body.classList.add(name);
+    localStorage.setItem('sabre_theme', name);
+  }
+  sbInitTheme();
+</script>
+
+
+<!-- ══ In-App Update Progress Modal ══ -->
+<style>
+#sbUpdateModal {
+  position:fixed;inset:0;z-index:999999;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(10,18,30,0.88);backdrop-filter:blur(6px);
+}
+#sbUpdateModal[hidden]{display:none!important;}
+.sb-update-card {
+  width:min(400px,92vw);
+  padding:30px 28px 26px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#1c2a3a,#0e1520);
+  border:1px solid rgba(0,130,138,0.5);
+  box-shadow:0 24px 60px rgba(0,0,0,0.7);
+  color:#eef0f3;
+  text-align:center;
+  display:grid;
+  gap:14px;
+}
+.sb-update-icon{font-size:40px;line-height:1;}
+.sb-update-title{font-size:19px;font-weight:700;margin:0;}
+.sb-update-sub{font-size:13px;color:#8b96a5;margin:0;}
+.sb-update-bar-wrap{background:rgba(255,255,255,0.1);border-radius:99px;height:9px;overflow:hidden;}
+.sb-update-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#00828a,#00d4aa);
+  border-radius:99px;
+  transition:width 0.3s ease;
+}
+.sb-update-pct{font-size:13px;color:#00d4aa;font-weight:600;}
+.sb-update-speed{font-size:12px;color:#5a7080;}
+.sb-update-btn{
+  padding:11px 22px;border-radius:8px;border:none;
+  background:linear-gradient(90deg,#00828a,#006c73);
+  color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+  transition:opacity 0.15s;
+}
+.sb-update-btn:hover{opacity:0.85;}
+.sb-update-btn.secondary{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.15);
+  font-weight:500;font-size:13px;
+}
+</style>
+
+<div id="sbUpdateModal" hidden role="dialog" aria-modal="true">
+  <div class="sb-update-card">
+    <div class="sb-update-icon" id="sbUpdateIcon">&#x1F504;</div>
+    <p class="sb-update-title" id="sbUpdateTitle">Checking for updates&#x2026;</p>
+    <p class="sb-update-sub"   id="sbUpdateSub">Please wait.</p>
+    <div class="sb-update-bar-wrap" id="sbUpdateBarWrap" hidden>
+      <div class="sb-update-bar" id="sbUpdateBar"></div>
+    </div>
+    <div class="sb-update-pct"   id="sbUpdatePct"   hidden></div>
+    <div class="sb-update-speed" id="sbUpdateSpeed" hidden></div>
+    <button class="sb-update-btn"           id="sbUpdateAction" hidden onclick="sbUpdateAction()"></button>
+    <button class="sb-update-btn secondary" id="sbUpdateClose"  onclick="document.getElementById('sbUpdateModal').hidden=true">Close</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var _unsubs = [];
+
+  function fmtBytes(b) {
+    if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    return Math.round(b / 1024) + ' KB';
+  }
+
+  function setState(icon, title, sub, showBar, pct, speed, actionLabel, showClose) {
+    document.getElementById('sbUpdateIcon').textContent  = icon;
+    document.getElementById('sbUpdateTitle').textContent = title;
+    document.getElementById('sbUpdateSub').textContent   = sub;
+    var barWrap = document.getElementById('sbUpdateBarWrap');
+    var pctEl   = document.getElementById('sbUpdatePct');
+    var spdEl   = document.getElementById('sbUpdateSpeed');
+    var actBtn  = document.getElementById('sbUpdateAction');
+    var clsBtn  = document.getElementById('sbUpdateClose');
+    barWrap.hidden = !showBar;
+    pctEl.hidden   = !showBar;
+    spdEl.hidden   = !showBar;
+    if (showBar) {
+      document.getElementById('sbUpdateBar').style.width = (pct || 0) + '%';
+      pctEl.textContent = (pct || 0) + '% downloaded';
+      spdEl.textContent = speed ? fmtBytes(speed) + '/s' : '';
+    }
+    if (actionLabel) { actBtn.textContent = actionLabel; actBtn.hidden = false; }
+    else { actBtn.hidden = true; }
+    clsBtn.hidden = !showClose;
+  }
+
+  window.sbCheckForUpdates = function () {
+    if (window.sabreUpdater && window.sabreUpdater.platform === "darwin") {
+      window.sabreUpdater.checkForUpdates();
+      return;
+    }
+    if (!window.sabreUpdater) {
+      window.open('https://github.com/shakibapon1234-maker/Sabre-Releases/releases/latest', '_blank');
+      return;
+    }
+    _unsubs.forEach(function (fn) { try { fn(); } catch (_) {} });
+    _unsubs = [];
+
+    var modal = document.getElementById('sbUpdateModal');
+    modal.hidden = false;
+    setState('\uD83D\uDD04', 'Checking for updates\u2026', 'Please wait.', false, 0, 0, null, false);
+
+    _unsubs.push(
+      window.sabreUpdater.on('updater:checking', function () {
+        setState('\uD83D\uDD04', 'Checking for updates\u2026', 'Connecting to update server.', false, 0, 0, null, false);
+      }),
+      window.sabreUpdater.on('updater:not-available', function (data) {
+        setState('\u2705', 'You are up to date!', 'v' + ((data && data.version) || '') + ' is the latest.', false, 0, 0, null, true);
+      }),
+      window.sabreUpdater.on('updater:available', function (data) {
+        setState('\u2B07\uFE0F', 'Update available!', 'Downloading v' + ((data && data.version) || '') + '\u2026', true, 0, 0, null, false);
+      }),
+      window.sabreUpdater.on('updater:progress', function (data) {
+        if (!data) return;
+        setState('\u2B07\uFE0F', 'Downloading update\u2026', 'Do not close the app.', true, data.percent, data.bytesPerSecond, null, false);
+      }),
+      window.sabreUpdater.on('updater:downloaded', function (data) {
+        setState('\uD83C\uDF89', 'Ready to install!', 'v' + ((data && data.version) || '') + ' downloaded.', false, 100, 0, '\u26A1 Restart & Install Now', true);
+      }),
+      window.sabreUpdater.on('updater:error', function (data) {
+        setState('\u274C', 'Update failed', (data && data.message) || 'Check your internet connection.', false, 0, 0, null, true);
+      })
+    );
+
+    window.sabreUpdater.checkForUpdates().then(function (result) {
+      if (result && result.devMode) {
+        setState('\u2139\uFE0F', 'Running from project source', 'This copy does not use the EXE auto-updater. Your project files are already running.', false, 0, 0, null, true);
+      } else if (result && result.error) {
+        setState('\u274C', 'Update check failed', result.error, false, 0, 0, null, true);
+      }
+    }).catch(function () {
+      setState('\u274C', 'Update check failed', 'Could not contact the update service. Check your internet connection and try again.', false, 0, 0, null, true);
+    });
+  };
+
+  window.sbUpdateAction = function () {
+    if (window.sabreUpdater) window.sabreUpdater.quitAndInstall();
+  };
+
+  // Background check: update the footer button if update is available/downloaded
+  if (window.sabreUpdater) {
+    window.sabreUpdater.on('updater:available', function () {
+      var btn = document.getElementById('sbCheckUpdateBtn');
+      if (btn) {
+        btn.textContent = '\u2B07 Update available';
+        btn.style.color = '#00d4aa';
+        btn.style.borderColor = '#00d4aa';
+      }
+    });
+    window.sabreUpdater.on('updater:downloaded', function () {
+      var btn = document.getElementById('sbCheckUpdateBtn');
+      if (btn) {
+        btn.textContent = '\uD83C\uDF89 Restart to install';
+        btn.style.color = '#ffba00';
+        btn.style.borderColor = '#ffba00';
+        btn.onclick = function () { if (window.sabreUpdater) window.sabreUpdater.quitAndInstall(); };
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
+
+

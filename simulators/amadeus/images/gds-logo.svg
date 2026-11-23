@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#0d2347"/>
+      <stop offset="100%" stop-color="#060e1f"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="goldGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="none" stroke="#c8a84b" stroke-width="3"/>
+  <circle cx="100" cy="100" r="95" fill="url(#bgGrad)"/>
+  <circle cx="100" cy="85" r="55" fill="none" stroke="#00d4e8" stroke-width="1.2" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="100" cy="85" r="38" fill="none" stroke="#00d4e8" stroke-width="1" opacity="0.55" filter="url(#glow)"/>
+  <circle cx="100" cy="85" r="20" fill="none" stroke="#00d4e8" stroke-width="0.8" opacity="0.4"/>
+  <line x1="100" y1="28" x2="100" y2="40" stroke="#00d4e8" stroke-width="1.5" opacity="0.8" filter="url(#glow)"/>
+  <line x1="100" y1="130" x2="100" y2="142" stroke="#00d4e8" stroke-width="1.5" opacity="0.8" filter="url(#glow)"/>
+  <line x1="40" y1="85" x2="52" y2="85" stroke="#00d4e8" stroke-width="1.5" opacity="0.8" filter="url(#glow)"/>
+  <line x1="148" y1="85" x2="160" y2="85" stroke="#00d4e8" stroke-width="1.5" opacity="0.8" filter="url(#glow)"/>
+  <circle cx="148" cy="85" r="3" fill="#00d4e8" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="52" cy="85" r="3" fill="#00d4e8" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="100" cy="30" r="3" fill="#00d4e8" opacity="0.9" filter="url(#glow)"/>
+  <g transform="translate(100,80) rotate(-40)" filter="url(#goldGlow)">
+    <ellipse cx="0" cy="0" rx="26" ry="6.5" fill="#c8a84b"/>
+    <ellipse cx="26" cy="0" rx="7" ry="4.5" fill="#d4af37"/>
+    <polygon points="-26,0 -19,-5 -19,5" fill="#b8963e"/>
+    <polygon points="-4,-6 14,-6 6,12 -8,12" fill="#d4af37"/>
+    <polygon points="-4,6 14,6 6,-12 -8,-12" fill="#d4af37"/>
+    <polygon points="-19,-5 -11,-5 -13,0 -19,0" fill="#c8a84b"/>
+    <polygon points="-19,5 -11,5 -13,0 -19,0" fill="#c8a84b"/>
+    <line x1="-30" y1="3" x2="-46" y2="7" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+    <line x1="-30" y1="0" x2="-50" y2="0" stroke="#d4af37" stroke-width="2.5" opacity="0.5"/>
+    <line x1="-30" y1="-3" x2="-46" y2="-7" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+  </g>
+  <text x="100" y="140" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="22" font-weight="900" fill="#c8a84b" filter="url(#goldGlow)" letter-spacing="1">GDS</text>
+  <path id="bottomArc" d="M 20,145 A 80,80 0 0,0 180,145" fill="none"/>
+  <text font-family="Arial, sans-serif" font-size="12.5" font-weight="700" fill="#c8a84b" letter-spacing="3.5">
+    <textPath href="#bottomArc" startOffset="13%">TRAINING HUB</textPath>
+  </text>
+</svg>
