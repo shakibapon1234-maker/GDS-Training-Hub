@@ -5679,11 +5679,6 @@ function runCommand(raw, paneId){
     return;
   }
   if(/^SS/i.test(clean)) return handleSS(upper);
-  // Auto-correct common typo: NMI or NMl (letter I or l instead of number 1)
-  if(/^NM[Il]/i.test(upper)){
-    upper = upper.replace(/^NM[Il]/i, 'NM1');
-    cmd = cmd.replace(/^NM[Il]/i, 'NM1');
-  }
   if(/^NM\d+/i.test(upper)) return handleNM(upper);
   if(/^AP\s/i.test(upper)) return handleAP(cmd);
   if(/^TK\s*(TL|OK)/i.test(upper)) return handleTK(upper);

@@ -395,7 +395,7 @@
                 <label class="flex items-start gap-2.5 cursor-pointer text-slate-300 p-2.5 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 transition select-none">
                     <input type="checkbox" id="termsCheck1" onchange="window.updateGateUnlockState()" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0">
                     <span class="text-[11px] leading-relaxed">
-                        আমি স্বীকার করছি এটি <strong>১-বার ব্যবহারযোগ্য ফ্রি ট্রায়াল</strong> (ফ্লাইট সার্চ, সিট হোল্ড, PNR ক্রিয়েশন ও টিকিট ইস্যু পর্যন্ত)।
+                        আমি স্বীকার করছি এটি <strong>১-বার ব্যবহারযোগ্য ফ্রি ট্রায়াল</strong> (সর্বোচ্চ ১ ঘণ্টার সেশন বা ১টি টিকিট ইস্যু পর্যন্ত)।
                     </span>
                 </label>
                 <label class="flex items-start gap-2.5 cursor-pointer text-slate-300 p-2.5 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 transition select-none">
@@ -504,6 +504,61 @@
                 >
                     টার্মিনাল দেখুন
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 1-Hour Trial Time Expired Modal -->
+    <!-- ========================================== -->
+    <div id="gdsTimeExpiredModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 hidden">
+        <div class="bg-gradient-to-b from-slate-900 via-[#0a1222] to-[#050a14] border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative space-y-4 animate-scaleUp">
+            <button
+                type="button"
+                onclick="window.closeTimeExpiredModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 text-lg"
+                title="বন্ধ করুন"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl flex-shrink-0 shadow-lg">
+                    <i class="fa-solid fa-hourglass-end"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg sm:text-xl font-black text-white">⏳ ফ্রি ট্রায়ালের ১ ঘণ্টা সময় সমাপ্ত!</h3>
+                    <p class="text-xs text-amber-400 font-bold">আপনার ১-বার ফ্রি ট্রায়াল সেশন শেষ হয়েছে</p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-black/70 border border-slate-800 space-y-2 text-xs text-slate-300 leading-relaxed">
+                <p>
+                    আপনি আমাদের লাইভ GDS ক্রিপ্টিক টার্মিনালে সফলভাবে ফ্রি প্র্যাকটিস করেছেন। ফ্রি ট্রায়াল সেশনটি সর্বোচ্চ <strong>১ ঘণ্টার জন্য</strong> উন্মুক্ত ছিল।
+                </p>
+                <p class="text-amber-300 font-medium">
+                    আজীবন যেকোনো সময় আনলিমিটেড PNR, ফেয়ার ক্যালকুলেশন, ব্যাগেজ রুলস, রি-ইস্যু, রিফান্ড ও লাইভ টিকেট প্রিন্টিং প্র্যাকটিস করতে আমাদের ফুল ৩টি বান্ডেল সফটওয়্যার নিন।
+                </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/5 border border-amber-500/30 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-bold">৩টি কমপ্লিট বান্ডেল (Amadeus, Galileo, Sabre):</span>
+                    <span class="text-sm font-black text-amber-400">৳ ৫,০০০</span>
+                </div>
+                <div class="text-[11px] text-slate-400">Windows PC + Android Phone দুটি ডিভাইসেই আজীবন মেয়াদ। কোনো মাসিক ফি নেই।</div>
+            </div>
+
+            <div class="pt-2 flex flex-col sm:flex-row gap-2">
+                <a
+                    href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A7%A7%20%E0%A6%98%E0%A6%A3%E0%A7%8D%E0%A6%9F%E0%A6%BE%E0%A6%B0%20%E0%A6%A1%E0%A7%87%E0%A6%AE%E0%A7%8B%20%E0%A6%9F%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%9F%20%E0%A6%B6%E0%A7%87%E0%A6%B7%20%E0%A6%95%E0%A6%B0%E0%A7%87%E0%A6%9B%E0%A6%BF%E0%A7%88%20%E0%A7%A9%E0%A6%9F%E0%A6%BF%20%E0%A6%95%E0%A6%AE%E0%A6%AA%E0%A7%8D%E0%A6%B2%E0%A6%BF%E0%A6%9F%20%E0%A6%AC%E0%A6%BE%E0%A6%A8%E0%A7%8D%E0%A6%A1%E0%A7%87%E0%A6%B2%20(%E0%A7%A7%E0%A7%A6%E0%A7%A6%25%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B2%E0%A6%BE%E0%A6%87%E0%A6%AB%E0%A6%9F%E0%A6%BE%E0%A6%87%E0%A6%AE)%20%E0%A7%AB%2C%E0%A7%A6%E0%A7%A6%E0%A7%A6%20%E0%A6%9F%E0%A6%BE%E0%A6%95%E0%A6%BE%E0%A6%AF%E0%A6%BC%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-black text-sm py-3 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 shadow-lg"
+                >
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp-এ ৫,০০০ টাকার বান্ডেল কিনুন</span>
+                </a>
             </div>
         </div>
     </div>
@@ -881,12 +936,96 @@
     (function() {
         var TRIAL_USED_KEY = 'gds_trial_used';
         var TRIAL_UNLOCKED_KEY = 'gds_trial_unlocked';
+        var TRIAL_START_TIME_KEY = 'gds_trial_start_time';
         var YT_CLICKED_KEY = 'gds_yt_subscribed_clicked';
+        var TRIAL_DURATION_MS = 60 * 60 * 1000; // 1 hour (60 minutes) max session
 
         var isYtClicked = false;
         try {
             isYtClicked = localStorage.getItem(YT_CLICKED_KEY) === 'true';
         } catch(e) {}
+
+        function getTrialRemainingMs() {
+            var isUsed = false;
+            try { isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true'; } catch(e) {}
+            if (isUsed) return 0;
+
+            var startStr = null;
+            try { startStr = localStorage.getItem(TRIAL_START_TIME_KEY); } catch(e) {}
+            if (!startStr) return TRIAL_DURATION_MS;
+
+            var startTime = parseInt(startStr, 10);
+            if (isNaN(startTime)) return TRIAL_DURATION_MS;
+
+            var elapsed = Date.now() - startTime;
+            var remaining = TRIAL_DURATION_MS - elapsed;
+            return remaining > 0 ? remaining : 0;
+        }
+
+        function formatRemainingTime(ms) {
+            var totalSec = Math.floor(ms / 1000);
+            var mins = Math.floor(totalSec / 60);
+            var secs = totalSec % 60;
+            return (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        // Live countdown ticker every 1s
+        var countdownTimerInterval = null;
+        function startCountdownTicker() {
+            if (countdownTimerInterval) clearInterval(countdownTimerInterval);
+            countdownTimerInterval = setInterval(function() {
+                var isUnlocked = false;
+                var isUsed = false;
+                try {
+                    isUnlocked = localStorage.getItem(TRIAL_UNLOCKED_KEY) === 'true';
+                    isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true';
+                } catch(e) {}
+
+                if (!isUnlocked || isUsed) {
+                    clearInterval(countdownTimerInterval);
+                    return;
+                }
+
+                var remaining = getTrialRemainingMs();
+                var timerEl = document.getElementById('trialTimerBadge');
+
+                if (remaining <= 0) {
+                    // Time is up! Expire session
+                    try { localStorage.setItem(TRIAL_USED_KEY, 'true'); } catch(e) {}
+                    clearInterval(countdownTimerInterval);
+
+                    var container = document.getElementById('simIframeContainer');
+                    if (container) container.classList.add('hidden');
+                    var overlay = document.getElementById('simGateOverlay');
+                    if (overlay) overlay.classList.remove('hidden');
+
+                    window.updateTrialBannerUI();
+                    window.openTimeExpiredModal();
+                    return;
+                }
+
+                if (timerEl) {
+                    timerEl.innerHTML = '<i class="fa-solid fa-clock text-amber-400 mr-1"></i> বাকি: ' + formatRemainingTime(remaining);
+                }
+            }, 1000);
+        }
+
+        window.openTimeExpiredModal = function() {
+            var modal = document.getElementById('gdsTimeExpiredModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+        };
+
+        window.closeTimeExpiredModal = function() {
+            var modal = document.getElementById('gdsTimeExpiredModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+            window.updateTrialBannerUI();
+        };
 
         window.handleYtSubscribeClick = function() {
             isYtClicked = true;
@@ -1000,10 +1139,15 @@
         };
 
         window.unlockDemoTerminalAction = function() {
+            var now = Date.now();
             try {
+                if (!localStorage.getItem(TRIAL_START_TIME_KEY)) {
+                    localStorage.setItem(TRIAL_START_TIME_KEY, now.toString());
+                }
                 localStorage.setItem(TRIAL_UNLOCKED_KEY, 'true');
             } catch(e) {}
             window.closeTrialGateModal();
+            startCountdownTicker();
             window.updateTrialBannerUI();
 
             // Reveal iframe
@@ -1025,6 +1169,7 @@
                 try {
                     localStorage.setItem(TRIAL_USED_KEY, 'true');
                 } catch(e) {}
+                if (countdownTimerInterval) clearInterval(countdownTimerInterval);
                 window.updateTrialBannerUI();
                 window.openCompletionModal({
                     gds: (event.data.sim ? event.data.sim.toUpperCase() : 'GDS'),
@@ -1041,6 +1186,8 @@
         window.updateTrialBannerUI = function() {
             var isUsed = false;
             try { isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true'; } catch(e) {}
+            var remaining = getTrialRemainingMs();
+            if (remaining <= 0) isUsed = true;
 
             var banner = document.getElementById('trialStatusBanner');
             var dot = document.getElementById('trialStatusDot');
@@ -1054,7 +1201,7 @@
                 banner.className = 'p-3.5 sm:p-4 rounded-xl border border-amber-500/40 bg-amber-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
                 if (dot) dot.className = 'w-3 h-3 rounded-full bg-amber-400 flex-shrink-0';
                 if (title) title.textContent = '⚠️ আপনার ১-বার ফ্রি ট্রায়াল সেশন সম্পন্ন হয়েছে:';
-                if (desc) desc.textContent = 'ফুল ভার্সনে আনলিমিটেড PNR, ফেয়ার ক্যালকুলেশন, টিকিট ইস্যু, রিইস্যু ও রিফান্ড পেতে আমাদের ফুল প্যাকেজ নিন।';
+                if (desc) desc.textContent = 'ফুল ভার্সনে আজীবন আনলিমিটেড PNR, ফেয়ার ক্যালকুলেশন, টিকিট ইস্যু, রিইস্যু ও রিফান্ড পেতে আমাদের ফুল প্যাকেজ নিন।';
                 if (actions) {
                     actions.innerHTML = `
                         <a href="https://wa.me/8801674091748?text=${encodeURIComponent('হ্যালো, আমি GDS Training Hub এর ডেমো ট্রায়াল শেষ করেছি। ৩টি কমপ্লিট বান্ডেল (Windows + Android) ৫,০০০ টাকায় কিনতে চাই।')}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md">
@@ -1069,15 +1216,19 @@
             } else {
                 banner.className = 'p-3.5 sm:p-4 rounded-xl border border-sky-500/30 bg-sky-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
                 if (dot) dot.className = 'w-3 h-3 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
-                if (title) title.textContent = '১-বার ফ্রি ট্রায়াল সেশন সক্রিয়:';
-                if (desc) desc.textContent = 'ফ্লাইট সার্চ থেকে টিকিট ইস্যু পর্যন্ত ১০০% আসল কমান্ডে প্র্যাকটিস করুন। (রিইস্যু ও রিফান্ড ফুল ভার্সনে সংরক্ষিত)';
+                if (title) title.textContent = '১-বার ফ্রি ট্রায়াল সেশন সক্রিয় (সর্বোচ্চ ১ ঘণ্টা):';
+                if (desc) desc.textContent = 'ফ্লাইট সার্চ থেকে টিকিট ইস্যু পর্যন্ত আসল কমান্ডে প্র্যাকটিস করুন। (রিইস্যু ও রিফান্ড ফুল ভার্সনে সংরক্ষিত)';
                 if (actions) {
+                    var formattedTime = formatRemainingTime(remaining);
                     actions.innerHTML = `
-                        <span id="trialBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
-                            ✓ TRIAL UNLOCKED
+                        <span id="trialTimerBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                            <i class="fa-solid fa-clock text-amber-400 mr-1"></i> বাকি: ${formattedTime}
+                        </span>
+                        <span id="trialBadge" class="text-[11px] font-mono px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold hidden sm:inline-block">
+                            ✓ UNLOCKED
                         </span>
                         <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-400 hover:text-white underline">
-                            শর্তাবলী দেখুন
+                            শর্তাবলী
                         </button>
                     `;
                 }
@@ -1120,6 +1271,7 @@
             try {
                 localStorage.removeItem(TRIAL_USED_KEY);
                 localStorage.removeItem(TRIAL_UNLOCKED_KEY);
+                localStorage.removeItem(TRIAL_START_TIME_KEY);
             } catch(e) {}
             window.location.reload();
         };
@@ -1132,10 +1284,23 @@
                 isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true';
             } catch(e) {}
 
+            var remaining = getTrialRemainingMs();
+            if (isUnlocked && remaining <= 0) {
+                try { localStorage.setItem(TRIAL_USED_KEY, 'true'); } catch(e) {}
+                isUsed = true;
+            }
+
             window.updateTrialBannerUI();
 
-            if (isUnlocked) {
-                // Already unlocked, show iframe immediately
+            if (isUsed) {
+                // Expired or used - keep iframe hidden
+                var overlay = document.getElementById('simGateOverlay');
+                var container = document.getElementById('simIframeContainer');
+                if (overlay) overlay.classList.remove('hidden');
+                if (container) container.classList.add('hidden');
+            } else if (isUnlocked) {
+                // Already unlocked and time still remaining
+                startCountdownTicker();
                 var overlay = document.getElementById('simGateOverlay');
                 var container = document.getElementById('simIframeContainer');
                 if (overlay) overlay.classList.add('hidden');
