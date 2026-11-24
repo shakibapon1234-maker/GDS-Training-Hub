@@ -122,6 +122,9 @@
     // Patch keydown
     cmdInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
+        if (/^NM[Il]/i.test(cmdInput.value)) {
+          cmdInput.value = cmdInput.value.replace(/^NM[Il]/i, 'NM1');
+        }
         if (interceptCommand(cmdInput.value)) {
           e.preventDefault();
           e.stopImmediatePropagation();
@@ -133,6 +136,9 @@
     const origProcess = window.processCommand;
     if (typeof origProcess === 'function') {
       window.processCommand = function (cmd) {
+        if (typeof cmd === 'string' && /^NM[Il]/i.test(cmd)) {
+          cmd = cmd.replace(/^NM[Il]/i, 'NM1');
+        }
         if (interceptCommand(cmd)) return;
         return origProcess.apply(this, arguments);
       };
@@ -142,6 +148,9 @@
     const origHandle = window.handleCommand;
     if (typeof origHandle === 'function') {
       window.handleCommand = function (cmd) {
+        if (typeof cmd === 'string' && /^NM[Il]/i.test(cmd)) {
+          cmd = cmd.replace(/^NM[Il]/i, 'NM1');
+        }
         if (interceptCommand(cmd)) return;
         return origHandle.apply(this, arguments);
       };
