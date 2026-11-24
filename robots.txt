@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /*.bak$
 Disallow: /*.md$
+Disallow: /simulators/
 
 Sitemap: https://gdstraininghub.com/sitemap.xml

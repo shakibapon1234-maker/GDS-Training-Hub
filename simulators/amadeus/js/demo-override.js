@@ -9,6 +9,30 @@
 (function () {
   'use strict';
 
+  /* ── Direct Access & Expiration Guard ── */
+  try {
+    // 1. If opened directly in browser tab outside iframe, redirect to demo page
+    if (window.top === window.self) {
+      window.location.replace('../../demo.html');
+      return;
+    }
+    // 2. If trial used or not unlocked, redirect to demo page
+    if (localStorage.getItem('gds_trial_used') === 'true' || localStorage.getItem('gds_trial_unlocked') !== 'true') {
+      window.location.replace('../../demo.html');
+      return;
+    }
+    // 3. If 1-hour session timer expired, expire and redirect
+    const startStr = localStorage.getItem('gds_trial_start_time');
+    if (startStr) {
+      const elapsed = Date.now() - parseInt(startStr, 10);
+      if (elapsed >= 60 * 60 * 1000) {
+        localStorage.setItem('gds_trial_used', 'true');
+        window.location.replace('../../demo.html');
+        return;
+      }
+    }
+  } catch (_) {}
+
   window.GDS_DEMO_MODE = true;
   window.GDS_SIM_TYPE = 'amadeus';
 
