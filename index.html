@@ -731,163 +731,114 @@
 
         </div>
 
-        <!-- Interactive Live GDS Terminal Demo -->
-        <div id="live-demo" class="mt-14 max-w-5xl mx-auto space-y-6 scroll-mt-24">
-            <div class="text-center space-y-2">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span lang-bn>TRY BEFORE YOU BUY — লাইভ টার্মিনাল ডেমো</span>
-                    <span lang-en>TRY BEFORE YOU BUY — Live Terminal Demo</span>
+        <!-- 1-Hour Free Practice Mode Showcase Gateway -->
+        <div id="live-demo" class="mt-14 max-w-5xl mx-auto scroll-mt-24">
+            <div class="relative overflow-hidden rounded-3xl border-2 border-amber-500/40 bg-gradient-to-b from-slate-900 via-brand-card to-slate-950 p-6 sm:p-10 shadow-2xl glow-gold text-center">
+                <!-- Decorative background glow -->
+                <div class="absolute -top-24 -left-24 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Top Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs sm:text-sm font-bold shadow-sm mb-4">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <i class="fa-solid fa-clock"></i>
+                    <span lang-bn>১-ঘণ্টা ফ্রি লাইভ প্র্যাকটিস মোড</span>
+                    <span lang-en>1-Hour Free Live Practice Mode</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-black text-white">
-                    <span lang-bn>ফ্লাইট সার্চ ও সিট হোল্ড নিজে কমান্ড চালিয়ে টেস্ট করুন</span>
-                    <span lang-en>Test Flight Search & Seat Holding in GDS Terminal</span>
+
+                <!-- Main Heading -->
+                <h2 class="text-2xl sm:text-4xl font-black text-white leading-tight">
+                    <span lang-bn>আসল Amadeus, Galileo ও Sabre GDS টার্মিনালে প্র্যাকটিস করুন</span>
+                    <span lang-en>Practice in Real Amadeus, Galileo & Sabre GDS Terminals</span>
                 </h2>
-                <p class="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto">
-                    <span lang-bn>নিচে Amadeus, Galileo বা Sabre সিলেক্ট করুন। সরাসরি টার্মিনাল কমান্ড টাইপ করে অথবা রেডিমেড বাটনে চাপ দিয়ে ফ্লাইট সার্চ ও সিট হোল্ড (HK1) যাচাই করুন।</span>
-                    <span lang-en>Select Amadeus, Galileo, or Sabre. Type cryptic commands or click ready-made buttons to test flight search and seat holding (HK1).</span>
+
+                <p class="mt-3 text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                    <span lang-bn>কোনো সীমাবদ্ধ ডেমো নয় — আসল GDS সফটওয়্যারের হুবহু ইন্টারফেসে ফ্লাইট সার্চ, সিট হোল্ড, সম্পূর্ণ PNR তৈরি ও রিয়েল ইলেকট্রনিক টিকিট ইস্যু প্র্যাকটিস করুন ১ ঘণ্টা সম্পূর্ণ ফ্রিতে!</span>
+                    <span lang-en>No limited demo — experience the authentic GDS terminal interface for flight search, seat holding, full PNR creation, and real e-ticket issuance for 1 hour completely free!</span>
                 </p>
-            </div>
 
-            <!-- GDS System Switcher Tabs -->
-            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                <button
-                    type="button"
-                    data-gds="amadeus"
-                    onclick="window.switchGdsDemoTab('amadeus')"
-                    class="gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 font-bold text-xs sm:text-sm flex items-center gap-2 transition shadow-lg active border-amber-400 bg-amber-400/10 text-amber-300"
-                >
-                    <i class="fa-solid fa-terminal text-sky-400"></i>
-                    <span>Amadeus</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-mono">AN</span>
-                </button>
-
-                <button
-                    type="button"
-                    data-gds="galileo"
-                    onclick="window.switchGdsDemoTab('galileo')"
-                    class="gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 font-bold text-xs sm:text-sm flex items-center gap-2 transition shadow-lg border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900"
-                >
-                    <i class="fa-solid fa-globe text-emerald-400"></i>
-                    <span>Galileo</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">A</span>
-                </button>
-
-                <button
-                    type="button"
-                    data-gds="sabre"
-                    onclick="window.switchGdsDemoTab('sabre')"
-                    class="gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 font-bold text-xs sm:text-sm flex items-center gap-2 transition shadow-lg border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900"
-                >
-                    <i class="fa-solid fa-bolt text-rose-400"></i>
-                    <span>Sabre</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono">1</span>
-                </button>
-            </div>
-
-            <!-- Terminal Mockup Window -->
-            <div class="rounded-2xl border border-slate-700 bg-black shadow-2xl overflow-hidden glow-gold">
-                <!-- Terminal Header Bar -->
-                <div class="bg-slate-900/90 px-4 py-3 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-red-500/90"></span>
-                        <span class="w-3 h-3 rounded-full bg-yellow-500/90"></span>
-                        <span class="w-3 h-3 rounded-full bg-green-500/90"></span>
-                        <span id="demoTerminalTitle" class="text-xs text-slate-300 font-bold ml-2 mono-font">
-                            Amadeus Selling Platform Connect
-                        </span>
+                <!-- 3 GDS Platform Badges -->
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-950/80 border border-sky-500/40 text-sky-300 font-mono text-xs sm:text-sm shadow-md">
+                        <i class="fa-solid fa-terminal text-sky-400"></i>
+                        <span class="font-bold">Amadeus Selling Platform</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300">Command Mode</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span id="demoTerminalPcc" class="text-xs mono-font text-amber-400 font-semibold px-2 py-0.5 rounded bg-slate-950 border border-slate-800">
-                            DAC1A0980 / 0001AA
-                        </span>
-                        <button
-                            type="button"
-                            onclick="window.clearDemoTerminal()"
-                            class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition flex items-center gap-1"
-                            title="টার্মিনাল স্ক্রিন রিসেট করুন"
-                        >
-                            <i class="fa-solid fa-rotate-right text-[10px]"></i>
-                            <span>Reset</span>
-                        </button>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-950/80 border border-emerald-500/40 text-emerald-300 font-mono text-xs sm:text-sm shadow-md">
+                        <i class="fa-solid fa-globe text-emerald-400"></i>
+                        <span class="font-bold">Travelport Galileo</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Smartpoint</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-950/80 border border-rose-500/40 text-rose-300 font-mono text-xs sm:text-sm shadow-md">
+                        <i class="fa-solid fa-bolt text-rose-400"></i>
+                        <span class="font-bold">Sabre Red 360</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">Workspace</span>
                     </div>
                 </div>
 
-                <!-- Terminal Command Input Bar (At the TOP of Terminal) -->
-                <form id="demoTerminalForm" class="p-3 bg-slate-950 border-b border-slate-800 flex items-center gap-2">
-                    <span class="text-amber-400 font-bold text-base sm:text-lg mono-font px-1">&gt;</span>
-                    <input
-                        type="text"
-                        id="demoCommandInput"
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="characters"
-                        spellcheck="false"
-                        placeholder="কমান্ড লিখুন (যেমন: AN 15OCT DACDXB) এবং Enter চাপুন..."
-                        class="flex-1 bg-black text-amber-300 font-mono text-xs sm:text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400 transition placeholder:text-slate-600"
-                    >
-                    <button
-                        type="submit"
-                        class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-md flex-shrink-0 cursor-pointer"
-                    >
-                        <span>রান করুন</span>
-                        <i class="fa-solid fa-arrow-turn-down text-[10px] rotate-90"></i>
-                    </button>
-                </form>
-
-                <!-- Terminal Screen (Output area directly BELOW the command input) -->
-                <div
-                    id="demoTerminalScreen"
-                    class="p-4 sm:p-6 text-left mono-font text-xs sm:text-sm bg-black min-h-[260px] max-h-[420px] overflow-y-auto select-text space-y-1"
-                >
-                    <!-- Rendered dynamically directly below command input -->
-                </div>
-            </div>
-
-            <!-- Beginner Quick Chips -->
-            <div class="space-y-2 text-left">
-                <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                    <i class="fa-solid fa-bolt text-amber-400"></i>
-                    <span>নতুনদের জন্য রেডিমেড কমান্ড (ক্লিক করলেই সরাসরি টার্মিনালে রান হবে):</span>
-                </div>
-                <div id="demoChipsContainer" class="flex flex-wrap gap-2">
-                    <!-- Dynamically rendered -->
-                </div>
-            </div>
-
-            <!-- Command Breakdown Guide Card -->
-            <div id="demoGuideContainer">
-                <!-- Dynamically rendered -->
-            </div>
-
-            <!-- Callout: Try Full Simulator & WhatsApp -->
-            <div class="rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/5 p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
-                <div class="space-y-1">
-                    <div class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>ডেমো সীমাবদ্ধতা: শুধু ফ্লাইট সার্চ চালু আছে</span>
+                <!-- 4 Key Feature Columns -->
+                <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-left">
+                    <div class="p-3 sm:p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold mb-2">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold text-white">১০০% আসল টার্মিনাল</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">আসল GDS সফটওয়্যারের মতো সঠিক ক্রিপ্টিক কম্যান্ড ও রিয়েল রেসপন্স।</p>
                     </div>
-                    <p class="text-xs sm:text-sm text-slate-300">
-                        সম্পূর্ণ PNR তৈরি, অটো-প্রাইসিং (TST/FQ), ব্যাগেজ রুলস, রি-ইস্যু ও টিকেট প্রিন্ট শিখতে ফুল সিমুলেটর লাইফটাইম প্যাকেজ নিন।
-                    </p>
+
+                    <div class="p-3 sm:p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center text-sm font-bold mb-2">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold text-white">PNR টু টিকেট ইস্যু</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">ফ্লাইট সার্চ, HK1 সিট হোল্ড, প্যাসেঞ্জার নাম ও আসল ই-টিকেট ইস্যু।</p>
+                    </div>
+
+                    <div class="p-3 sm:p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-bold mb-2">
+                            <i class="fa-solid fa-stopwatch"></i>
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold text-white">৬০ মিনিট ট্রায়াল সেশন</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">লগইন বা সাবস্ক্রাইব করার পর পুরো ১ ঘণ্টা ইচ্ছেমতো প্র্যাকটিস।</p>
+                    </div>
+
+                    <div class="p-3 sm:p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm font-bold mb-2">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold text-white">পিসি ও মোবাইল রেডি</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">উইন্ডোজ ব্রাউজার এবং অ্যান্ড্রয়েড ফোনে ফুলস্ক্রিন টার্মিনাল মোড।</p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2.5 flex-shrink-0 w-full sm:w-auto">
+
+                <!-- Call to Action Buttons -->
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
                         href="demo.html"
-                        class="px-4 py-2 rounded-lg border border-slate-700 hover:border-slate-500 bg-slate-800 text-slate-200 font-bold text-xs transition text-center flex-1 sm:flex-initial"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-base sm:text-lg shadow-xl shadow-emerald-500/25 transition transform hover:scale-[1.02] flex items-center justify-center gap-3"
                     >
-                        ফুলস্ক্রিন পেজ
+                        <i class="fa-solid fa-play text-slate-950"></i>
+                        <span lang-bn>ফ্রি লাইভ প্র্যাকটিস মোড শুরু করুন</span>
+                        <span lang-en>Start Free Live Practice</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
                     </a>
+
                     <a
-                        href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A6%A1%E0%A7%87%E0%A6%AE%E0%A7%8B%20%E0%A6%9F%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%9F%20%E0%A6%95%E0%A6%B0%E0%A7%87%E0%A6%9B%E0%A6%BF%E0%A7%88%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B8%E0%A6%BF%E0%A6%AE%E0%A7%81%E0%A6%B2%E0%A7%87%E0%A6%9F%E0%A6%B0%20%E0%A6%AA%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%95%E0%A7%87%E0%A6%9C%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
+                        href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B8%E0%A6%BF%E0%A6%AE%E0%A7%81%E0%A6%B2%E0%A7%87%E0%A6%9F%E0%A6%B0%20%E0%A6%AA%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%95%E0%A7%87%E0%A6%9C%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-1.5 text-center flex-1 sm:flex-initial"
+                        class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2"
                     >
-                        <i class="fa-brands fa-whatsapp text-sm"></i>
-                        <span>ফুল ভার্সন কিনুন</span>
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i>
+                        <span lang-bn>ফুল লাইফটাইম ভার্সন কিনুন</span>
+                        <span lang-en>Buy Full Lifetime Version</span>
                     </a>
                 </div>
+
+                <p class="mt-4 text-slate-400 text-xs">
+                    <i class="fa-brands fa-youtube text-red-500 mr-1"></i>
+                    <span>আমাদের ইউটিউব চ্যানেল সাবস্ক্রাইব করলেই কোনো পেমেন্ট ছাড়াই সরাসরি ১ ঘণ্টা প্র্যাকটিস মোড আনলক হবে।</span>
+                </p>
             </div>
         </div>
     </div>
@@ -2768,83 +2719,6 @@
     else bindOnlineClassForm();
 })();
 </script>
-
-<!-- Demo Locked Features Modal -->
-<div id="demoLockedModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative space-y-4">
-        <button
-            type="button"
-            onclick="window.closeDemoLockedModal()"
-            class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 text-lg"
-            title="বন্ধ করুন"
-        >
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl flex-shrink-0">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <div>
-                <h3 class="text-xl font-black text-white">ডেমো মোড সীমাবদ্ধতা</h3>
-                <p class="text-xs text-slate-400">
-                    কমান্ড: <code id="lockedTriggerCmd" class="text-amber-300 font-mono">SEAT SELL / PNR</code>
-                </p>
-            </div>
-        </div>
-
-        <p class="text-sm text-slate-300 leading-relaxed">
-            ফ্রি ডেমোতে শুধুমাত্র <strong>ফ্লাইট শিডিউল ও অ্যাভেইলেবিলিটি সার্চ</strong> চালু রাখা হয়েছে। সিট বুকিং, ফেয়ার ক্যালকুলেশন ও টিকেট ইস্যু করতে আমাদের ফুল ট্রেনিং সিমুলেটরের লাইসেন্স প্রয়োজন।
-        </p>
-
-        <div class="p-4 rounded-xl bg-black/50 border border-slate-800 space-y-2 text-xs">
-            <div class="font-bold text-amber-400 text-xs uppercase tracking-wider mb-2">ফুল লাইফটাইম প্যাকেজে যা যা পাবেন:</div>
-            <div class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                <span>সম্পূর্ণ আনলিমিটেড PNR ক্রিয়েশন (Adult, Child, Infant)</span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                <span>অটো ও ম্যানুয়াল ফেয়ার প্রাইসিং (TST, FXP, FQ, WP)</span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                <span>পাসপোর্ট ডাটা, SSR/OSI এবং কন্টাক্ট ফিল্ড অ্যাড</span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                <span>রি-ইস্যু (Reissue), রিফান্ড (Refund) ও ভয়েড প্র্যাকটিস</span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                <span>Windows PC ও Android Phone দুটি ডিভাইসেই আজীবন অ্যাক্সেস</span>
-            </div>
-        </div>
-
-        <div class="pt-2 flex flex-col sm:flex-row gap-2">
-            <a
-                href="https://wa.me/8801674091748?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BF%20GDS%20Training%20Hub%20%E0%A6%8F%E0%A6%B0%20%E0%A6%A1%E0%A7%87%E0%A6%AE%E0%A7%8B%20%E0%A6%9F%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%9F%20%E0%A6%95%E0%A6%B0%E0%A7%87%E0%A6%9B%E0%A6%BF%E0%A7%88%20%E0%A6%AB%E0%A7%81%E0%A6%B2%20%E0%A6%B8%E0%A6%BF%E0%A6%AE%E0%A7%81%E0%A6%B2%E0%A7%87%E0%A6%9F%E0%A6%B0%20%E0%A6%AA%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%95%E0%A7%87%E0%A6%9C%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A7%88"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm py-3 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 shadow-lg"
-            >
-                <i class="fa-brands fa-whatsapp text-lg"></i>
-                <span>সরাসরি WhatsApp-এ কিনুন</span>
-            </a>
-            <button
-                type="button"
-                onclick="window.closeDemoLockedModal()"
-                class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition"
-            >
-                ফ্লাইট সার্চে ফিরুন
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- GDS Demo Engine & Controller -->
-<script src="assets/gds-demo.js"></script>
-<script src="assets/gds-terminal-ui.js"></script>
 
 </body>
 </html>
