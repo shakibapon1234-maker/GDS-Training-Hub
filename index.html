@@ -456,29 +456,36 @@
 </div>
 
 <!-- Navbar -->
-<nav class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/90 border-b border-brand-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg">✈️</div>
-            <div>
-                <span class="text-2xl font-black text-white tracking-wider">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
-                <p class="text-xs text-slate-400 hidden sm:block">
+<nav class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/95 border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[76px] py-2 flex items-center justify-between gap-3">
+        <a href="index.html" class="flex items-center space-x-3 flex-shrink-0 group">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg flex-shrink-0 group-hover:scale-105 transition-transform">✈️</div>
+            <div class="flex flex-col justify-center">
+                <span class="text-xl sm:text-2xl font-black text-white tracking-wider whitespace-nowrap leading-tight">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
+                <p class="text-[11px] text-slate-400 hidden sm:block whitespace-nowrap leading-tight mt-0.5">
                     <span lang-bn>Aviation GDS Simulator Software for Windows & Android</span>
                     <span lang-en>Professional GDS Simulator — Amadeus · Galileo · Sabre</span>
                 </p>
             </div>
-        </div>
-        <div class="hidden md:flex items-center space-x-8 text-sm font-semibold">
-            <a href="#live-demo" class="hover:text-amber-400 text-amber-300 font-bold transition flex items-center gap-1.5">
+        </a>
+        <div class="hidden md:flex items-center gap-1.5 lg:gap-2 text-[11px] lg:text-xs font-semibold overflow-x-auto no-scrollbar py-1">
+            <!-- 1. লাইভ ডেমো (Emerald Green) -->
+            <a href="demo.html" class="px-3 py-1.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span lang-bn>লাইভ ডেমো</span><span lang-en>Live Demo</span>
             </a>
-            <a href="#features" class="hover:text-amber-400 transition">
+
+            <!-- 2. সিমুলেটর (Sky Blue) -->
+            <a href="#features" class="px-3 py-1.5 rounded-full bg-sky-500/15 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-desktop text-sky-400 text-xs"></i>
                 <span lang-bn>সিমুলেটর</span><span lang-en>Simulators</span>
             </a>
+
+            <!-- 3. GDS পেজ (Blue Dropdown) -->
             <div class="relative" id="gdsPagesDropdown">
-                <button id="gdsPagesButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="gdsPagesMenu" class="hover:text-sky-400 transition flex items-center gap-1 text-slate-300">
-                    <i class="fa-solid fa-terminal text-xs text-sky-400"></i> GDS পেজ
+                <button id="gdsPagesButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="gdsPagesMenu" class="px-3 py-1.5 rounded-full bg-blue-500/15 hover:bg-blue-500/30 border border-blue-500/40 text-blue-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-terminal text-xs text-blue-400"></i>
+                    <span>GDS পেজ</span>
                     <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
                 </button>
                 <div id="gdsPagesMenu" role="menu" aria-labelledby="gdsPagesButton" class="absolute top-full left-0 mt-2 w-40 bg-[#0d1422] border border-slate-700 rounded-xl shadow-2xl z-50 hidden">
@@ -493,24 +500,39 @@
                     </a>
                 </div>
             </div>
-            <a href="#ebook" class="hover:text-amber-400 transition text-amber-300 flex items-center gap-1.5">
-                <i class="fa-solid fa-book-open text-xs"></i>
+
+            <!-- 4. ফ্রি ইবুক (Purple) -->
+            <a href="#ebook" class="px-3 py-1.5 rounded-full bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-book-open text-xs text-purple-400"></i>
                 <span lang-bn>ফ্রি ইবুক</span><span lang-en>Free Ebook</span>
             </a>
-            <a href="#pricing" class="hover:text-amber-400 transition">
+
+            <!-- 5. প্রাইসিং (Amber / Gold) -->
+            <a href="#pricing" class="px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-tags text-xs text-amber-400"></i>
                 <span lang-bn>প্রাইসিং</span><span lang-en>Pricing</span>
             </a>
-            <a href="#online-class" class="hover:text-amber-400 transition text-emerald-300 font-semibold">
+
+            <!-- 6. অনলাইন ক্লাস (Teal / Cyan) -->
+            <a href="#online-class" class="px-3 py-1.5 rounded-full bg-teal-500/15 hover:bg-teal-500/30 border border-teal-500/40 text-teal-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-graduation-cap text-xs text-teal-400"></i>
                 <span lang-bn>অনলাইন ক্লাস</span><span lang-en>Online Class</span>
             </a>
-            <a href="#faq" class="hover:text-amber-400 transition">FAQ</a>
-            <a href="#other-products" class="hover:text-amber-400 transition text-amber-400/90 flex items-center gap-1.5">
-                <i class="fa-solid fa-layer-group text-xs"></i>
+
+            <!-- 7. FAQ (Indigo) -->
+            <a href="#faq" class="px-3 py-1.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-circle-question text-xs text-indigo-400"></i>
+                <span>FAQ</span>
+            </a>
+
+            <!-- 8. অন্যান্য সফটওয়্যার (Rose / Pink) -->
+            <a href="#other-products" class="px-3 py-1.5 rounded-full bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-layer-group text-xs text-rose-400"></i>
                 <span lang-bn>অন্যান্য সফটওয়্যার</span><span lang-en>Other Software</span>
             </a>
         </div>
 
-        <a href="#pricing" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg shadow-md transition flex items-center space-x-2">
+        <a href="#pricing" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 flex-shrink-0 text-xs sm:text-sm">
             <i class="fa-solid fa-cart-shopping"></i>
             <span lang-bn>কিনুন</span><span lang-en>Buy Now</span>
         </a>
@@ -536,9 +558,15 @@
                     <span lang-en>Works on Windows PC & Android Phone</span>
                 </div>
 
-                <h1 class="text-4xl sm:text-5xl font-extrabold text-white leading-tight">
-                    <span lang-bn>ঘরে বসেই প্র্যাকটিস করুন <br><span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">এয়ার টিকেটিং GDS সিমুলেটর</span></span>
-                    <span lang-en>Master Air Ticketing From Home with <br><span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">Real GDS Simulators</span></span>
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.35] sm:leading-[1.4] tracking-normal">
+                    <span lang-bn class="block space-y-2 sm:space-y-3">
+                        <span class="block">ঘরে বসেই প্র্যাকটিস করুন</span>
+                        <span class="block bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent pt-1">এয়ার টিকেটিং GDS সিমুলেটর</span>
+                    </span>
+                    <span lang-en class="block space-y-2 sm:space-y-3">
+                        <span class="block">Master Air Ticketing From Home with</span>
+                        <span class="block bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent pt-1">Real GDS Simulators</span>
+                    </span>
                 </h1>
 
                 <p class="mt-5 text-lg text-slate-300 leading-relaxed max-w-xl">
