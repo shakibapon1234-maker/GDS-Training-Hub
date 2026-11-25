@@ -28,8 +28,9 @@
 
     <style>
         body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #070c1a; color: #E2E8F0; overflow-x: hidden; }
-        .gds-input { width: 100%; padding: 11px 14px; border: 1px solid #334155; border-radius: 10px; background: #0b1324; color: #f8fafc; font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s; }
+        .gds-input { width: 100%; padding: 11px 14px; border: 1px solid #334155; border-radius: 10px; background: #0b1324; color: #f8fafc; font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s; color-scheme: dark; }
         .gds-input:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; filter: invert(0.85) sepia(100%) saturate(600%) hue-rotate(350deg); opacity: 0.9; font-size: 16px; padding-right: 4px; }
         .online-gds-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
         .online-gds-option { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1.5px solid #334155; border-radius: 12px; background: #0a1122; color: #e2e8f0; cursor: pointer; font-size: 14px; font-weight: 600; transition: all .2s ease; }
         .online-gds-option:has(input:checked) { border-color: #10b981; background: rgba(16,185,129,.14); color: #6ee7b7; box-shadow: 0 0 15px rgba(16,185,129,.2); }
@@ -226,7 +227,18 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-xs sm:text-sm font-semibold text-slate-300 mb-1.5">কবে থেকে শুরু করতে চান? <span class="text-amber-400">*</span></label>
-                            <input id="classStartDate" required type="date" class="gds-input">
+                            <div class="relative flex items-center">
+                                <input id="classStartDate" required type="date" class="gds-input pr-12" style="color-scheme: dark;">
+                                <button 
+                                    type="button" 
+                                    onclick="var el=document.getElementById('classStartDate'); try{el.showPicker();}catch(e){el.focus();}" 
+                                    class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-400 border border-amber-500/50 flex items-center justify-center transition cursor-pointer shadow-sm active:scale-95"
+                                    title="ক্যালেন্ডার খুলুন"
+                                    aria-label="ক্যালেন্ডার খুলুন"
+                                >
+                                    <i class="fa-solid fa-calendar-days text-sm"></i>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-semibold text-slate-300 mb-1.5">পেমেন্ট মাধ্যম <span class="text-amber-400">*</span></label>
@@ -313,6 +325,18 @@
             input.addEventListener('change', updateClassFee); 
         });
         updateClassFee();
+
+        // Auto-fill today's date as default and set min selectable date
+        var dateInput = document.getElementById('classStartDate');
+        if (dateInput) {
+            var today = new Date();
+            var yyyy = today.getFullYear();
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var dd = String(today.getDate()).padStart(2, '0');
+            var todayStr = yyyy + '-' + mm + '-' + dd;
+            dateInput.value = todayStr;
+            dateInput.min = todayStr;
+        }
 
         var form = document.getElementById('onlineClassForm');
         if (form) {
