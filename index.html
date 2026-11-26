@@ -369,6 +369,9 @@
             box-shadow: 0 0 35px rgba(236, 72, 153, 0.35), 0 0 80px rgba(236, 72, 153, 0.15), inset 0 0 25px rgba(236, 72, 153, 0.08);
             transform: translateY(-8px);
         }
+
+        @keyframes gdsLogoSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .gds-logo-spin { animation: gdsLogoSpin 10s linear infinite; }
     </style>
     <!-- Meta Pixel Code (GDS Training Hub) -->
     <script>
@@ -478,7 +481,7 @@
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/95 border-b border-brand-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[76px] py-2 flex items-center justify-between gap-3">
         <a href="index.html" class="flex items-center space-x-3 flex-shrink-0 group">
-            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-xl object-cover shadow-lg flex-shrink-0 group-hover:scale-105 transition-transform border border-amber-400/40">
+            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
             <div class="flex flex-col justify-center">
                 <span class="text-xl sm:text-2xl font-black text-white tracking-wider whitespace-nowrap leading-tight">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
                 <p class="text-[11px] text-slate-200 hidden sm:block whitespace-nowrap leading-tight mt-0.5">

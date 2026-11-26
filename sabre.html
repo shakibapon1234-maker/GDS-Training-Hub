@@ -43,6 +43,17 @@
         @keyframes blink{50%{opacity:0}}
         .cmd-line{animation:fadeUp .4s ease both}
         @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+        @keyframes gdsLogoSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .gds-logo-spin { animation: gdsLogoSpin 10s linear infinite; }
+
+        @keyframes gdsOrbFloat1 { 0%,100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(45px, 35px) scale(1.12); } }
+        @keyframes gdsOrbFloat2 { 0%,100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-45px, -30px) scale(1.15); } }
+        @keyframes gdsGridDrift { 0% { background-position: 0 0; } 100% { background-position: 60px 60px; } }
+        .gds-bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .gds-bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(251,113,133,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(251,113,133,0.06) 1px, transparent 1px); background-size: 60px 60px; animation: gdsGridDrift 18s linear infinite; }
+        .gds-bg-orb1 { position: absolute; top: -10%; left: -8%; width: 520px; height: 520px; border-radius: 9999px; background: radial-gradient(circle, rgba(244,63,94,0.20) 0%, transparent 70%); filter: blur(30px); animation: gdsOrbFloat1 11s ease-in-out infinite; }
+        .gds-bg-orb2 { position: absolute; bottom: -12%; right: -8%; width: 560px; height: 560px; border-radius: 9999px; background: radial-gradient(circle, rgba(245,158,11,0.14) 0%, transparent 70%); filter: blur(35px); animation: gdsOrbFloat2 13s ease-in-out infinite; }
     </style>
     <!-- Meta Pixel Code (GDS Training Hub) -->
     <script>
@@ -115,6 +126,7 @@
     </script>
 </head>
 <body class="selection:bg-rose-500 selection:text-white">
+<div class="gds-bg-layer" aria-hidden="true"><div class="gds-bg-grid"></div><div class="gds-bg-orb1"></div><div class="gds-bg-orb2"></div></div>
 
 <!-- Notice Bar -->
 <div class="z-20 bg-gradient-to-r from-rose-700 via-rose-600 to-red-600 text-white py-2 px-4 text-center text-xs sm:text-sm font-semibold">
@@ -126,7 +138,7 @@
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-[#080C14]/90 border-b border-rose-900/40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
         <a href="index.html" class="flex items-center space-x-3 group">
-            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-xl object-cover shadow-lg flex-shrink-0 border border-amber-400/40">
+            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
             <div>
                 <span class="text-xl font-black text-white tracking-wider">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
                 <p class="text-xs text-slate-200 hidden sm:block">Amadeus · Galileo · Sabre Simulators</p>
