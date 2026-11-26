@@ -200,12 +200,23 @@
             box-shadow: 0 0 35px rgba(0, 217, 255, 0.3), 0 0 80px rgba(0, 217, 255, 0.1), inset 0 0 25px rgba(0, 217, 255, 0.08);
             transform: translateY(-6px);
         }
+        @property --border-angle {
+            syntax: "<angle>";
+            inherits: true;
+            initial-value: 0deg;
+        }
+        @keyframes borderRotate {
+            to { --border-angle: 360deg; }
+        }
         .neon-card-amber {
-            background: linear-gradient(145deg, #1a1000 0%, #1f1400 100%);
-            border: 2px solid rgba(245, 158, 11, 0.7);
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2), inset 0 0 25px rgba(245, 158, 11, 0.06);
+            --border-angle: 0deg;
+            background:
+                linear-gradient(145deg, #1a1000 0%, #1f1400 100%) padding-box,
+                conic-gradient(from var(--border-angle), rgba(245,158,11,0.18) 55%, #fbbf24 78%, #38bdf8 90%, #f59e0b 100%) border-box;
+            border: 2.5px solid transparent;
+            box-shadow: 0 0 28px rgba(245, 158, 11, 0.25), inset 0 0 25px rgba(245, 158, 11, 0.06);
             transition: all 0.4s ease;
-            animation: floatCard2 7s ease-in-out infinite;
+            animation: floatCard2 7s ease-in-out infinite, borderRotate 4s linear infinite;
         }
         .neon-card-amber:hover {
             border-color: rgba(245, 158, 11, 1);
@@ -420,6 +431,14 @@
         } catch (err) {}
     });
     </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HCWBV0EZ04');
+    </script>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">
 <!-- Animated Canvas Background -->
@@ -459,16 +478,22 @@
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/95 border-b border-brand-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[76px] py-2 flex items-center justify-between gap-3">
         <a href="index.html" class="flex items-center space-x-3 flex-shrink-0 group">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg flex-shrink-0 group-hover:scale-105 transition-transform">✈️</div>
+            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-xl object-cover shadow-lg flex-shrink-0 group-hover:scale-105 transition-transform border border-amber-400/40">
             <div class="flex flex-col justify-center">
                 <span class="text-xl sm:text-2xl font-black text-white tracking-wider whitespace-nowrap leading-tight">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
-                <p class="text-[11px] text-slate-400 hidden sm:block whitespace-nowrap leading-tight mt-0.5">
+                <p class="text-[11px] text-slate-200 hidden sm:block whitespace-nowrap leading-tight mt-0.5">
                     <span lang-bn>Aviation GDS Simulator Software for Windows & Android</span>
                     <span lang-en>Professional GDS Simulator — Amadeus · Galileo · Sabre</span>
                 </p>
             </div>
         </a>
-        <div class="hidden md:flex items-center gap-1.5 lg:gap-2 text-[11px] lg:text-xs font-semibold overflow-x-auto no-scrollbar py-1">
+        <div class="hidden md:flex flex-nowrap items-center gap-1.5 lg:gap-2 text-[11px] lg:text-xs font-semibold py-1">
+            <!-- 0. হোম (Home) -->
+            <a href="index.html" class="px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-600/60 text-white font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-house text-amber-400 text-xs"></i>
+                <span lang-bn>হোম</span><span lang-en>Home</span>
+            </a>
+
             <!-- 1. লাইভ ডেমো (Emerald Green) -->
             <a href="demo.html" class="px-3 py-1.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -501,35 +526,37 @@
                 </div>
             </div>
 
-            <!-- 4. ফ্রি ইবুক (Purple) -->
-            <a href="#ebook" class="px-3 py-1.5 rounded-full bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
-                <i class="fa-solid fa-book-open text-xs text-purple-400"></i>
-                <span lang-bn>ফ্রি ইবুক</span><span lang-en>Free Ebook</span>
-            </a>
-
-            <!-- 5. প্রাইসিং (Amber / Gold) -->
+            <!-- 4. প্রাইসিং (Amber / Gold) -->
             <a href="#pricing" class="px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                 <i class="fa-solid fa-tags text-xs text-amber-400"></i>
                 <span lang-bn>প্রাইসিং</span><span lang-en>Pricing</span>
             </a>
 
-            <!-- 6. অনলাইন ক্লাস (Teal / Cyan) -->
+            <!-- 5. অনলাইন ক্লাস (Teal / Cyan) -->
             <a href="online-class.html" class="px-3 py-1.5 rounded-full bg-teal-500/15 hover:bg-teal-500/30 border border-teal-500/40 text-teal-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                 <i class="fa-solid fa-graduation-cap text-xs text-teal-400"></i>
                 <span lang-bn>অনলাইন ক্লাস</span><span lang-en>Online Class</span>
             </a>
 
-            <!-- 7. FAQ (Indigo) -->
-            <a href="#faq" class="px-3 py-1.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
-                <i class="fa-solid fa-circle-question text-xs text-indigo-400"></i>
-                <span>FAQ</span>
-            </a>
-
-            <!-- 8. অন্যান্য সফটওয়্যার (Rose / Pink) -->
-            <a href="#other-products" class="px-3 py-1.5 rounded-full bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
-                <i class="fa-solid fa-layer-group text-xs text-rose-400"></i>
-                <span lang-bn>অন্যান্য সফটওয়্যার</span><span lang-en>Other Software</span>
-            </a>
+            <!-- 6. আরও / More (Purple Dropdown: Ebook, FAQ, Other Software) -->
+            <div class="relative" id="morePagesDropdown">
+                <button id="morePagesButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="morePagesMenu" class="px-3 py-1.5 rounded-full bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-layer-group text-xs text-purple-400"></i>
+                    <span lang-bn>আরও</span><span lang-en>More</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
+                </button>
+                <div id="morePagesMenu" role="menu" aria-labelledby="morePagesButton" class="absolute top-full right-0 mt-2 w-48 bg-[#0d1422] border border-slate-700 rounded-xl shadow-2xl z-50 hidden">
+                    <a href="#ebook" class="flex items-center gap-2 px-4 py-2.5 text-purple-300 hover:bg-purple-500/10 rounded-t-xl text-xs font-bold transition">
+                        <i class="fa-solid fa-book-open text-[10px]"></i> <span lang-bn>ফ্রি ইবুক</span><span lang-en>Free Ebook</span>
+                    </a>
+                    <a href="#faq" class="flex items-center gap-2 px-4 py-2.5 text-indigo-300 hover:bg-indigo-500/10 text-xs font-bold transition">
+                        <i class="fa-solid fa-circle-question text-[10px]"></i> FAQ
+                    </a>
+                    <a href="#other-products" class="flex items-center gap-2 px-4 py-2.5 text-rose-300 hover:bg-rose-500/10 rounded-b-xl text-xs font-bold transition">
+                        <i class="fa-solid fa-boxes-stacked text-[10px]"></i> <span lang-bn>অন্যান্য সফটওয়্যার</span><span lang-en>Other Software</span>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <a href="#pricing" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 flex-shrink-0 text-xs sm:text-sm">
@@ -690,7 +717,7 @@
                                 <i class="fa-brands fa-youtube"></i>
                                 <span lang-bn>ইউটিউবে দেখুন</span><span lang-en>YouTube</span>
                             </a>
-                            <button onclick="toggleVideoSound()" id="soundToggleBtn" aria-label="ভিডিও সাউন্ড" class="text-slate-400 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
+                            <button onclick="toggleVideoSound()" id="soundToggleBtn" aria-label="ভিডিও সাউন্ড" class="text-slate-200 hover:text-amber-400 px-2 py-1 rounded transition flex items-center gap-1 text-[11px]">
                                 <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
                                 <span id="soundLabel">Sound Off</span>
                             </button>
@@ -861,7 +888,7 @@
                 <span lang-bn>৩টি প্রধান GDS সিমুলেটর অন্তর্ভুক্ত</span>
                 <span lang-en>3 Major GDS Simulators Included</span>
             </h2>
-            <p class="mt-3 text-slate-400">
+            <p class="mt-3 text-slate-200">
                 <span lang-bn>বিশ্বের যে কোনো এয়ারলাইন্স ও ট্রাভেল এজেন্সিতে কাজের জন্য প্রয়োজনীয় সবগুলো সিস্টেম</span>
                 <span lang-en>All the GDS systems you need for any airline or travel agency worldwide</span>
             </p>
@@ -906,7 +933,7 @@
                         </li>
                         <li class="flex items-center gap-2.5">
                             <i class="fa-solid fa-circle-check text-sky-400 text-sm"></i>
-                            <span lang-bn>ফুল অফিশিয়াল কম্যান্ড চিটশিট গাইড</span><span lang-en>Official Command Cheatsheet</span>
+                            <span lang-bn>সম্পূর্ণ কম্যান্ড চিটশিট গাইড</span><span lang-en>Complete Command Cheatsheet</span>
                         </li>
                     </ul>
                 </div>
@@ -948,7 +975,7 @@
                     <ul class="space-y-3 text-sm text-slate-200">
                         <li class="flex items-center gap-2.5">
                             <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
-                            <span lang-bn>সিট অ্যাভেইলেবিলিটি ও রিয়েল-টাইম চেক</span><span lang-en>Seat Availability & Real-Time Check</span>
+                            <span lang-bn>সিট অ্যাভেইলেবিলিটি ও প্র্যাকটিস চেক</span><span lang-en>Simulated Seat Availability Check</span>
                         </li>
                         <li class="flex items-center gap-2.5">
                             <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
@@ -1079,27 +1106,27 @@
                     </p>
 
                     <div class="mt-5 space-y-2.5 text-xs text-slate-300 font-mono bg-black/60 p-4 rounded-xl border border-slate-800">
-                        <div class="flex items-center justify-between text-slate-400">
+                        <div class="flex items-center justify-between text-slate-200">
                             <span>Chapter 1:</span>
                             <span class="text-amber-400 font-semibold">Golden PRINT Rule</span>
                         </div>
-                        <div class="flex items-center justify-between text-slate-400">
+                        <div class="flex items-center justify-between text-slate-200">
                             <span>Chapter 2:</span>
                             <span class="text-cyan-400 font-semibold">3-Way Comparison Matrix</span>
                         </div>
-                        <div class="flex items-center justify-between text-slate-400">
+                        <div class="flex items-center justify-between text-slate-200">
                             <span>Chapter 3:</span>
                             <span class="text-sky-400 font-semibold">Amadeus Core Workflow</span>
                         </div>
-                        <div class="flex items-center justify-between text-slate-400">
+                        <div class="flex items-center justify-between text-slate-200">
                             <span>Chapter 4:</span>
                             <span class="text-emerald-400 font-semibold">Galileo Booking Guide</span>
                         </div>
-                        <div class="flex items-center justify-between text-slate-400">
+                        <div class="flex items-center justify-between text-slate-200">
                             <span>Chapter 5:</span>
                             <span class="text-rose-400 font-semibold">Sabre Terminal Workflow</span>
                         </div>
-                        <div class="flex items-center justify-between text-slate-400">
+                        <div class="flex items-center justify-between text-slate-200">
                             <span>Chapter 6:</span>
                             <span class="text-purple-400 font-semibold">Agency Troubleshooting</span>
                         </div>
@@ -1108,7 +1135,7 @@
                     <!-- Price Strike & Free Tag -->
                     <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800">
                         <div>
-                            <span class="text-xs text-slate-400 line-through">রেগুলার মূল্য: ৳১,৫০০</span>
+                            <span class="text-xs text-slate-200 line-through">রেগুলার মূল্য: ৳১,৫০০</span>
                             <div class="text-2xl font-black text-amber-400">
                                 <span lang-bn>সম্পূর্ণ ফ্রি!</span><span lang-en>100% FREE!</span>
                             </div>
@@ -1134,7 +1161,7 @@
                             <span lang-bn>১০০% প্র্যাকটিক্যাল কোড-ভেরিফাইড কম্যান্ড</span>
                             <span lang-en>100% Code-Verified Practical Commands</span>
                         </h4>
-                        <p class="text-sm text-slate-400 mt-1 leading-relaxed">
+                        <p class="text-sm text-slate-200 mt-1 leading-relaxed">
                             <span lang-bn>সাধারণ গুগল বা এআই-এর ভুল কম্যান্ড নয়। আমাদের ৩টি সিমুলেটরের আসল সোর্স কোড ও রিয়েল এভিয়েশন ডাটাবেজ থেকে তৈরি সম্পূর্ণ নির্ভুল গাইড।</span>
                             <span lang-en>No hallucinated AI commands. Strictly built and cross-verified against real aviation terminal engines and simulator source code.</span>
                         </p>
@@ -1150,7 +1177,7 @@
                             <span lang-bn>এক নজরে ৩টি GDS-এর মেগা কমপ্যারিসন চার্ট</span>
                             <span lang-en>Side-by-Side 3 GDS Mega Comparison Chart</span>
                         </h4>
-                        <p class="text-sm text-slate-400 mt-1 leading-relaxed">
+                        <p class="text-sm text-slate-200 mt-1 leading-relaxed">
                             <span lang-bn>PNR তৈরি, ফেয়ার স্টোর, টিকেট ইস্যু, ভয়েড ও রিফান্ডের ক্ষেত্রে Amadeus, Galileo এবং Sabre-এর কম্যান্ডগুলোর পাশাপাশি তুলনামূলক রূপরেখা।</span>
                             <span lang-en>Instant cross-reference table comparing PNR creation, fare storage, ticket issue, void and refund across Amadeus, Galileo, and Sabre.</span>
                         </p>
@@ -1166,7 +1193,7 @@
                             <span lang-bn>এজেন্সির রিয়েল-লাইফ টিকিট ইস্যু & ট্রাবলশুটিং</span>
                             <span lang-en>Agency Real-World Ticket Issuance & Troubleshooting</span>
                         </h4>
-                        <p class="text-sm text-slate-400 mt-1 leading-relaxed">
+                        <p class="text-sm text-slate-200 mt-1 leading-relaxed">
                             <span lang-bn>Sabre প্রিন্টার অ্যাক্টিভেশন (W*BD, DSIV, PTR), Amadeus TST ফেয়ার স্টোর (FXP/FXB/TQT), Galileo টিকিটিং এবং SSR TKNE সংক্রান্ত জটিল সমস্যার বাস্তব সমাধান।</span>
                             <span lang-en>Covers Sabre printer setup (W*BD, DSIV, PTR), Amadeus TST storage (FXP/FXB/TQT), Galileo fare store, and SSR TKNE synchronization.</span>
                         </p>
@@ -1208,7 +1235,7 @@
                     <span lang-bn>স্বচ্ছতা ও প্র্যাকটিস গাইডলাইন</span>
                     <span lang-en>Transparency & Practice Guidelines</span>
                 </span>
-                <span class="text-xs text-slate-400 font-mono">100% Risk-Free Practice Environment</span>
+                <span class="text-xs text-slate-200 font-mono">100% Risk-Free Practice Environment</span>
             </div>
 
             <!-- Title & Subtitle -->
@@ -1295,7 +1322,7 @@
                 <span lang-bn>আপনার পছন্দের প্যাকেজটি বাছাই করুন</span>
                 <span lang-en>Choose Your Package</span>
             </h2>
-            <p class="mt-3 text-slate-400">
+            <p class="mt-3 text-slate-200">
                 <span lang-bn>একবার কিনলেই আজীবন ব্যবহার। কোনো মাসিক ফি নেই।</span>
                 <span lang-en>One-time purchase. No monthly fees. Lifetime access.</span>
             </p>
@@ -1316,7 +1343,7 @@
                     <p class="text-xs mt-1" style="color:rgba(0,217,255,0.6);">Amadeus / Galileo / Sabre</p>
                     <div class="mt-5 flex items-baseline">
                         <span class="text-5xl font-black neon-price-cyan">৳ ২,০০০</span>
-                        <span class="text-slate-400 ml-2 text-sm">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
+                        <span class="text-slate-200 ml-2 text-sm">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
                     </div>
                     <hr class="my-5 neon-divider-cyan">
                     <ul class="space-y-3 text-sm text-slate-300">
@@ -1327,9 +1354,12 @@
                         <li class="flex items-center gap-2 text-amber-400 font-bold bg-amber-500/10 px-2 py-1.5 rounded-lg border border-amber-500/25"><i class="fa-solid fa-gift text-amber-400 text-xs"></i> <span lang-bn>🎁 ফ্রি: ৩-ইন-১ GDS Master Ebook</span><span lang-en>🎁 Free: 3-in-1 GDS Master Ebook</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%201%20GDS%20Simulator%20(%E0%A7%B32000).%20Which%20one%3F%20Amadeus%20%2F%20Galileo%20%2F%20Sabre%3A%20" target="_blank" class="mt-7 block text-center neon-btn-cyan py-3.5 rounded-xl transition">
-                    <span lang-bn>অর্ডার করুন (৳ ২,০০০)</span><span lang-en>Order Now (৳ 2,000)</span>
-                </a>
+                <div class="mt-7">
+                    <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%201%20GDS%20Simulator%20(%E0%A7%B32000).%20Which%20one%3F%20Amadeus%20%2F%20Galileo%20%2F%20Sabre%3A%20" target="_blank" class="block text-center neon-btn-cyan py-3.5 rounded-xl transition">
+                        <span lang-bn>অর্ডার করুন (৳ ২,০০০)</span><span lang-en>Order Now (৳ 2,000)</span>
+                    </a>
+                    <p style="margin-top: 16px; color: #ffffff;" class="text-xs text-center font-medium"><span lang-bn>* PC অথবা Android — প্রতি ডিভাইসে আলাদা আইডি</span><span lang-en>* Separate ID per device (PC or Android)</span></p>
+                </div>
             </div>
 
             <!-- 3 GDS BEST VALUE – Neon Amber -->
@@ -1349,7 +1379,7 @@
                     <p class="text-xs text-slate-300 mt-1">Amadeus + Galileo + Sabre</p>
                     <div class="mt-6 flex items-baseline">
                         <span class="text-5xl font-black neon-price-amber">৳ ৫,০০০</span>
-                        <span class="text-slate-400 ml-2">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
+                        <span class="text-slate-200 ml-2">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
                     </div>
                     <div class="mt-2 inline-block neon-badge-amber text-xs px-3 py-1 rounded-full font-bold">
                         <span lang-bn>🔥 ৳১,০০০ টাকা সাশ্রয়!</span><span lang-en>🔥 Save ৳1,000!</span>
@@ -1364,9 +1394,12 @@
                         <li class="flex items-center gap-2 text-amber-300 font-black bg-amber-500/20 px-2.5 py-1.5 rounded-lg border border-amber-500/40"><i class="fa-solid fa-gift text-amber-400"></i> <span lang-bn>🎁 বিশেষ গিফট: ৩-ইন-১ GDS Master Ebook</span><span lang-en>🎁 Free: 3-in-1 GDS Master Ebook Included</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%20Complete%20Bundle%20(All%203%20GDS)%20(%E0%A7%B35000)" target="_blank" class="mt-7 block text-center neon-btn-amber py-4 rounded-xl shadow-lg transition">
-                    <span lang-bn>কমপ্লিট বান্ডেল অর্ডার করুন (৳ ৫,০০০)</span><span lang-en>Order Complete Bundle (৳ 5,000)</span>
-                </a>
+                <div class="mt-7">
+                    <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%20Complete%20Bundle%20(All%203%20GDS)%20(%E0%A7%B35000)" target="_blank" class="block text-center neon-btn-amber py-4 rounded-xl shadow-lg transition">
+                        <span lang-bn>কমপ্লিট বান্ডেল অর্ডার করুন (৳ ৫,০০০)</span><span lang-en>Order Complete Bundle (৳ 5,000)</span>
+                    </a>
+                    <p style="margin-top: 16px; color: #ffffff;" class="text-xs text-center font-medium"><span lang-bn>* PC অথবা Android — প্রতি ডিভাইসে আলাদা আইডি</span><span lang-en>* Separate ID per device (PC or Android)</span></p>
+                </div>
             </div>
 
             <!-- 2 GDS – Neon Green -->
@@ -1383,7 +1416,7 @@
                     <p class="text-xs mt-1" style="color:rgba(16,185,129,0.6);"><span lang-bn>পছন্দের যে কোনো ২টি</span><span lang-en>Your choice of any 2</span></p>
                     <div class="mt-5 flex items-baseline">
                         <span class="text-5xl font-black neon-price-green">৳ ৩,৫০০</span>
-                        <span class="text-slate-400 ml-2 text-sm">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
+                        <span class="text-slate-200 ml-2 text-sm">/ <span lang-bn>লাইফটাইম</span><span lang-en>Lifetime</span></span>
                     </div>
                     <div class="mt-2 inline-block neon-badge-green text-xs px-2.5 py-1 rounded-full font-bold">
                         <span lang-bn>৳৫০০ ছাড়</span><span lang-en>Save ৳500</span>
@@ -1397,9 +1430,12 @@
                         <li class="flex items-center gap-2 text-emerald-300 font-bold bg-emerald-500/10 px-2 py-1.5 rounded-lg border border-emerald-500/25"><i class="fa-solid fa-gift text-emerald-400 text-xs"></i> <span lang-bn>🎁 ফ্রি: ৩-ইন-১ GDS Master Ebook</span><span lang-en>🎁 Free: 3-in-1 GDS Master Ebook</span></li>
                     </ul>
                 </div>
-                <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%202%20GDS%20Simulators%20(%E0%A7%B33500).%20Which%20two%3F%20Amadeus%20%2F%20Galileo%20%2F%20Sabre%3A%20" target="_blank" class="mt-7 block text-center neon-btn-green py-3.5 rounded-xl transition">
-                    <span lang-bn>অর্ডার করুন (৳ ৩,৫০০)</span><span lang-en>Order Now (৳ 3,500)</span>
-                </a>
+                <div class="mt-7">
+                    <a href="https://wa.me/8801674091748?text=I%20want%20to%20order%202%20GDS%20Simulators%20(%E0%A7%B33500).%20Which%20two%3F%20Amadeus%20%2F%20Galileo%20%2F%20Sabre%3A%20" target="_blank" class="block text-center neon-btn-green py-3.5 rounded-xl transition">
+                        <span lang-bn>অর্ডার করুন (৳ ৩,৫০০)</span><span lang-en>Order Now (৳ 3,500)</span>
+                    </a>
+                    <p style="margin-top: 16px; color: #ffffff;" class="text-xs text-center font-medium"><span lang-bn>* PC অথবা Android — প্রতি ডিভাইসে আলাদা আইডি</span><span lang-en>* Separate ID per device (PC or Android)</span></p>
+                </div>
             </div>
         </div>
     </div>
@@ -1552,7 +1588,7 @@
                     <p class="text-xs text-pink-200/80 mt-1">Send Money অপশন ব্যবহার করুন</p>
 
                     <div class="my-5 p-4 rounded-xl bg-slate-950/80 border border-pink-500/40 text-center">
-                        <span class="text-[11px] text-slate-400 uppercase tracking-wider block mb-1">অ্যাকাউন্ট নম্বর:</span>
+                        <span class="text-[11px] text-slate-200 uppercase tracking-wider block mb-1">অ্যাকাউন্ট নম্বর:</span>
                         <div id="bkashNumText" class="text-2xl sm:text-3xl font-black text-pink-300 tracking-wider mono-font">01674091748</div>
                     </div>
                 </div>
@@ -1568,7 +1604,7 @@
                         <i class="fa-regular fa-copy"></i>
                         <span>নম্বর কপি করুন</span>
                     </button>
-                    <p class="text-[11px] text-slate-400 text-center">সেন্ড মানি করে লাস্ট ৩ ডিজিট WhatsApp-এ জানান</p>
+                    <p class="text-[11px] text-slate-200 text-center">সেন্ড মানি করে লাস্ট ৩ ডিজিট WhatsApp-এ জানান</p>
                 </div>
             </div>
 
@@ -1586,7 +1622,7 @@
                     <p class="text-xs text-orange-200/80 mt-1">Send Money অপশন ব্যবহার করুন</p>
 
                     <div class="my-5 p-4 rounded-xl bg-slate-950/80 border border-orange-500/40 text-center">
-                        <span class="text-[11px] text-slate-400 uppercase tracking-wider block mb-1">অ্যাকাউন্ট নম্বর:</span>
+                        <span class="text-[11px] text-slate-200 uppercase tracking-wider block mb-1">অ্যাকাউন্ট নম্বর:</span>
                         <div id="nagadNumText" class="text-2xl sm:text-3xl font-black text-amber-300 tracking-wider mono-font">01674091748</div>
                     </div>
                 </div>
@@ -1602,7 +1638,7 @@
                         <i class="fa-regular fa-copy"></i>
                         <span>নম্বর কপি করুন</span>
                     </button>
-                    <p class="text-[11px] text-slate-400 text-center">সেন্ড মানি করে লাস্ট ৩ ডিজিট WhatsApp-এ জানান</p>
+                    <p class="text-[11px] text-slate-200 text-center">সেন্ড মানি করে লাস্ট ৩ ডিজিট WhatsApp-এ জানান</p>
                 </div>
             </div>
 
@@ -1621,15 +1657,15 @@
 
                     <div class="my-3.5 p-3.5 rounded-xl bg-slate-950/80 border border-cyan-500/40 text-left space-y-1.5">
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-400">A/C Name:</span>
+                            <span class="text-slate-200">A/C Name:</span>
                             <strong class="text-white">Shakib Ibna Mustafa</strong>
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-400">A/C Number:</span>
+                            <span class="text-slate-200">A/C Number:</span>
                             <strong class="text-cyan-300 mono-font text-sm">1058494150001</strong>
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-400">Branch:</span>
+                            <span class="text-slate-200">Branch:</span>
                             <strong class="text-white">Bonosree Branch</strong>
                         </div>
                     </div>
@@ -1646,7 +1682,7 @@
                         <i class="fa-regular fa-copy"></i>
                         <span>অ্যাকাউন্ট নম্বর কপি করুন</span>
                     </button>
-                    <p class="text-[11px] text-slate-400 text-center">ট্রান্সফারের পর স্ক্রিনশট বা TrxID WhatsApp-এ দিন</p>
+                    <p class="text-[11px] text-slate-200 text-center">ট্রান্সফারের পর স্ক্রিনশট বা TrxID WhatsApp-এ দিন</p>
                 </div>
             </div>
 
@@ -1710,7 +1746,7 @@ function copyPaymentNum(text, btnId) {
                     <span lang-bn>সফটওয়্যার চালানোর জন্য কি ইন্টারনেট সংযোগ জরুরি?</span>
                     <span lang-en>Do I need an internet connection to use the software?</span>
                 </h3>
-                <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                <p class="mt-2 text-slate-200 text-sm leading-relaxed">
                     <span lang-bn>হ্যাঁ, আমাদের শক্তিশালী ক্লাউড সিকিউরিটি এবং সার্ভার অথেন্টিকেশনের জন্য সামান্য সাধারণ ইন্টারনেট কানেকশন প্রয়োজন।</span>
                     <span lang-en>Yes, a standard internet connection is required for secure cloud authentication and database verification.</span>
                 </p>
@@ -1721,7 +1757,7 @@ function copyPaymentNum(text, btnId) {
                     <span lang-bn>মোবাইলে কি ভালোভাবে কাজ করবে?</span>
                     <span lang-en>Does it work well on mobile phones?</span>
                 </h3>
-                <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                <p class="mt-2 text-slate-200 text-sm leading-relaxed">
                     <span lang-bn>হ্যাঁ! প্রতিটি সিমুলেটরের ডেডিকেটেড Android APK ফাইল রয়েছে যা যেকোনো স্মার্টফোনে চলে।</span>
                     <span lang-en>Yes! Each simulator has a dedicated Android APK that runs smoothly on any smartphone.</span>
                 </p>
@@ -1732,7 +1768,7 @@ function copyPaymentNum(text, btnId) {
                     <span lang-bn>লাইফটাইম অ্যাক্সেস মানে কতদিন?</span>
                     <span lang-en>What does "Lifetime Access" mean?</span>
                 </h3>
-                <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                <p class="mt-2 text-slate-200 text-sm leading-relaxed">
                     <span lang-bn>একবার কিনলেই কোনো মাসিক বা বাৎসরিক সাবস্ক্রিপশন ছাড়াই আজীবন ব্যবহার করতে পারবেন।</span>
                     <span lang-en>One-time purchase. Use it forever with no monthly or annual subscription fees.</span>
                 </p>
@@ -1743,7 +1779,7 @@ function copyPaymentNum(text, btnId) {
                     <span lang-bn>বিদেশ থেকে কি অর্ডার করা যাবে?</span>
                     <span lang-en>Can I order from outside Bangladesh?</span>
                 </h3>
-                <p class="mt-2 text-slate-400 text-sm leading-relaxed">
+                <p class="mt-2 text-slate-200 text-sm leading-relaxed">
                     <span lang-bn>হ্যাঁ! বিশ্বের যেকোনো প্রান্ত থেকে WhatsApp এ যোগাযোগ করলেই আমরা ডেলিভারির ব্যবস্থা করে দেব।</span>
                     <span lang-en>Yes! Contact us on WhatsApp from anywhere in the world. We deliver the software digitally via Google Drive link.</span>
                 </p>
@@ -1767,7 +1803,7 @@ function copyPaymentNum(text, btnId) {
                 <span lang-bn>আমাদের অন্যান্য <span style="color: #fbbf24; text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);">অ্যাডভান্স সফটওয়্যার</span> সলিউশন</span>
                 <span lang-en>Explore Our <span style="color: #fbbf24; text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);">Advanced Software</span> Suite</span>
             </h2>
-            <p class="mt-3 text-slate-400 text-sm sm:text-base leading-relaxed">
+            <p class="mt-3 text-slate-200 text-sm sm:text-base leading-relaxed">
                 <span lang-bn>GDS এভিয়েশন সিমুলেটরের পাশাপাশি আমাদের নিজস্ব ডেভেলপ করা হাই-পারফরম্যান্স বিজনেস ও ক্রিয়েটিভ ডেস্কটপ অ্যাপ্লিকেশনসমূহ।</span>
                 <span lang-en>Beyond aviation simulation, discover our proprietary enterprise accounting, document processing, and creative desktop suites.</span>
             </p>
@@ -2039,7 +2075,7 @@ function copyPaymentNum(text, btnId) {
                         <span lang-bn>কাস্টম সফটওয়্যার সলিউশন বা এন্টারপ্রাইজ লাইসেন্স প্রয়োজন?</span>
                         <span lang-en>Need Custom Software Development or Enterprise Licensing?</span>
                     </h4>
-                    <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl">
+                    <p class="text-xs sm:text-sm text-slate-200 mt-1 max-w-2xl">
                         <span lang-bn>আপনার ব্যবসা, প্রতিষ্ঠান বা এজেন্সির জন্য কাস্টম উইন্ডোজ ডেস্কটপ অ্যাপ, ক্লাউড অটোমেশন বা ইআরপি সফটওয়্যারের জন্য সরাসরি আমাদের ডেভেলপার টিমের সাথে কথা বলুন।</span>
                         <span lang-en>We engineer custom desktop applications, ERP accounting tools, and high-performance business engines tailored directly to your operational workflows.</span>
                     </p>
@@ -2061,16 +2097,16 @@ function copyPaymentNum(text, btnId) {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
             <span class="text-xl font-black text-white">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
-            <p class="text-xs text-slate-400 mt-1">© 2026 GDS Training Hub & Antigravity Suite. All rights reserved. • <a href="privacy-policy.html" class="text-slate-400 hover:text-amber-400 underline">Privacy Policy</a></p>
-            <p class="text-xs text-slate-400 mt-2 flex items-center gap-2">
+            <p class="text-xs text-slate-200 mt-1">© 2026 GDS Training Hub & Antigravity Suite. All rights reserved. • <a href="privacy-policy.html" class="text-slate-200 hover:text-amber-400 underline">Privacy Policy</a></p>
+            <p class="text-xs text-slate-200 mt-2 flex items-center gap-2">
                 <i class="fa-solid fa-envelope text-amber-400"></i>
                 <a href="mailto:gdstraininghub@gmail.com" class="hover:text-amber-400 transition">gdstraininghub@gmail.com</a>
             </p>
         </div>
         <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6 text-sm">
-            <a href="#features" class="text-slate-400 hover:text-white"><span lang-bn>ফিচার</span><span lang-en>Features</span></a>
-            <a href="#pricing" class="text-slate-400 hover:text-white"><span lang-bn>প্রাইসিং</span><span lang-en>Pricing</span></a>
-            <a href="#faq" class="text-slate-400 hover:text-white">FAQ</a>
+            <a href="#features" class="text-slate-200 hover:text-white"><span lang-bn>ফিচার</span><span lang-en>Features</span></a>
+            <a href="#pricing" class="text-slate-200 hover:text-white"><span lang-bn>প্রাইসিং</span><span lang-en>Pricing</span></a>
+            <a href="#faq" class="text-slate-200 hover:text-white">FAQ</a>
             <a href="privacy-policy.html" class="text-amber-400 hover:text-amber-300 font-semibold"><span lang-bn>প্রাইভেসি পলিসি</span><span lang-en>Privacy Policy</span></a>
             <a href="#other-products" class="text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1">
                 <i class="fa-solid fa-layer-group text-xs"></i>
@@ -2178,6 +2214,33 @@ function copyPaymentNum(text, btnId) {
 
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') closeGdsPagesMenu();
+        });
+    })();
+
+    // Toggle "আরও / More" dropdown
+    (function () {
+        var dropdown = document.getElementById('morePagesDropdown');
+        var button = document.getElementById('morePagesButton');
+        var menu = document.getElementById('morePagesMenu');
+        if (!dropdown || !button || !menu) return;
+
+        function closeMoreMenu() {
+            menu.classList.add('hidden');
+            button.setAttribute('aria-expanded', 'false');
+        }
+
+        button.addEventListener('click', function () {
+            var isHidden = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden');
+            button.setAttribute('aria-expanded', String(isHidden));
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!dropdown.contains(event.target)) closeMoreMenu();
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeMoreMenu();
         });
     })();
 
@@ -2920,12 +2983,15 @@ function copyPaymentNum(text, btnId) {
                 আমাদের ওয়েবসাইটে উন্নত ব্রাউজিং অভিজ্ঞতা ও বিজ্ঞাপন পরিমাপ নিশ্চিত করতে আমরা কুকিজ ব্যবহার করি। বিস্তারিত জানতে আমাদের 
                 <a href="privacy-policy.html" class="text-amber-400 hover:underline font-semibold">প্রাইভেসি পলিসি</a> পড়ুন।
             </p>
-            <div class="mt-3.5 flex items-center gap-2">
+            <div class="mt-3.5 flex flex-wrap items-center gap-2">
                 <button id="acceptCookieBtn" type="button" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 transition hover:brightness-110 active:scale-95 shadow-lg" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
                     সম্মত আছি / Accept
                 </button>
-                <a href="privacy-policy.html" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
-                    পলিসি দেখুন
+                <button id="declineCookieBtn" type="button" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                    প্রত্যাখ্যান / Decline
+                </button>
+                <a href="privacy-policy.html" class="px-3 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:underline transition">
+                    পলিসি
                 </a>
             </div>
         </div>
@@ -2937,6 +3003,7 @@ function copyPaymentNum(text, btnId) {
     var consentKey = 'gds_cookie_consent';
     var banner = document.getElementById('gdsCookieConsent');
     var acceptBtn = document.getElementById('acceptCookieBtn');
+    var declineBtn = document.getElementById('declineCookieBtn');
     if (!banner || !acceptBtn) return;
 
     try {
@@ -2953,6 +3020,15 @@ function copyPaymentNum(text, btnId) {
         } catch(e) {}
         banner.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
     });
+
+    if (declineBtn) {
+        declineBtn.addEventListener('click', function() {
+            try {
+                localStorage.setItem(consentKey, 'declined');
+            } catch(e) {}
+            banner.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+        });
+    }
 })();
 </script>
 
