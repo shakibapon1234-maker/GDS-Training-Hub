@@ -27,6 +27,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '881905844712860');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=881905844712860&ev=PageView&noscript=1"/></noscript>
+    <!-- End Meta Pixel Code -->
+
     <style>
         body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #080C14; color: #E2E8F0; }
         .mono-font { font-family: 'JetBrains Mono', 'Courier New', Courier, monospace; }
@@ -54,7 +70,18 @@
         .gds-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
         .gds-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
         @media (max-width:500px) { .gds-grid-2 { grid-template-columns:1fr; } }
+
+        @keyframes gdsLogoSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .gds-logo-spin { animation: gdsLogoSpin 10s linear infinite; }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HCWBV0EZ04');
+    </script>
 </head>
 <body class="min-h-screen flex flex-col bg-[#080C14] text-slate-100 selection:bg-amber-500 selection:text-slate-950">
 
@@ -62,10 +89,10 @@
     <nav class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/90 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="index.html" class="flex items-center space-x-3 group flex-shrink-0">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg group-hover:scale-105 transition-transform flex-shrink-0">✈️</div>
+                <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
                 <div class="flex flex-col justify-center">
                     <span class="text-xl sm:text-2xl font-black text-white tracking-wider whitespace-nowrap leading-tight">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
-                    <p class="text-[11px] text-slate-400 whitespace-nowrap leading-tight mt-0.5">Aviation GDS Simulator Software</p>
+                    <p class="text-[11px] text-slate-200 whitespace-nowrap leading-tight mt-0.5">Aviation GDS Simulator Software</p>
                 </div>
             </a>
             <div class="flex items-center space-x-4">
@@ -112,7 +139,7 @@
                 <span id="trialBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
                     ✓ TRIAL UNLOCKED
                 </span>
-                <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-400 hover:text-white underline">
+                <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-200 hover:text-white underline">
                     শর্তাবলী দেখুন
                 </button>
             </div>
@@ -135,7 +162,7 @@
                 type="button"
                 data-gds="galileo"
                 onclick="window.switchGdsDemoTab('galileo')"
-                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg border-transparent text-slate-200 hover:text-slate-200 hover:bg-slate-900"
             >
                 <i class="fa-solid fa-globe text-emerald-400"></i>
                 <span>Galileo</span>
@@ -146,7 +173,7 @@
                 type="button"
                 data-gds="sabre"
                 onclick="window.switchGdsDemoTab('sabre')"
-                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg border-transparent text-slate-200 hover:text-slate-200 hover:bg-slate-900"
             >
                 <i class="fa-solid fa-bolt text-rose-400"></i>
                 <span>Sabre</span>
@@ -174,7 +201,7 @@
                 <i class="fa-brands fa-youtube text-xl"></i>
                 <span>সাবস্ক্রাইব করে সিমুলেটর আনলক করুন</span>
             </button>
-            <p class="text-xs text-slate-500">📌 একবার আনলক হলে এই ডিভাইসে পুনরায় সাবস্ক্রাইব করতে হবে না</p>
+            <p class="text-xs text-slate-300">📌 একবার আনলক হলে এই ডিভাইসে পুনরায় সাবস্ক্রাইব করতে হবে না</p>
         </div>
 
         <!-- Simulator iframe container (hidden until unlocked) -->
@@ -189,7 +216,7 @@
                 </div>
                 <div class="flex items-center gap-2 text-xs">
                     <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold border border-amber-500/30">🎓 DEMO MODE</span>
-                    <button type="button" onclick="window.reloadSimIframe()" class="text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition text-[11px] flex items-center gap-1">
+                    <button type="button" onclick="window.reloadSimIframe()" class="text-slate-200 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition text-[11px] flex items-center gap-1">
                         <i class="fa-solid fa-rotate-right text-[10px]"></i> Reload
                     </button>
                 </div>
@@ -206,7 +233,7 @@
                 ></iframe>
             </div>
             <!-- Mobile note -->
-            <p class="text-center text-xs text-slate-500 mt-2">
+            <p class="text-center text-xs text-slate-300 mt-2">
                 📱 মোবাইলে দেখতে ফোনটি landscape (আড়াআড়ি) করুন অথবা zoom out করুন
             </p>
         </div>
@@ -251,7 +278,7 @@
             <button
                 type="button"
                 onclick="window.closeDemoLockedModal()"
-                class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 text-lg"
+                class="absolute top-4 right-4 text-slate-200 hover:text-white p-1 text-lg"
                 title="বন্ধ করুন"
             >
                 <i class="fa-solid fa-xmark"></i>
@@ -263,7 +290,7 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-black text-white">রি-ইস্যু ও রিফান্ড সীমাবদ্ধতা</h3>
-                    <p class="text-xs text-slate-400">
+                    <p class="text-xs text-slate-200">
                         কমান্ড: <code id="lockedTriggerCmd" class="text-amber-300 font-mono">REISSUE / REFUND</code>
                     </p>
                 </div>
@@ -344,7 +371,7 @@
                         </span>
                         <div>
                             <div class="text-xs font-bold text-white">GDS Training Hub BD</div>
-                            <div class="text-[11px] text-slate-400">@gdstraininghubbd (বাংলা ভিডিও টিউটোরিয়াল)</div>
+                            <div class="text-[11px] text-slate-200">@gdstraininghubbd (বাংলা ভিডিও টিউটোরিয়াল)</div>
                         </div>
                     </div>
                     <span id="ytSubBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
@@ -364,7 +391,7 @@
                     <span>YouTube চ্যানেল সাবস্ক্রাইব করুন</span>
                     <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
                 </a>
-                <p class="text-[11px] text-slate-400 text-center">
+                <p class="text-[11px] text-slate-200 text-center">
                     (লিংকে ক্লিক করলে নতুন ট্যাবে চ্যানেল ওপেন হবে, সাবস্ক্রাইব করে এই ট্যাবে ফিরে আসুন)
                 </p>
             </div>
@@ -413,7 +440,7 @@
                     id="btnUnlockTerminal"
                     onclick="window.unlockDemoTerminalAction()"
                     disabled
-                    class="w-full bg-slate-800 text-slate-500 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 cursor-not-allowed opacity-60"
+                    class="w-full bg-slate-800 text-slate-300 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 cursor-not-allowed opacity-60"
                 >
                     <i class="fa-solid fa-lock" id="unlockIcon"></i>
                     <span id="unlockBtnText">সাবস্ক্রাইব করুন ও শর্তাবলী মেনে আনলক করুন</span>
@@ -430,7 +457,7 @@
             <button
                 type="button"
                 onclick="window.closeCompletionModal()"
-                class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 text-lg"
+                class="absolute top-4 right-4 text-slate-200 hover:text-white p-1 text-lg"
                 title="বন্ধ করুন"
             >
                 <i class="fa-solid fa-xmark"></i>
@@ -454,19 +481,19 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1">
                     <div>
-                        <span class="text-slate-500 block text-[10px]">TICKET NUMBER:</span>
+                        <span class="text-slate-300 block text-[10px]">TICKET NUMBER:</span>
                         <span id="compTktNum" class="text-white font-bold">176-2489103841</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 block text-[10px]">PNR LOCATOR:</span>
+                        <span class="text-slate-300 block text-[10px]">PNR LOCATOR:</span>
                         <span id="compLocator" class="text-amber-300 font-bold">J99GZO</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 block text-[10px]">PASSENGER:</span>
+                        <span class="text-slate-300 block text-[10px]">PASSENGER:</span>
                         <span id="compPax" class="text-slate-200">CHOWDHURY/RAHIM MR</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 block text-[10px]">TOTAL FARE:</span>
+                        <span class="text-slate-300 block text-[10px]">TOTAL FARE:</span>
                         <span id="compFare" class="text-emerald-400 font-bold">BDT 55,050</span>
                     </div>
                 </div>
@@ -481,7 +508,7 @@
                     আমাদের ৩টি সফটওয়্যার বান্ডেল (Amadeus, Galileo, Sabre)-এ পাবেন আনলিমিটেড PNR, অটো/ম্যানুয়াল ফেয়ার, ব্যাগেজ রুলস, রি-ইস্যু, রিফান্ড ও লাইভ টিকেট প্রিন্টিং।
                 </p>
                 <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-800">
-                    <span class="text-slate-400">৩টি বান্ডেল (Windows + Android):</span>
+                    <span class="text-slate-200">৩টি বান্ডেল (Windows + Android):</span>
                     <span class="text-sm font-black text-amber-400">৳ ৫,০০০ (লাইফটাইম)</span>
                 </div>
             </div>
@@ -516,7 +543,7 @@
             <button
                 type="button"
                 onclick="window.closeTimeExpiredModal()"
-                class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 text-lg"
+                class="absolute top-4 right-4 text-slate-200 hover:text-white p-1 text-lg"
                 title="বন্ধ করুন"
             >
                 <i class="fa-solid fa-xmark"></i>
@@ -534,7 +561,7 @@
 
             <div class="p-4 rounded-xl bg-black/70 border border-slate-800 space-y-2 text-xs text-slate-300 leading-relaxed">
                 <p>
-                    আপনি আমাদের লাইভ GDS ক্রিপ্টিক টার্মিনালে সফলভাবে ফ্রি প্র্যাকটিস করেছেন। ফ্রি ট্রায়াল সেশনটি সর্বোচ্চ <strong>১ ঘণ্টার জন্য</strong> উন্মুক্ত ছিল।
+                    আপনি আমাদের ইন্টারেক্টিভ GDS প্র্যাকটিস টার্মিনালে সফলভাবে ফ্রি প্র্যাকটিস করেছেন। ফ্রি ট্রায়াল সেশনটি সর্বোচ্চ <strong>১ ঘণ্টার জন্য</strong> উন্মুক্ত ছিল।
                 </p>
                 <p class="text-amber-300 font-medium">
                     আজীবন যেকোনো সময় আনলিমিটেড PNR, ফেয়ার ক্যালকুলেশন, ব্যাগেজ রুলস, রি-ইস্যু, রিফান্ড ও লাইভ টিকেট প্রিন্টিং প্র্যাকটিস করতে আমাদের ফুল ৩টি বান্ডেল সফটওয়্যার নিন।
@@ -546,7 +573,7 @@
                     <span class="text-slate-300 font-bold">৩টি কমপ্লিট বান্ডেল (Amadeus, Galileo, Sabre):</span>
                     <span class="text-sm font-black text-amber-400">৳ ৫,০০০</span>
                 </div>
-                <div class="text-[11px] text-slate-400">Windows PC + Android Phone দুটি ডিভাইসেই আজীবন মেয়াদ। কোনো মাসিক ফি নেই।</div>
+                <div class="text-[11px] text-slate-200">Windows PC + Android Phone দুটি ডিভাইসেই আজীবন মেয়াদ। কোনো মাসিক ফি নেই।</div>
             </div>
 
             <div class="pt-2 flex flex-col sm:flex-row gap-2">
@@ -702,8 +729,8 @@
     </div>
 
     <!-- Footer -->
-    <footer class="py-8 border-t border-slate-900 text-center text-xs text-slate-500 mt-auto px-4 space-y-3">
-        <div class="flex flex-wrap items-center justify-center gap-5 text-sm text-slate-400">
+    <footer class="py-8 border-t border-slate-900 text-center text-xs text-slate-300 mt-auto px-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-center gap-5 text-sm text-slate-200">
             <a href="index.html" class="hover:text-white transition">হোমপেজ</a>
             <a href="index.html#pricing" class="hover:text-amber-400 transition">প্রাইসিং</a>
             <a href="online-class.html" class="hover:text-white transition">অনলাইন ক্লাস</a>
@@ -1092,7 +1119,7 @@
             } else {
                 if (btn) {
                     btn.disabled = true;
-                    btn.className = 'w-full bg-slate-800 text-slate-500 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 cursor-not-allowed opacity-60';
+                    btn.className = 'w-full bg-slate-800 text-slate-300 font-black text-sm py-3.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 cursor-not-allowed opacity-60';
                 }
                 if (txt) {
                     if (!isYtClicked) {
@@ -1145,10 +1172,10 @@
                 var target = btn.getAttribute('data-gds');
                 if (target === gdsKey) {
                     btn.classList.add('active', 'border-amber-400', 'bg-amber-400/10', 'text-amber-300');
-                    btn.classList.remove('text-slate-400', 'border-transparent');
+                    btn.classList.remove('text-slate-200', 'border-transparent');
                 } else {
                     btn.classList.remove('active', 'border-amber-400', 'bg-amber-400/10', 'text-amber-300');
-                    btn.classList.add('text-slate-400', 'border-transparent');
+                    btn.classList.add('text-slate-200', 'border-transparent');
                 }
             });
 
@@ -1243,7 +1270,7 @@
                             <i class="fa-brands fa-whatsapp text-sm"></i>
                             <span>ফুল বান্ডেল অর্ডার (৳ ৫,০০০)</span>
                         </a>
-                        <button type="button" onclick="window.resetTrialForTesting()" class="text-[11px] text-slate-500 hover:text-slate-300 ml-1" title="আবার টেস্ট করুন">
+                        <button type="button" onclick="window.resetTrialForTesting()" class="text-[11px] text-slate-300 hover:text-slate-300 ml-1" title="আবার টেস্ট করুন">
                             <i class="fa-solid fa-rotate-right"></i>
                         </button>
                     `;
@@ -1262,7 +1289,7 @@
                         <span id="trialBadge" class="text-[11px] font-mono px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold hidden sm:inline-block">
                             ✓ UNLOCKED
                         </span>
-                        <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-400 hover:text-white underline">
+                        <button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-200 hover:text-white underline">
                             শর্তাবলী
                         </button>
                     `;
@@ -1352,6 +1379,36 @@
                 }, 600);
             }
         });
+    })();
+    </script>
+
+    <!-- Independent Simulator Disclaimer -->
+    <div class="max-w-7xl mx-auto px-4 pb-6 text-center text-[11px] text-slate-300">
+        এটি একটি স্বতন্ত্র GDS ট্রেনিং সিমুলেটর (Independent GDS Training Simulator)। কোনো অফিশিয়াল এয়ারলাইন বা লাইভ GDS প্রোডাকশন সিস্টেমের সাথে এর কোনো সংযোগ নেই এবং এটি কোনো চাকরির নিশ্চয়তা দেয় না।
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="gdsCookieConsent" class="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-50 max-w-md w-[calc(100%-2rem)] sm:w-auto p-4 sm:p-5 rounded-2xl shadow-2xl transition-all duration-500 ease-out translate-y-24 opacity-0 pointer-events-none" style="background: rgba(11, 21, 40, 0.96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1.5px solid rgba(245, 158, 11, 0.45); box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.2);">
+        <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex-shrink-0 flex items-center justify-center text-amber-400 text-lg">🍪</div>
+            <div class="flex-grow">
+                <h4 class="text-sm font-extrabold text-white flex items-center gap-2">কুকিজ ও ডেটা পলিসি <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">সুরক্ষিত</span></h4>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed">আমাদের ওয়েবসাইটে উন্নত ব্রাউজিং অভিজ্ঞতা ও বিজ্ঞাপন পরিমাপ নিশ্চিত করতে আমরা কুকিজ ব্যবহার করি। বিস্তারিত জানতে আমাদের <a href="privacy-policy.html" class="text-amber-400 hover:underline font-semibold">প্রাইভেসি পলিসি</a> পড়ুন।</p>
+                <div class="mt-3.5 flex flex-wrap items-center gap-2">
+                    <button id="acceptCookieBtn" type="button" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 transition hover:brightness-110 active:scale-95 shadow-lg" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">সম্মত আছি / Accept</button>
+                    <button id="declineCookieBtn" type="button" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">প্রত্যাখ্যান / Decline</button>
+                    <a href="privacy-policy.html" class="px-3 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:underline transition">পলিসি</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function() {
+        var k='gds_cookie_consent',b=document.getElementById('gdsCookieConsent'),a=document.getElementById('acceptCookieBtn'),d=document.getElementById('declineCookieBtn');
+        if(!b||!a)return;
+        try{if(!localStorage.getItem(k)){setTimeout(function(){b.classList.remove('translate-y-24','opacity-0','pointer-events-none');},1200);}}catch(e){}
+        a.addEventListener('click',function(){try{localStorage.setItem(k,'accepted');}catch(e){}b.classList.add('translate-y-24','opacity-0','pointer-events-none');});
+        if(d){d.addEventListener('click',function(){try{localStorage.setItem(k,'declined');}catch(e){}b.classList.add('translate-y-24','opacity-0','pointer-events-none');});}
     })();
     </script>
 </body>
