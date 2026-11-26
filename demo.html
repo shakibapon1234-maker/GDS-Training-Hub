@@ -280,13 +280,14 @@
             </div>
         </div>
 
-        <!-- GDS System Switcher Tabs -->
+        <!-- GDS System Switcher Tabs (No default selection - customer selects) -->
         <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             <button
                 type="button"
+                id="btnTabAmadeus"
                 data-gds="amadeus"
                 onclick="window.switchGdsDemoTab('amadeus')"
-                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg active border-amber-400 bg-amber-400/10 text-amber-300"
+                class="gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-slate-700 bg-slate-900/70 font-bold text-sm sm:text-base flex items-center gap-2.5 transition text-slate-300 hover:text-white hover:border-slate-500 cursor-pointer"
             >
                 <i class="fa-solid fa-terminal text-sky-400"></i>
                 <span>Amadeus</span>
@@ -295,9 +296,10 @@
 
             <button
                 type="button"
+                id="btnTabGalileo"
                 data-gds="galileo"
                 onclick="window.switchGdsDemoTab('galileo')"
-                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg border-transparent text-slate-200 hover:text-slate-200 hover:bg-slate-900"
+                class="gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-slate-700 bg-slate-900/70 font-bold text-sm sm:text-base flex items-center gap-2.5 transition text-slate-300 hover:text-white hover:border-slate-500 cursor-pointer"
             >
                 <i class="fa-solid fa-globe text-emerald-400"></i>
                 <span>Galileo</span>
@@ -306,9 +308,10 @@
 
             <button
                 type="button"
+                id="btnTabSabre"
                 data-gds="sabre"
                 onclick="window.switchGdsDemoTab('sabre')"
-                class="gds-demo-tab-btn px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg border-transparent text-slate-200 hover:text-slate-200 hover:bg-slate-900"
+                class="gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-slate-700 bg-slate-900/70 font-bold text-sm sm:text-base flex items-center gap-2.5 transition text-slate-300 hover:text-white hover:border-slate-500 cursor-pointer"
             >
                 <i class="fa-solid fa-bolt text-rose-400"></i>
                 <span>Sabre</span>
@@ -348,21 +351,50 @@
                     <span class="w-3 h-3 rounded-full bg-red-500"></span>
                     <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
                     <span class="w-3 h-3 rounded-full bg-green-500"></span>
-                    <span id="iframeTabTitle" class="text-xs font-bold text-slate-200 ml-2">Amadeus Selling Platform Connect</span>
+                    <span id="iframeTabTitle" class="text-xs font-bold text-slate-200 ml-2">প্রথমে পছন্দের GDS নির্বাচন করুন</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs">
                     <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold border border-amber-500/30">🎓 DEMO MODE</span>
-                    <button type="button" onclick="window.reloadSimIframe()" class="text-slate-200 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition text-[11px] flex items-center gap-1">
+                    <button type="button" onclick="window.reloadSimIframe()" class="text-slate-200 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition text-[11px] flex items-center gap-1 cursor-pointer">
                         <i class="fa-solid fa-rotate-right text-[10px]"></i> Reload
                     </button>
                 </div>
             </div>
-            <!-- The actual iframe -->
-            <div class="border border-slate-700 rounded-b-2xl overflow-hidden shadow-2xl" style="height:620px;">
+            <!-- The actual iframe & prompt -->
+            <div class="border border-slate-700 rounded-b-2xl overflow-hidden shadow-2xl bg-slate-950 relative" style="height:620px;">
+                <!-- Prompt shown until customer selects a GDS -->
+                <div id="simSelectPrompt" class="w-full h-full flex flex-col items-center justify-center p-6 text-center space-y-6">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-400 flex items-center justify-center text-3xl">
+                        <i class="fa-solid fa-hand-pointer"></i>
+                    </div>
+                    <div class="space-y-2 max-w-md">
+                        <h3 class="text-xl sm:text-2xl font-black text-white">আপনার পছন্দের GDS নির্বাচন করুন</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            প্র্যাকটিস শুরু করতে নিচের (অথবা উপরের) যেকোনো একটি সিমুলেটরে ক্লিক করুন:
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-xl">
+                        <button type="button" onclick="window.switchGdsDemoTab('amadeus')" class="p-4 rounded-xl border border-slate-700 bg-slate-900/80 hover:border-amber-400 hover:bg-amber-400/10 transition flex flex-col items-center gap-2 cursor-pointer group">
+                            <i class="fa-solid fa-terminal text-2xl text-sky-400"></i>
+                            <span class="font-bold text-white group-hover:text-amber-300">Amadeus</span>
+                            <span class="text-[11px] text-slate-300">Selling Platform Connect</span>
+                        </button>
+                        <button type="button" onclick="window.switchGdsDemoTab('galileo')" class="p-4 rounded-xl border border-slate-700 bg-slate-900/80 hover:border-amber-400 hover:bg-amber-400/10 transition flex flex-col items-center gap-2 cursor-pointer group">
+                            <i class="fa-solid fa-globe text-2xl text-emerald-400"></i>
+                            <span class="font-bold text-white group-hover:text-amber-300">Galileo</span>
+                            <span class="text-[11px] text-slate-300">Travelport Smartpoint</span>
+                        </button>
+                        <button type="button" onclick="window.switchGdsDemoTab('sabre')" class="p-4 rounded-xl border border-slate-700 bg-slate-900/80 hover:border-amber-400 hover:bg-amber-400/10 transition flex flex-col items-center gap-2 cursor-pointer group">
+                            <i class="fa-solid fa-bolt text-2xl text-rose-400"></i>
+                            <span class="font-bold text-white group-hover:text-amber-300">Sabre</span>
+                            <span class="text-[11px] text-slate-300">Sabre Red 360</span>
+                        </button>
+                    </div>
+                </div>
                 <iframe
                     id="simIframe"
                     src="about:blank"
-                    class="w-full h-full border-0 bg-black"
+                    class="w-full h-full border-0 bg-black hidden"
                     allow="clipboard-write"
                     sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox"
                     title="GDS Training Simulator"
@@ -591,13 +623,13 @@
                     </div>
 
                     <label id="termsLabel1" class="flex items-start gap-3 cursor-pointer text-slate-100 p-3 rounded-xl bg-slate-900/70 border border-slate-700/80 hover:border-amber-400/50 transition select-none">
-                        <input type="checkbox" id="termsCheck1" onchange="window.updateGateUnlockState()" class="mt-0.5 w-4 h-4 rounded border-slate-600 bg-slate-900 flex-shrink-0 cursor-pointer" style="accent-color: #10b981; width: 18px; height: 18px;">
+                        <input type="checkbox" id="termsCheck1" autocomplete="off" onchange="window.updateGateUnlockState()" class="mt-0.5 w-4 h-4 rounded border-slate-600 bg-slate-900 flex-shrink-0 cursor-pointer" style="accent-color: #10b981; width: 18px; height: 18px;">
                         <span class="text-xs leading-relaxed">
                             আমি স্বীকার করছি এটি <strong>১-বার ব্যবহারযোগ্য ফ্রি ট্রায়াল</strong> (সর্বোচ্চ ১ ঘণ্টার সেশন বা ১টি টিকিট ইস্যু পর্যন্ত)।
                         </span>
                     </label>
                     <label id="termsLabel2" class="flex items-start gap-3 cursor-pointer text-slate-100 p-3 rounded-xl bg-slate-900/70 border border-slate-700/80 hover:border-amber-400/50 transition select-none">
-                        <input type="checkbox" id="termsCheck2" onchange="window.updateGateUnlockState()" class="mt-0.5 w-4 h-4 rounded border-slate-600 bg-slate-900 flex-shrink-0 cursor-pointer" style="accent-color: #10b981; width: 18px; height: 18px;">
+                        <input type="checkbox" id="termsCheck2" autocomplete="off" onchange="window.updateGateUnlockState()" class="mt-0.5 w-4 h-4 rounded border-slate-600 bg-slate-900 flex-shrink-0 cursor-pointer" style="accent-color: #10b981; width: 18px; height: 18px;">
                         <span class="text-xs leading-relaxed">
                             রি-ইস্যু (Re-issue) এবং রিফান্ড (Refund) ফিচারটি শুধুমাত্র আমাদের ফুল লাইসেন্সড পেইড সফটওয়্যারে উপলব্ধ।
                         </span>
@@ -1463,21 +1495,114 @@
             }
         };
 
+        // GDS demo tab switcher function (no default selection until customer picks)
+        window.currentGdsTab = null;
+
+        var GDS_TITLES = {
+            amadeus: 'Amadeus Selling Platform Connect',
+            galileo: 'Travelport Galileo — Focalpoint / Smartpoint',
+            sabre: 'Agency Workspace (CERT) — Sabre Training Simulator'
+        };
+
+        window.switchGdsDemoTab = function(gdsKey) {
+            if (!GDS_TITLES[gdsKey]) return;
+            window.currentGdsTab = gdsKey;
+
+            var tabButtons = document.querySelectorAll('.gds-demo-tab-btn');
+            tabButtons.forEach(function(btn) {
+                var target = btn.getAttribute('data-gds');
+                if (target === gdsKey) {
+                    btn.className = 'gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-amber-400 bg-amber-400/15 text-amber-300 font-black text-sm sm:text-base flex items-center gap-2.5 transition shadow-lg shadow-amber-500/20 cursor-pointer active';
+                } else {
+                    btn.className = 'gds-demo-tab-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-slate-700 bg-slate-900/70 text-slate-300 hover:text-white hover:border-slate-500 font-bold text-sm sm:text-base flex items-center gap-2.5 transition cursor-pointer';
+                }
+            });
+
+            var titleEl = document.getElementById('iframeTabTitle');
+            if (titleEl) {
+                titleEl.textContent = GDS_TITLES[gdsKey];
+            }
+
+            var isUnlocked = false;
+            var isUsed = false;
+            try {
+                isUnlocked = localStorage.getItem(TRIAL_UNLOCKED_KEY) === 'true';
+                isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true';
+            } catch(e) {}
+            if (isUnlocked && getTrialRemainingMs() <= 0) {
+                isUsed = true;
+            }
+
+            if (isUsed) {
+                window.openTimeExpiredModal();
+                return;
+            }
+
+            if (!isUnlocked) {
+                window.openTrialGateModal(false);
+                return;
+            }
+
+            var overlay = document.getElementById('simGateOverlay');
+            var container = document.getElementById('simIframeContainer');
+            var promptEl = document.getElementById('simSelectPrompt');
+            var iframe = document.getElementById('simIframe');
+
+            if (overlay) overlay.classList.add('hidden');
+            if (container) container.classList.remove('hidden');
+            if (promptEl) promptEl.classList.add('hidden');
+            if (iframe) {
+                iframe.classList.remove('hidden');
+                iframe.src = 'simulators/' + gdsKey + '/index.html';
+            }
+        };
+
+        window.reloadSimIframe = function() {
+            if (!window.currentGdsTab) return;
+            var iframe = document.getElementById('simIframe');
+            if (iframe) {
+                iframe.src = 'simulators/' + window.currentGdsTab + '/index.html';
+            }
+        };
+
+        window.openDemoLockedModal = function(cmdName) {
+            var modal = document.getElementById('demoLockedModal');
+            var cmdEl = document.getElementById('lockedTriggerCmd');
+            if (cmdEl) cmdEl.textContent = cmdName || 'REISSUE / REFUND';
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+        };
+
+        window.closeDemoLockedModal = function() {
+            var modal = document.getElementById('demoLockedModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        };
+
         window.openTrialGateModal = function(isViewTermsOnly) {
+            var isUsed = false;
+            try { isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true'; } catch(e) {}
+            if (!isViewTermsOnly && (isUsed || getTrialRemainingMs() <= 0)) {
+                try { localStorage.setItem(TRIAL_USED_KEY, 'true'); } catch(e) {}
+                window.openTimeExpiredModal();
+                return;
+            }
+
             var modal = document.getElementById('gdsTrialGateModal');
             if (!modal) return;
 
             var cookieBanner = document.getElementById('gdsCookieConsent');
             if (cookieBanner) cookieBanner.style.display = 'none';
 
-            var isUnlocked = false;
-            try { isUnlocked = localStorage.getItem(TRIAL_UNLOCKED_KEY) === 'true'; } catch(e) {}
-            if (isViewTermsOnly || isUnlocked) {
-                var c1 = document.getElementById('termsCheck1');
-                var c2 = document.getElementById('termsCheck2');
-                if (c1) c1.checked = true;
-                if (c2) c2.checked = true;
-            }
+            // Checkboxes must ALWAYS start UNCHECKED - customer manually checks them
+            var c1 = document.getElementById('termsCheck1');
+            var c2 = document.getElementById('termsCheck2');
+            if (c1) c1.checked = false;
+            if (c2) c2.checked = false;
 
             window.updateGateUnlockState();
             modal.classList.remove('hidden');
@@ -1517,17 +1642,108 @@
             if (container) container.classList.remove('hidden');
 
             startCountdownTicker();
+            window.updateTrialBannerUI();
 
-            var iframe = document.getElementById('simIframe');
-            if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src.endsWith('about:blank'))) {
-                var currentGds = window.currentGdsTab || 'amadeus';
-                var targetFile = 'simulator-amadeus.html';
-                if (currentGds === 'galileo') targetFile = 'simulator-galileo.html';
-                else if (currentGds === 'sabre') targetFile = 'simulator-sabre.html';
-                iframe.src = targetFile;
+            if (window.currentGdsTab) {
+                window.switchGdsDemoTab(window.currentGdsTab);
+            } else {
+                // Keep all GDS tabs unselected until customer clicks one
+                var promptEl = document.getElementById('simSelectPrompt');
+                var iframe = document.getElementById('simIframe');
+                var titleEl = document.getElementById('iframeTabTitle');
+                if (promptEl) promptEl.classList.remove('hidden');
+                if (iframe) iframe.classList.add('hidden');
+                if (titleEl) titleEl.textContent = 'প্রথমে পছন্দের GDS নির্বাচন করুন';
+            }
+        };
+
+        // Listen for postMessage from simulator iframes
+        window.addEventListener('message', function(event) {
+            if (!event.data) return;
+            if (event.data.type === 'GDS_TICKET_ISSUED') {
+                try {
+                    localStorage.setItem(TRIAL_USED_KEY, 'true');
+                } catch(e) {}
+                if (countdownTimerInterval) clearInterval(countdownTimerInterval);
+                window.updateTrialBannerUI();
+                window.openCompletionModal({
+                    gds: (event.data.sim ? event.data.sim.toUpperCase() : 'GDS'),
+                    ticketNumber: '176-' + Math.floor(1000000000 + Math.random() * 9000000000),
+                    pnr: 'J' + Math.floor(10000 + Math.random() * 90000),
+                    pax: 'CHOWDHURY/RAHIM MR',
+                    amount: 'BDT 55,050'
+                });
+            } else if (event.data.type === 'GDS_REISSUE_BLOCKED') {
+                window.openDemoLockedModal('REISSUE / REFUND');
+            }
+        });
+
+        window.updateTrialBannerUI = function() {
+            var isUnlocked = false;
+            var isUsed = false;
+            try {
+                isUnlocked = localStorage.getItem(TRIAL_UNLOCKED_KEY) === 'true';
+                isUsed = localStorage.getItem(TRIAL_USED_KEY) === 'true';
+            } catch(e) {}
+            var remaining = getTrialRemainingMs();
+            if (isUnlocked && remaining <= 0) {
+                isUsed = true;
+                try { localStorage.setItem(TRIAL_USED_KEY, 'true'); } catch(e) {}
             }
 
-            window.updateTrialBannerUI();
+            var banner = document.getElementById('trialStatusBanner');
+            var dot = document.getElementById('trialStatusDot');
+            var title = document.getElementById('trialStatusTitle');
+            var desc = document.getElementById('trialStatusDesc');
+            var actions = document.getElementById('trialBannerActions');
+
+            if (!banner) return;
+
+            if (isUsed) {
+                banner.className = 'p-3.5 sm:p-4 rounded-xl border border-amber-500/40 bg-amber-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
+                if (dot) dot.className = 'w-3 h-3 rounded-full bg-amber-400 flex-shrink-0';
+                if (title) title.textContent = '⚠️ আপনার ১-বার ফ্রি ট্রায়াল সেশন সম্পন্ন হয়েছে:';
+                if (desc) desc.textContent = 'ফুল ভার্সনে আজীবন আনলিমিটেড PNR, ফেয়ার ক্যালকুলেশন, টিকিট ইস্যু, রিইস্যু ও রিফান্ড পেতে আমাদের ফুল প্যাকেজ নিন।';
+                if (actions) {
+                    actions.innerHTML =
+                        '<a href="https://wa.me/8801674091748?text=' + encodeURIComponent('হ্যালো, আমি GDS Training Hub এর ডেমো ট্রায়াল শেষ করেছি। ৩টি কমপ্লিট বান্ডেল (Windows + Android) ৫,০০০ টাকায় কিনতে চাই।') + '" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md">' +
+                            '<i class="fa-brands fa-whatsapp text-sm"></i>' +
+                            '<span>ফুল বান্ডেল অর্ডার (৳ ৫,০০০)</span>' +
+                        '</a>' +
+                        '<button type="button" onclick="window.resetTrialForTesting()" class="text-[11px] text-slate-300 hover:text-white ml-1 cursor-pointer" title="আবার টেস্ট করুন">' +
+                            '<i class="fa-solid fa-rotate-right"></i>' +
+                        '</button>';
+                }
+            } else if (isUnlocked) {
+                banner.className = 'p-3.5 sm:p-4 rounded-xl border border-sky-500/30 bg-sky-950/40 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
+                if (dot) dot.className = 'w-3 h-3 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
+                if (title) title.textContent = '১-বার ফ্রি ট্রায়াল সেশন সক্রিয় (সর্বোচ্চ ১ ঘণ্টা):';
+                if (desc) desc.textContent = 'ফ্লাইট সার্চ থেকে টিকিট ইস্যু পর্যন্ত স্ট্যান্ডার্ড কমান্ডে প্র্যাকটিস করুন। (রিইস্যু ও রিফান্ড ফুল ভার্সনে সংরক্ষিত)';
+                if (actions) {
+                    var formattedTime = formatRemainingTime(remaining);
+                    actions.innerHTML =
+                        '<span id="trialTimerBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">' +
+                            '<i class="fa-solid fa-clock text-amber-400 mr-1"></i> বাকি: ' + formattedTime +
+                        '</span>' +
+                        '<span id="trialBadge" class="text-[11px] font-mono px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold hidden sm:inline-block">' +
+                            '✓ UNLOCKED' +
+                        '</span>' +
+                        '<button type="button" onclick="window.openTrialGateModal(true)" class="text-xs text-slate-200 hover:text-white underline cursor-pointer">' +
+                            'শর্তাবলী' +
+                        '</button>';
+                }
+            } else {
+                banner.className = 'p-3.5 sm:p-4 rounded-xl border border-amber-500/30 bg-slate-900/60 backdrop-blur flex flex-col sm:flex-row items-center justify-between gap-3 text-left';
+                if (dot) dot.className = 'w-3 h-3 rounded-full bg-amber-400 animate-pulse flex-shrink-0';
+                if (title) title.textContent = '১ ঘণ্টার ফ্রি লাইভ ডেমো সেশন:';
+                if (desc) desc.textContent = 'YouTube সাবস্ক্রাইব ও শর্তাবলী মেনে নিয়ে আপনার পছন্দের GDS সিমুলেটর আনলক করুন।';
+                if (actions) {
+                    actions.innerHTML =
+                        '<button type="button" onclick="window.openTrialGateModal(false)" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer">' +
+                            '🔓 আনলক করুন' +
+                        '</button>';
+                }
+            }
         };
 
         window.openCompletionModal = function(ticket) {
@@ -1571,6 +1787,25 @@
             window.location.reload();
         };
 
+        // Close trial gate / locked modal on Escape or backdrop click
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                window.closeTrialGateModal();
+                window.closeDemoLockedModal();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            var gateModal = document.getElementById('gdsTrialGateModal');
+            if (gateModal && !gateModal.classList.contains('hidden') && e.target === gateModal) {
+                window.closeTrialGateModal();
+            }
+            var lockedModal = document.getElementById('demoLockedModal');
+            if (lockedModal && !lockedModal.classList.contains('hidden') && e.target === lockedModal) {
+                window.closeDemoLockedModal();
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             var isUnlocked = false;
             var isUsed = false;
@@ -1594,17 +1829,16 @@
                 if (overlay) overlay.classList.remove('hidden');
                 if (container) container.classList.add('hidden');
             } else if (isUnlocked) {
-                // Already unlocked and time still remaining
+                // Already unlocked and time still remaining - keep GDS unselected until user clicks one
                 startCountdownTicker();
                 var overlay = document.getElementById('simGateOverlay');
                 var container = document.getElementById('simIframeContainer');
+                var promptEl = document.getElementById('simSelectPrompt');
+                var iframe = document.getElementById('simIframe');
                 if (overlay) overlay.classList.add('hidden');
                 if (container) container.classList.remove('hidden');
-
-                var iframe = document.getElementById('simIframe');
-                if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src.endsWith('about:blank'))) {
-                    iframe.src = 'simulators/' + currentGds + '/index.html';
-                }
+                if (promptEl) promptEl.classList.remove('hidden');
+                if (iframe) iframe.classList.add('hidden');
             } else {
                 // Not unlocked, show modal after brief delay
                 setTimeout(function() {
