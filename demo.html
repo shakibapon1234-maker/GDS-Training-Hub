@@ -24,6 +24,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/tailwind.min.css">
+    <link rel="stylesheet" href="assets/css/fonts.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -74,27 +75,13 @@
         @keyframes gdsLogoSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .gds-logo-spin { animation: gdsLogoSpin 10s linear infinite; }
     </style>
-    <!-- Google tag (gtag.js) - deferred for zero TBT -->
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HCWBV0EZ04');
-      (function(){
-        var loaded = false;
-        function loadGA(){
-          if(loaded) return;
-          loaded = true;
-          var s = document.createElement('script');
-          s.async = true;
-          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04';
-          document.head.appendChild(s);
-        }
-        window.addEventListener('load', function(){ setTimeout(loadGA, 1800); });
-        ['pointerdown','keydown','scroll'].forEach(function(ev){
-          window.addEventListener(ev, loadGA, {once:true, passive:true});
-        });
-      })();
     </script>
 </head>
 <body class="min-h-screen flex flex-col bg-[#080C14] text-slate-100 selection:bg-amber-500 selection:text-slate-950">
