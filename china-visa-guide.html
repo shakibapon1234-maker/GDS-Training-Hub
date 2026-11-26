@@ -116,13 +116,27 @@
         } catch (err) {}
     });
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
+    <!-- Google tag (gtag.js) - deferred for zero TBT -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HCWBV0EZ04');
+      (function(){
+        var loaded = false;
+        function loadGA(){
+          if(loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04';
+          document.head.appendChild(s);
+        }
+        window.addEventListener('load', function(){ setTimeout(loadGA, 1800); });
+        ['pointerdown','keydown','scroll'].forEach(function(ev){
+          window.addEventListener(ev, loadGA, {once:true, passive:true});
+        });
+      })();
     </script>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">

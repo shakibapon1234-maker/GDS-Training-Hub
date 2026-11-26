@@ -34,13 +34,27 @@
     fbq('init', '881905844712860');
     fbq('track', 'PageView');
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
+    <!-- Google tag (gtag.js) - deferred for zero TBT -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HCWBV0EZ04');
+      (function(){
+        var loaded = false;
+        function loadGA(){
+          if(loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04';
+          document.head.appendChild(s);
+        }
+        window.addEventListener('load', function(){ setTimeout(loadGA, 1800); });
+        ['pointerdown','keydown','scroll'].forEach(function(ev){
+          window.addEventListener(ev, loadGA, {once:true, passive:true});
+        });
+      })();
     </script>
 </head>
 <body class="bg-[#070c1a] text-slate-200 min-h-screen flex flex-col justify-between">

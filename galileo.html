@@ -116,13 +116,27 @@
         } catch (err) {}
     });
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
+    <!-- Google tag (gtag.js) - deferred for zero TBT -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HCWBV0EZ04');
+      (function(){
+        var loaded = false;
+        function loadGA(){
+          if(loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04';
+          document.head.appendChild(s);
+        }
+        window.addEventListener('load', function(){ setTimeout(loadGA, 1800); });
+        ['pointerdown','keydown','scroll'].forEach(function(ev){
+          window.addEventListener(ev, loadGA, {once:true, passive:true});
+        });
+      })();
     </script>
 </head>
 <body class="selection:bg-emerald-500 selection:text-white">
@@ -138,7 +152,7 @@
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-[#080C14]/90 border-b border-emerald-900/40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
         <a href="index.html" class="flex items-center space-x-3 group">
-            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
+            <img src="assets/logo.png" width="40" height="40" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
             <div>
                 <span class="text-xl font-black text-white tracking-wider">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
                 <p class="text-xs text-slate-200 hidden sm:block">Amadeus · Galileo · Sabre Simulators</p>

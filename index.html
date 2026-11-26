@@ -434,13 +434,27 @@
         } catch (err) {}
     });
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04"></script>
+    <!-- Google tag (gtag.js) - deferred for zero TBT -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HCWBV0EZ04');
+      (function(){
+        var loaded = false;
+        function loadGA(){
+          if(loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HCWBV0EZ04';
+          document.head.appendChild(s);
+        }
+        window.addEventListener('load', function(){ setTimeout(loadGA, 1800); });
+        ['pointerdown','keydown','scroll'].forEach(function(ev){
+          window.addEventListener(ev, loadGA, {once:true, passive:true});
+        });
+      })();
     </script>
 </head>
 <body class="selection:bg-amber-500 selection:text-black">
@@ -481,7 +495,7 @@
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/95 border-b border-brand-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[76px] py-2 flex items-center justify-between gap-3">
         <a href="index.html" class="flex items-center space-x-3 flex-shrink-0 group">
-            <img src="assets/logo.png" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
+            <img src="assets/logo.png" width="40" height="40" alt="GDS Training Hub Logo" class="w-10 h-10 rounded-full object-cover shadow-lg flex-shrink-0 border border-amber-400/50 gds-logo-spin">
             <div class="flex flex-col justify-center">
                 <span class="text-xl sm:text-2xl font-black text-white tracking-wider whitespace-nowrap leading-tight">GDS <span class="text-amber-400">TRAINING</span> HUB</span>
                 <p class="text-[11px] text-slate-200 hidden sm:block whitespace-nowrap leading-tight mt-0.5">
@@ -517,13 +531,13 @@
                     <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
                 </button>
                 <div id="gdsPagesMenu" role="menu" aria-labelledby="gdsPagesButton" class="absolute top-full left-0 mt-2 w-40 bg-[#0d1422] border border-slate-700 rounded-xl shadow-2xl z-50 hidden">
-                    <a href="amadeus.html" class="flex items-center gap-2 px-4 py-2.5 text-sky-400 hover:bg-sky-500/10 rounded-t-xl text-xs font-bold transition">
+                    <a href="amadeus.html" role="menuitem" class="flex items-center gap-2 px-4 py-2.5 text-sky-400 hover:bg-sky-500/10 rounded-t-xl text-xs font-bold transition">
                         <i class="fa-solid fa-terminal text-[10px]"></i> Amadeus
                     </a>
-                    <a href="galileo.html" class="flex items-center gap-2 px-4 py-2.5 text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold transition">
+                    <a href="galileo.html" role="menuitem" class="flex items-center gap-2 px-4 py-2.5 text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold transition">
                         <i class="fa-solid fa-globe text-[10px]"></i> Galileo
                     </a>
-                    <a href="sabre.html" class="flex items-center gap-2 px-4 py-2.5 text-rose-400 hover:bg-rose-500/10 rounded-b-xl text-xs font-bold transition">
+                    <a href="sabre.html" role="menuitem" class="flex items-center gap-2 px-4 py-2.5 text-rose-400 hover:bg-rose-500/10 rounded-b-xl text-xs font-bold transition">
                         <i class="fa-solid fa-bolt text-[10px]"></i> Sabre
                     </a>
                 </div>
@@ -549,13 +563,13 @@
                     <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
                 </button>
                 <div id="morePagesMenu" role="menu" aria-labelledby="morePagesButton" class="absolute top-full right-0 mt-2 w-48 bg-[#0d1422] border border-slate-700 rounded-xl shadow-2xl z-50 hidden">
-                    <a href="#ebook" class="flex items-center gap-2 px-4 py-2.5 text-purple-300 hover:bg-purple-500/10 rounded-t-xl text-xs font-bold transition">
+                    <a href="#ebook" role="menuitem" class="flex items-center gap-2 px-4 py-2.5 text-purple-300 hover:bg-purple-500/10 rounded-t-xl text-xs font-bold transition">
                         <i class="fa-solid fa-book-open text-[10px]"></i> <span lang-bn>ফ্রি ইবুক</span><span lang-en>Free Ebook</span>
                     </a>
-                    <a href="#faq" class="flex items-center gap-2 px-4 py-2.5 text-indigo-300 hover:bg-indigo-500/10 text-xs font-bold transition">
+                    <a href="#faq" role="menuitem" class="flex items-center gap-2 px-4 py-2.5 text-indigo-300 hover:bg-indigo-500/10 text-xs font-bold transition">
                         <i class="fa-solid fa-circle-question text-[10px]"></i> FAQ
                     </a>
-                    <a href="#other-products" class="flex items-center gap-2 px-4 py-2.5 text-rose-300 hover:bg-rose-500/10 rounded-b-xl text-xs font-bold transition">
+                    <a href="#other-products" role="menuitem" class="flex items-center gap-2 px-4 py-2.5 text-rose-300 hover:bg-rose-500/10 rounded-b-xl text-xs font-bold transition">
                         <i class="fa-solid fa-boxes-stacked text-[10px]"></i> <span lang-bn>অন্যান্য সফটওয়্যার</span><span lang-en>Other Software</span>
                     </a>
                 </div>
