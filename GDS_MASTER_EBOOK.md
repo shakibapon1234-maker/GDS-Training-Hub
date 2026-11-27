@@ -78,8 +78,15 @@ T — Ticketing Status    (টিকেটের টাইম লিমিট �
 | **Encode City/Airport** | `DAN DHAKA` | `.CD DHAKA` | `W/-DHAKA` |
 | **Decode City/Airport** | `DAC DAC` | `.CD DAC` | `W/-DAC` |
 | **Encode Airline** | `DNA EMIRATES` | `.CE EMIRATES` | `W/-ALEMIRATES` |
-| **Decode Airline** | `DNA EK` | `.CE EK` | `W/-ALEK` |
+| **Decode Airline** | `DNA EK` / `DNA 176` | `.CE EK` | `W/-ALEK` |
+| **Decode Aircraft / Equipment** | `DNE 77W` / `DNE BOEING` | `.EQ 77W` | `W/EQ-77W` |
+| **Decode Country & Currency** | `DC BD` / `DC BANGLADESH` | `.CC BD` | `DC*BD` |
+| **Decode State / Province** | `DNS FL` / `DNS FLORIDA` | `.CS FL` | `DNS*FL` |
 | **Flight Availability** | `AN20NOVDACSIN` | `A20NOVDACSIN` | `120NOVDACSIN` |
+| **Schedule Neutral (SN)** | `SN25JULDACSIN` | `S25JULDACSIN` | `S25JULDACSIN` |
+| **Timetable Neutral (TN)** | `TN25JULDACSIN` | `TT25JULDACSIN` | `125JULDACSIN*T` |
+| **Planned Flight Info (DO)** | `DO SQ447/25JUL` / `DO 2` | `DO SQ447` | `2SQ447/25JUL` |
+| **Work Area Status** | `JD` | `OP/W*` | `*S*` |
 | **Availability Specific Airline** | `AN20NOVDACDXB/AEK` | `A20NOVDACDXB*EK` | `120NOVDACDXB¥EK` |
 | **Seat Sell (1 Seat, Y Class, Line 1)** | `SS1Y1` | `01Y1` | `0Y1` |
 | **Adult Name** | `NM1RAHMAN/ANIS MR` | `N.1RAHMAN/ANIS MR` | `-RAHMAN/ANIS MR` |
@@ -94,6 +101,7 @@ T — Ticketing Status    (টিকেটের টাইম লিমিট �
 | **Ignore / Cancel Unsaved** | `IR` বা `IG` | `IR` বা `I` | `IR` বা `I` |
 | **Retrieve Active PNR** | `RT` | `*R` | `*R` |
 | **Retrieve by Locator** | `RT K7QZLM` | `*K7QZLM` | `*K7QZLM` |
+| **PNR History (Audit Trail)** | `RH` / `RHA` / `RHN` / `RHS` | `*H` | `*H` |
 | **Display Itinerary Only** | `RTI` | `*I` | `*I` |
 | **Display Names Only** | `RTN` | `*N` | `*N` বা `*-` |
 | **Price Fare (Booked Class)** | `FXP` (Stores TST) | `FQ` | `WP` বা `WPA SQ` |
@@ -110,10 +118,11 @@ T — Ticketing Status    (টিকেটের টাইম লিমিট �
 | **Printer Setup** | (Automatic) | (Automatic) | `W*BD` ➔ `DSIVE8C987` ➔ `PTR/E8C987` |
 | **Issue Ticket** | `TTP` বা `TTP/T1` | `TKP` বা `TKPFS` | `W¥PQ1¥ASQ¥FINVAGT¥K7` |
 | **Display Issued Ticket** | `TWD` বা `TWD/T1` | `*TE` বা `*TE1` | `*T` |
-| **Void Ticket (Same-Day)** | `TRDC/L1` | `#VOID` বা `TRV` | `WV*` ➔ `WV1` |
+| **Void Ticket (Same-Day)** | `TRDC` / `TRDC/L10` | `#VOID` বা `TRV` | `WV*` ➔ `WV1` |
 | **Refund Ticket** | `TRF` ➔ `TRFP/CP...` ➔ `TRFP/FP` | `TRNC` ➔ `TRNE` | `RFND` ➔ `REFUND` |
 | **Reissue / Exchange** | `XE` ➔ `SS` ➔ `FXQ` ➔ `TQR` ➔ `TTP/EXCH` | `FBUTAX` ➔ `TMU1FEX` ➔ `TKP` | `X` ➔ `0` ➔ `WPA` ➔ `PQ` ➔ `REISSUE` |
-| **Queue Summary** | `QS` | `*Q` | `Q/` |
+| **Queue Summary & Count** | `QS` / `QC` / `QCA` | `*Q` / `QC` | `Q/` / `QC` |
+| **Help & Information System** | `HE BAGGAGE` / `GG NEWS` / `GG AIR BG` | `H/` / `GC` | `HELP` / `Y/` |
 
 ---
 

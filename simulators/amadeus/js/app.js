@@ -1,4 +1,4 @@
-const OFFICE_ID = "DACVS3334";
+﻿const OFFICE_ID = "DACVS3334";
 // ---------- Lesson Training PNR (Turkish Airlines - J99GZO) ----------
 const LESSON_PNR = {
   locator: "J99GZO",
@@ -192,10 +192,10 @@ const JHONY_PNR = {
   dateStamp: "17JUN26/1324Z",
   headerLine2: "DACVS31XW/4455BP/17JUN26",
   passengers: [
-    { type: 'adult', label: "JHONY/MD MR Male", nameDisplay: "MR MD JHONY", code: "P1" }
+    { type: 'adult', label: "JHONY/MD MR Male", nameDisplay: "MR MD JHONY", code: "P1", passport: "A99887767" }
   ],
   segments: [
-    { al:"BG", fn:"555", cls:"Y", date:"25JUL", day:"7", dep:"DAC", arr:"SIN", status:"HK", count:1, depT:"1659", arrT:"2059", arrDate:"25JUL", eq:"739", tktCode:"BG/54FHGK", fullDate:"2026-07-25" }
+    { al:"BG", fn:"555", cls:"Y", date:"25JUL", day:"7", dep:"DAC", arr:"SIN", status:"HK", count:1, depT:"1659", arrT:"2059", arrDate:"25JUL", eq:"739", tktCode:"BG/54FHGK", fullDate:"2026-07-25", depTerminal:"2", arrTerminal:"1", baggage:"20 KG", cabin:"Economy" }
   ],
   phone: "DAC JHONY TECH TRAVEL CTC0505793144",
   ticketing: "OK18JUN/DACVS31XW/ET",
@@ -207,6 +207,22 @@ const JHONY_PNR = {
   showOths: false,
   showFE: false,
   seats: {},
+  docsEntries: [
+    {
+      airline: "BG",
+      action: "HK1",
+      docType: "P",
+      country: "BGD",
+      docNumber: "A99887767",
+      nationality: "BGD",
+      dob: "15MAY90",
+      gender: "M",
+      expiry: "20DEC32",
+      surname: "JHONY",
+      firstName: "MD",
+      pax: "P1"
+    }
+  ],
   tickets: [
     {
       tktNum: "157-7800396554421",
@@ -226,7 +242,7 @@ const JHONY_PNR = {
       status: "OK",
       couponStatuses: ["O"],
       itinerary: [
-        { al: "BG", fn: "555", cls: "Y", date: "25JUL", dep: "DAC", arr: "SIN", status: "OK", depT: "1659", arrT: "2059" }
+        { al: "BG", fn: "555", cls: "Y", date: "25JUL", dep: "DAC", arr: "SIN", status: "OK", depT: "1659", arrT: "2059", depTerminal:"2", arrTerminal:"1", baggage:"20 KG", cabin:"Economy" }
       ]
     }
   ],
@@ -389,6 +405,13 @@ function resolveFlightDate(dateStr, baseDate = new Date()){
 }
 
 function formatSegmentBuildingLines(seg, sIdx, totalSegs, segLineNum){
+  if(seg.isARNK){
+    return [`${segLineNum.toString().padStart(2, ' ')}  ARNK`];
+  }
+  if(seg.isOpen){
+    const dateDisplay = (seg.date && seg.date !== 'OPEN') ? `${seg.date} ` : '     ';
+    return [`${segLineNum.toString().padStart(2, ' ')}  ${seg.al} OPEN ${seg.cls} ${dateDisplay} ${seg.dep}${seg.arr}  OPEN`];
+  }
   const lines = [];
   const sNum = segLineNum.toString().padStart(2, ' ');
   const classLink = `<span class="seg-class-link" onclick="openSeatMap(${sIdx})" title="Click to view Seat Map for this flight (${seg.al} ${seg.fn})">${seg.cls}</span>`;
@@ -523,6 +546,15 @@ function renderPNR(header){
   const totalSegs = state.segments ? state.segments.length : 0;
   state.segments.forEach((seg, sIdx)=>{
     const segLineNum = idx++;
+    if(seg.isARNK){
+      rows.push(`${segLineNum.toString().padStart(2, ' ')}  ARNK`);
+      return;
+    }
+    if(seg.isOpen){
+      const dateDisplay = (seg.date && seg.date !== 'OPEN') ? `${seg.date} ` : '     ';
+      rows.push(`${segLineNum.toString().padStart(2, ' ')}  ${seg.al} OPEN ${seg.cls} ${dateDisplay} ${seg.dep}${seg.arr}  OPEN`);
+      return;
+    }
     const classLink = `<span class="seg-class-link" onclick="openSeatMap(${sIdx})" title="Click to view Seat Map for this flight (${seg.al} ${seg.fn})">${seg.cls}</span>`;
 
     if(isBuilding){
@@ -704,10 +736,11 @@ function renderPNR(header){
       rows.push(`${idx.toString().padStart(2, ' ')}  SSR FQTV ${s.al} ${s.status} ${s.value}/${s.pax}`);
       idx++;
     });
-    // SRBAGX — Extra Baggage
-    state.specialSSRs.filter(s => s.type === 'BAGX').forEach(s => {
-      state.segments.forEach((seg, si) => {
-        rows.push(`${idx.toString().padStart(2, ' ')}  SSR BAGX ${s.al} ${s.status} ${s.value}/S${si+3}/${s.pax}`);
+    // SRBAGX / SRXBAG / SRABAG — Extra Baggage
+    state.specialSSRs.filter(s => s.type === 'BAGX' || s.type === 'XBAG' || s.type === 'ABAG').forEach(s => {
+      const segTarget = s.segNum ? [s.segNum] : state.segments.map((_, si) => si + 2);
+      segTarget.forEach(segLine => {
+        rows.push(`${idx.toString().padStart(2, ' ')}  SSR ${s.type} ${s.al} ${s.status} ${s.value}/S${segLine}/${s.pax}`);
         idx++;
       });
     });
@@ -800,16 +833,6 @@ function renderPNR(header){
       state.ticketLineNumbers[String(idx)] = t.tktNum;
       rows.push(`${idx.toString().padStart(2, ' ')}  FA PAX ${t.tktNum}/ET${alLet}/${dt}/${off}/23567890/S3-4/${pNum}`);
       idx++;
-      if(t.status === 'V'){
-        rows.push(`${idx.toString().padStart(2, ' ')}  FB PAX 0000000000 TRDC OK VOID/${t.voidedAt ? new Date(t.voidedAt).toLocaleDateString() : 'SAME-DAY'}`);
-        idx++;
-      } else if(t.status === 'R' || t.refundNotice){
-        rows.push(`${idx.toString().padStart(2, ' ')}  FB PAX 0000000000 TRFP/FP OK REFUND/${t.refundNotice || 'RN157-998877'}`);
-        idx++;
-      } else if(t.status !== 'E'){
-        rows.push(`${idx.toString().padStart(2, ' ')}  FB PAX 0000000000 TTP/T1 OK ETICKET/S3-4/${pNum}`);
-        idx++;
-      }
       if(t.penaltyEMD){
         state.ticketLineNumbers[String(idx)] = t.penaltyEMD;
         rows.push(`${idx.toString().padStart(2, ' ')}  FA PAX ${t.penaltyEMD}/DT${alLet}/${dt}/${off}/23567890/S2/PENALTY`);
@@ -818,6 +841,17 @@ function renderPNR(header){
       if(t.originalIssue){
         state.ticketLineNumbers[String(idx)] = t.originalIssue;
         rows.push(`${idx.toString().padStart(2, ' ')}  FHE PAX ${t.originalIssue}`);
+        idx++;
+      }
+      if(t.status === 'V'){
+        rows.push(`${idx.toString().padStart(2, ' ')}  FB PAX 0000000000 TRDC OK VOID/${t.voidedAt ? new Date(t.voidedAt).toLocaleDateString() : 'SAME-DAY'}`);
+        idx++;
+      } else if(t.status === 'R' || t.refundNotice){
+        rows.push(`${idx.toString().padStart(2, ' ')}  FB PAX 0000000000 TRFP/FP OK REFUND/${t.refundNotice || 'RN157-998877'}`);
+        idx++;
+      } else if(t.status !== 'E'){
+        const tNum = t.tstNum || 1;
+        rows.push(`${idx.toString().padStart(2, ' ')}  FB PAX 0000000000 TTP/T${tNum} OK ETICKET/S3-4/${pNum}`);
         idx++;
       }
     });
@@ -1242,8 +1276,10 @@ function openAvailabilitySellMenu(event, bookingClass, lineNumber, availableSeat
 }
 window.openAvailabilitySellMenu = openAvailabilitySellMenu;
 
-function handleAN(cmd, isDirect){
+function handleAN(cmd, isDirect, displayMode){
   const clean = cmd.replace(/\s+/g, '');
+  const modeLabel = displayMode || (isDirect ? "AD" : "AN");
+  const modeTitle = displayMode === 'SN' ? 'AMADEUS SCHEDULE' : (displayMode === 'TN' ? 'AMADEUS TIMETABLE' : 'AMADEUS AVAILABILITY');
 
   // Multi-availability / Dual-city search via '*' (e.g. AN15NOVDACDXB*20NOVDXBLHR or AN10NOVDACBKK*AN16NOVBKKSIN)
   if(clean.includes('*')){
@@ -1361,11 +1397,27 @@ function handleAN(cmd, isDirect){
   const dayOfYear = Math.floor((dObj - startOfYear) / (24*60*60*1000)) + 1;
   const julianStr = String(dayOfYear).padStart(3, ' ');
 
-  const header = `** AMADEUS AVAILABILITY - ${isDirect ? "AD" : "AN"} ** ${destCity.padEnd(28, ' ')}  ${julianStr} ${day2L} ${date} 0000`;
+  const headerDatePart = displayMode === 'TN'
+    ? (() => {
+        const endObj = new Date(dObj.getTime() + 7 * 86400000);
+        const mNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        const fmt7 = (dtObj) => `${String(dtObj.getDate()).padStart(2,'0')}${mNames[dtObj.getMonth()]}${String(dtObj.getFullYear()).slice(-2)}`;
+        return `${fmt7(dObj)} ${fmt7(endObj)}`;
+      })()
+    : `${julianStr} ${day2L} ${date} 0000`;
+
+  const header = `** ${modeTitle} - ${modeLabel} ** ${destCity.padEnd(28, ' ')}  ${headerDatePart}`;
   const rows = [header];
 
   const alFilter = filter ? filter.toUpperCase().replace(/^A/, '') : null;
   let displayIdx = 1;
+
+  const extractTermDigit = (code, explicit) => {
+    if(explicit !== undefined && explicit !== null && explicit !== '') return String(explicit).replace(/\D+/g, '') || '0';
+    const t = getAirportTerminal(code);
+    const m = String(t).match(/(\d+)/);
+    return m ? m[1] : '1';
+  };
 
   route.lines.forEach(line => {
     if(alFilter && !line.segs.some(s => s.al.toUpperCase() === alFilter)) return;
@@ -1375,9 +1427,39 @@ function handleAN(cmd, isDirect){
       const clsEntries = Object.entries(seg.classes);
       const isCodeshare = !!seg.codeShare;
       const alDisplay = isCodeshare ? seg.codeShare.padEnd(9, ' ') : `  ${seg.al} ${(seg.fn.length < 3 ? seg.fn.padStart(3, ' ') : seg.fn)}`.padEnd(9, ' ');
-      const row1Cls = renderAvailabilityClasses(clsEntries.slice(0, 7), availabilityLine);
-      const row2Cls = clsEntries.length > 7 ? renderAvailabilityClasses(clsEntries.slice(7), availabilityLine) : '';
       const num = (i === 0) ? (displayIdx++).toString().padStart(2, ' ') : '  ';
+
+      if(displayMode === 'TN'){
+        // Amadeus Timetable (TN) format — no booking classes; shows freq, terminals, times, stops, validity dates, equip, EFT
+        const freq = (seg.freq || 'D').padEnd(4, ' ');
+        const tDep = extractTermDigit(seg.dep, seg.termDep);
+        const tArr = extractTermDigit(seg.arr, seg.termArr);
+        const routePart = `${seg.dep} ${tDep} ${seg.arr} ${tArr}`.padEnd(11, ' ');
+        const depTime = String(seg.depT || '0000').padEnd(7, ' ');
+        const arrTime = String(seg.arrT || '0000').padEnd(6, ' ');
+        const isLastLeg = (i === line.segs.length - 1);
+        const effStr = !isLastLeg
+          ? `CONNECT ${seg.arr}`.padEnd(15, ' ')
+          : `${seg.effDate || '26OCT26'} ${seg.discDate || '30OCT27'}`;
+        let totalDur = seg.dur || '4:00';
+        if(isLastLeg && line.segs.length > 1 && typeof flAbsMinutes === 'function'){
+          const mins = flAbsMinutes(seg.arrT) - flAbsMinutes(line.segs[0].depT);
+          if(mins > 0) totalDur = `${Math.floor(mins / 60)}:${String(mins % 60).padStart(2, '0')}`;
+        }
+        const durCol = isLastLeg ? `  ${totalDur}` : '';
+        rows.push(`${num}${isCodeshare ? '' : ' '}${alDisplay.trimEnd().padEnd(8, ' ')} ${freq} ${routePart} ${depTime} ${arrTime} 0 ${effStr} ${String(seg.eq || '738').padEnd(4, ' ')}${durCol}`);
+        return;
+      }
+
+      // For SN (Schedule Neutral): show class codes WITHOUT seat counts; for AN/AD: show class + count
+      const renderClsRow = (entries) => {
+        if(displayMode === 'SN'){
+          return entries.map(([c]) => c).join('  ');
+        }
+        return renderAvailabilityClasses(entries, availabilityLine);
+      };
+      const row1Cls = renderClsRow(clsEntries.slice(0, 7));
+      const row2Cls = clsEntries.length > 7 ? renderClsRow(clsEntries.slice(7)) : '';
       const hasTerm = (seg.termDep !== undefined || seg.termArr !== undefined);
       const termD = seg.termDep !== undefined ? ` ${seg.termDep}` : '';
       const termA = seg.termArr !== undefined ? ` ${seg.termArr}` : '';
@@ -1389,7 +1471,8 @@ function handleAN(cmd, isDirect){
       if(hasTerm){
         rows.push(`${num} ${alDisplay}  ${clsPadded} ${slash}${routeStr.padEnd(12, ' ')} ${seg.depT}    ${seg.arrT.padEnd(6, ' ')} ${eqStr.padEnd(10, ' ')} ${durStr}`);
       } else {
-        rows.push(`${num} <span class="al">${seg.al} ${seg.fn.padEnd(4, ' ')}</span>  ${clsPadded}  /${seg.dep} ${seg.arr}  ${seg.depT} ${seg.arrT}  ${seg.eq}  ${seg.dur || '3:00'}`);
+        const freqCol = displayMode === 'SN' ? ' D ' : '';
+        rows.push(`${num} <span class="al">${seg.al} ${seg.fn.padEnd(4, ' ')}</span> ${freqCol} ${clsPadded}  /${seg.dep} ${seg.arr}  ${seg.depT} ${seg.arrT}  ${seg.eq}  ${seg.dur || '3:00'}`);
       }
       if(row2Cls){
         rows.push(`             ${row2Cls}`);
@@ -1570,8 +1653,135 @@ function handleSS(cmd){
   showToast(`✓ Held ${count} seat(s) on ${newSegs.map(s => s.al + ' ' + s.fn).join(', ')} (Status: DK${count})`);
 }
 
+// ---------- SI ARNK / ARNK — Surface / Open-Jaw break ----------
+function handleARNK(cmd){
+  if(!state.segments || !state.segments.length){
+    printLines(['NO ITINERARY TO INSERT ARNK — ENTER FLIGHT SEGMENT FIRST'], 'err');
+    showToast('Enter flight segment first before adding ARNK', 'warn');
+    return;
+  }
+  if(state.segments[state.segments.length - 1].isARNK){
+    printLines(['CONSECUTIVE ARNK SEGMENTS NOT PERMITTED'], 'err');
+    return;
+  }
+  state.segments.push({
+    isARNK: true,
+    type: 'ARNK',
+    status: 'ARNK',
+    al: 'ARNK',
+    fn: '',
+    cls: '',
+    dep: '',
+    arr: '',
+    date: '',
+    count: 0
+  });
+  state.hasPending = true;
+
+  const isBuilding = !state.locator && !state.finalized;
+  if(isBuilding){
+    const rows = [];
+    rows.push('--- MSC SFP ---');
+    const currOffice = state.officeId || OFFICE_ID;
+    rows.push(`RP/${currOffice}/${currOffice}`);
+    if(state.passengers && state.passengers.length){
+      let paxLine = '';
+      state.passengers.forEach((p, i) => {
+        paxLine += `${i+1}.${p.label}  `;
+      });
+      rows.push(paxLine.trim());
+    }
+    let lineIdx = (state.passengers ? state.passengers.length : 0) + 1;
+    const totalSegs = state.segments.length;
+    state.segments.forEach((seg, idx) => {
+      const segLines = formatSegmentBuildingLines(seg, idx, totalSegs, lineIdx++);
+      segLines.forEach(l => rows.push(l));
+    });
+    printLines(rows, '');
+  } else {
+    renderPNR();
+  }
+  updateTopPnrInfo();
+  showToast('✓ Surface segment (ARNK) added');
+}
+
+// ---------- SO — Sell Open Segment (Open Journey / Open Return) ----------
+// Formats:
+//   SO EK Y 25DEC DXBDAC
+//   SO BG Y OPEN DACKUL
+//   0 EK OPEN Y 20DEC DXBDAC
+function handleSO(cmd){
+  const clean = cmd.trim().toUpperCase();
+  const m = clean.match(/^SO\s+([A-Z0-9]{2})\s+([A-Z])(?:\s+(OPEN|\d{1,2}[A-Z]{3}))?\s+([A-Z]{3})([A-Z]{3})$/i)
+         || clean.match(/^0\s+([A-Z0-9]{2})\s+OPEN\s+([A-Z])(?:\s+(OPEN|\d{1,2}[A-Z]{3}))?\s+([A-Z]{3})([A-Z]{3})$/i);
+
+  if(!m){
+    printLines([
+      'FORMAT ERROR — SELL OPEN SEGMENT',
+      'Format: SO [AIRLINE] [CLASS] [DATE/OPEN] [ORIGIN][DESTINATION]',
+      'Example: SO EK Y 25DEC DXBDAC',
+      'Example: SO BG Y OPEN DACKUL',
+      'Example: 0 EK OPEN Y 20DEC DXBDAC'
+    ], 'err');
+    return;
+  }
+
+  const al = m[1].toUpperCase();
+  const cls = m[2].toUpperCase();
+  const date = (m[3] || 'OPEN').toUpperCase();
+  const dep = m[4].toUpperCase();
+  const arr = m[5].toUpperCase();
+
+  state.segments = state.segments || [];
+  state.segments.push({
+    isOpen: true,
+    al: al,
+    fn: 'OPEN',
+    cls: cls,
+    date: date,
+    day: (date !== 'OPEN') ? getDayOfWeek(date) : '',
+    dep: dep,
+    arr: arr,
+    status: 'OPEN',
+    count: 1,
+    depT: '',
+    arrT: '',
+    arrDate: '',
+    eq: '',
+    confirmedEndCode: `E  ${al}/OPEN`
+  });
+  state.hasPending = true;
+
+  const isBuilding = !state.locator && !state.finalized;
+  if(isBuilding){
+    const rows = [];
+    rows.push('--- MSC SFP ---');
+    const currOffice = state.officeId || OFFICE_ID;
+    rows.push(`RP/${currOffice}/${currOffice}`);
+    if(state.passengers && state.passengers.length){
+      let paxLine = '';
+      state.passengers.forEach((p, i) => {
+        paxLine += `${i+1}.${p.label}  `;
+      });
+      rows.push(paxLine.trim());
+    }
+    let lineIdx = (state.passengers ? state.passengers.length : 0) + 1;
+    const totalSegs = state.segments.length;
+    state.segments.forEach((seg, idx) => {
+      const segLines = formatSegmentBuildingLines(seg, idx, totalSegs, lineIdx++);
+      segLines.forEach(l => rows.push(l));
+    });
+    printLines(rows, '');
+  } else {
+    renderPNR();
+  }
+  updateTopPnrInfo();
+  showToast(`✓ Open segment added (${al} OPEN ${cls} ${dep}-${arr})`);
+}
+
 function getHeldSeatCapacity(){
   const heldCounts = (state.segments || [])
+    .filter(seg => !seg.isARNK && !seg.isOpen)
     .map(seg => Number(seg.count))
     .filter(count => Number.isFinite(count) && count > 0);
   return heldCounts.length ? Math.min(...heldCounts) : null;
@@ -2072,11 +2282,13 @@ function handleER(){
   // a shared Amadeus-hosted record.
   const airlineLocMap = {};
   state.segments.forEach(s => {
+    if(s.isARNK || s.isOpen) return;
     if(s.airlineLocator){
       airlineLocMap[s.al] = s.airlineLocator;
     }
   });
   state.segments.forEach(s => {
+    if(s.isARNK || s.isOpen) return;
     s.status = 'HK';
     if(!s.airlineLocator){
       if(airlineLocMap[s.al]){
@@ -2874,8 +3086,8 @@ function handleSRDOCS(upper, rawCmd){
 
     if(!state.docsEntries) state.docsEntries = [];
 
-  // Remove existing DOCS entry for this passenger if any
-  state.docsEntries = state.docsEntries.filter(d => d.pax !== pax);
+  // Check if an existing DOCS entry already exists for this passenger
+  const existingDoc = state.docsEntries.find(d => d.pax === pax);
 
   state.docsEntries.push({
     airline,
@@ -2896,12 +3108,20 @@ function handleSRDOCS(upper, rawCmd){
 
   state.hasPending = true;
 
-  // A DOCS change requires a fresh pricing/TST before ticket issue.
-  state.tstNeedsReprice = true;
   renderPNR();
 
   const typeLabel = isInfant ? 'Infant' : (isChild ? 'Child' : 'Adult');
   showToast(`✅ SSR DOCS (${typeLabel}) added for ${pax}`);
+
+  // In real Amadeus GDS, entering SRDOCS does NOT automatically overwrite previous entries.
+  // Agents must cancel the old line using XE<line> (e.g. XE8 or XEDOCS/P1).
+  if(existingDoc){
+    printLines([
+      `WARNING: DUPLICATE SSR DOCS FOR ${pax} IN PNR`,
+      `IN REAL AMADEUS, ENTERING SRDOCS DOES NOT AUTOMATICALLY OVERWRITE PREVIOUS ENTRIES`,
+      `CANCEL THE PREVIOUS SSR LINE USING XE (e.g. XE<LINE_NUMBER> OR XEDOCS/${pax.replace('/INF','')})`
+    ], 'warn');
+  }
 }
 
 
@@ -2969,39 +3189,157 @@ function handleSRFFN(cmd){
   showToast(`✅ Frequent Flyer ${al}/${ffn} added for P${paxNum}`);
 }
 
-// ---------- SRBAGX — Extra Baggage SSR ----------
-// SRBAGX QR HK1-10KG/P1  or  SRBAGX TG HK1-1PC/P2
+// ---------- SRBAGX / SRXBAG / SRABAG — Extra Baggage SSR ----------
+// Real Amadeus formats:
+//   SR BAGX BG HK1-10KG/P1
+//   SR BAGX BG HK1-20KG/P1
+//   SR BAGX BG HK1-1PC/P1
+//   SR BAGX BG HK1-10KG/S2/P1
+//   SR BAGX 10KG/P1
+//   SR BAGX 20KG
+//   SR XBAG BG HK1-10KG/P1
+//   SR ABAG BG HK1-10KG/P1
 function handleSRBAGX(cmd){
-  const upper = cmd.toUpperCase().trim();
-  const m = upper.match(/^SR\s*BAGX\s+([A-Z0-9]{2})\s+(HK\d+)[\s-]+([^/]+)\/P(\d+)$/i)
-         || upper.match(/^SR\s*BAGX\s+([^/]+)\/P(\d+)$/i);
-  if(!m){
+  const upper = String(cmd || '').toUpperCase().trim();
+  let type = 'BAGX';
+  if(/^SR\s*XBAG/i.test(upper)) type = 'XBAG';
+  else if(/^SR\s*ABAG/i.test(upper)) type = 'ABAG';
+
+  // Extract passenger number if present (default P1)
+  let paxNum = 1;
+  const pMatch = upper.match(/\/P(\d+)/i);
+  if(pMatch) paxNum = parseInt(pMatch[1], 10);
+
+  // Extract segment number if present (e.g. /S2)
+  let segNum = null;
+  const sMatch = upper.match(/\/S(\d+)/i);
+  if(sMatch) segNum = parseInt(sMatch[1], 10);
+
+  // Strip prefix
+  let rest = upper.replace(/^SR\s*(?:BAGX|XBAG|ABAG)\s*/i, '').trim();
+  // Strip /P and /S parameters
+  rest = rest.replace(/\/(?:P\d+|S\d+)/gi, '').trim();
+
+  let al = (state.segments && state.segments[0] && state.segments[0].al) || 'BG';
+  let status = 'HK1';
+  let bagAmt = '20KG';
+
+  const tokens = rest.split(/[\s-]+/).filter(Boolean);
+  if(tokens.length === 0){
     printLines([
-      'FORMAT: SRBAGX [AIRLINE] HK1-[AMOUNT]/P[PAX]',
-      '  Example: SRBAGX QR HK1-10KG/P1',
-      '  Example: SRBAGX TG HK1-1PC/P1',
-      '  Example: SRBAGX QR HK1-23KG/P2'
+      `FORMAT: SR BAGX [AIRLINE] HK1-[AMOUNT]/P[PAX]`,
+      `  Example: SR BAGX BG HK1-10KG/P1`,
+      `  Example: SR BAGX BG HK1-20KG/P1`,
+      `  Example: SR BAGX BG HK1-1PC/P1`,
+      `  Example: SR BAGX 10KG/P1`,
+      `  Example: SR BAGX BG HK1-10KG/S2/P1`,
+      `  Enquiry: FQA  (Check Baggage Allowance)`
     ], 'err');
     return;
   }
-  let al, bagAmt, paxNum;
-  if(m.length === 5){
-    al = m[1]; bagAmt = m[3].trim(); paxNum = parseInt(m[4],10);
-  } else {
-    al = (state.segments[0] && state.segments[0].al) || 'QR';
-    bagAmt = m[1].trim(); paxNum = parseInt(m[2],10);
+
+  // Look for amount/unit token (e.g. 10KG, 20KG, 23KG, 1PC, 2PC, 15K, 1P)
+  let valToken = null;
+  for(let i = 0; i < tokens.length; i++){
+    if(/^\d+(?:KG|PC|K|P|LBS?)$/i.test(tokens[i]) || /^(?:FREE|NIL)$/i.test(tokens[i])){
+      valToken = tokens[i];
+      break;
+    }
   }
-  const pax = state.passengers[paxNum-1];
-  if(!pax){
-    printLines([`PASSENGER P${paxNum} NOT FOUND IN PNR`], 'err');
+
+  if(!valToken){
+    valToken = tokens[tokens.length - 1];
+  }
+  bagAmt = valToken.toUpperCase();
+  if(!/(KG|PC|K|P|LBS?)/i.test(bagAmt) && /^\d+$/.test(bagAmt)){
+    bagAmt = bagAmt + 'KG';
+  }
+
+  // Look for airline (2 alphanumeric chars)
+  for(let i = 0; i < tokens.length; i++){
+    if(/^[A-Z0-9]{2}$/i.test(tokens[i]) && tokens[i] !== valToken && !/^(HK|NN|HN|KK)\d*$/i.test(tokens[i])){
+      al = tokens[i].toUpperCase();
+      break;
+    }
+  }
+
+  // Look for status (HK1, NN1, etc.)
+  for(let i = 0; i < tokens.length; i++){
+    if(/^(HK|NN|HN|KK|LL)\d*$/i.test(tokens[i])){
+      status = tokens[i].toUpperCase();
+      break;
+    }
+  }
+
+  // Validate passenger
+  if(!state.passengers || !state.passengers.length){
+    printLines(['NO PASSENGER IN PNR - ENTER PASSENGER NAME FIRST (NM1...)'], 'err');
     return;
   }
+  const pax = state.passengers[paxNum - 1];
+  if(!pax){
+    printLines([`PASSENGER P${paxNum} NOT FOUND IN PNR (MAX P${state.passengers.length})`], 'err');
+    return;
+  }
+
   if(!state.specialSSRs) state.specialSSRs = [];
-  state.specialSSRs = state.specialSSRs.filter(s => !(s.type === 'BAGX' && s.pax === `P${paxNum}`));
-  state.specialSSRs.push({ type: 'BAGX', al, status: 'HK1', value: bagAmt, allSegs: true, pax: `P${paxNum}` });
+  state.specialSSRs = state.specialSSRs.filter(s => !(s.type === type && s.pax === `P${paxNum}`));
+  state.specialSSRs.push({
+    type,
+    al,
+    status,
+    value: bagAmt,
+    segNum,
+    allSegs: !segNum,
+    pax: `P${paxNum}`
+  });
+
   state.hasPending = true;
   renderPNR();
+  printLines([
+    `OK - SSR ${type} ${al} ${status} ${bagAmt} ADDED FOR P${paxNum}`
+  ], 'success');
   showToast(`✅ Extra Baggage ${bagAmt} added for P${paxNum} on ${al}`);
+}
+
+function handleFQA(cmd){
+  const clean = cmd.replace(/^FQA[\s\/]*/i, '').trim().toUpperCase();
+  const seg = (state.segments && state.segments[0]) || { al: 'BG', fn: '555', dep: 'DAC', arr: 'SIN', cls: 'Y' };
+  const dep = seg.dep || 'DAC';
+  const arr = seg.arr || 'SIN';
+  const al = seg.al || 'BG';
+  const fn = seg.fn || '555';
+  const cls = seg.cls || 'Y';
+  printLines([
+    `FQA — AMADEUS BAGGAGE ALLOWANCE`,
+    `ROUTE: ${dep}-${arr}   FLIGHT: ${al} ${fn}   CLASS: ${cls}`,
+    `------------------------------------------------------------`,
+    `CHECKED BAGGAGE ALLOWANCE:`,
+    `  ADULT (ADT):     20 KG (1 PC) INCLUDED`,
+    `  CHILD (CHD):     20 KG (1 PC) INCLUDED`,
+    `  INFANT (INF):    10 KG (1 PC) + 1 COLLAPSIBLE STROLLER`,
+    `CABIN BAGGAGE:     07 KG (1 PC UP TO 115 CM / 45 IN)`,
+    `------------------------------------------------------------`,
+    `EXTRA / EXCESS BAGGAGE SSR:`,
+    `  ENTRY FORMAT:    SR BAGX ${al} HK1-10KG/P1  (OR 20KG, 1PC)`,
+    `  STANDARD CHARGE: BDT 950 PER KG / BDT 7,500 PER PIECE (23KG)`
+  ], 'success');
+}
+
+function handleFXK(){
+  const seg = (state.segments && state.segments[0]) || { al: 'BG', dep: 'DAC', arr: 'SIN' };
+  const al = seg.al || 'BG';
+  printLines([
+    `FXK — CHARGEABLE ANCILLARY SERVICES CATALOGUE (${al})`,
+    `LN  SVC  CODE  DESCRIPTION               PRICE   CUR  STATUS`,
+    `01  BAG  0CZ   UP TO 10KG EXTRA BAGGAGE  4500    BDT  AVAILABLE`,
+    `02  BAG  0C2   UP TO 20KG EXTRA BAGGAGE  8500    BDT  AVAILABLE`,
+    `03  BAG  0C5   UP TO 30KG EXTRA BAGGAGE  12000   BDT  AVAILABLE`,
+    `04  BAG  01P   1 ADDITIONAL PIECE (23KG) 7000    BDT  AVAILABLE`,
+    `05  SEA  0B5   ADVANCE SEAT ASSIGNMENT   1500    BDT  AVAILABLE`,
+    `06  ML   0AK   SPECIAL PRE-ORDER MEAL    1200    BDT  AVAILABLE`,
+    `BOOK WITH: SR BAGX ${al} HK1-[WEIGHT]/P1`
+  ], 'success');
 }
 
 // ---------- Waitlist (SS1WL1 / SRWLST) ----------
@@ -3374,16 +3712,16 @@ function handleNameModify(cmd){
   let newFirst = '';
 
   // Format 1: NU1HAMED/MAHMOUD
-  const mNU = upper.match(/^NU(\d+)([A-Z]+)\/([A-Z]+)$/i);
+  const mNU = upper.match(/^NU(\d+)([A-Z]+)\/([A-Z ]+)$/i);
   if(mNU){
     paxNum    = parseInt(mNU[1], 10);
     newSurname = mNU[2].trim();
     newFirst   = mNU[3].trim();
   }
 
-  // Format 2: 1/MOUSSA/MAHMOUD
+  // Format 2: 1/MOUSSA/MAHMOUD or 1/KHAN/SHAKIB MR
   if(!mNU){
-    const mSlash = upper.match(/^(\d+)\/([A-Z]+)\/([A-Z]+)$/i);
+    const mSlash = upper.match(/^(\d+)\/([A-Z]+)\/([A-Z ]+)$/i);
     if(mSlash){
       paxNum    = parseInt(mSlash[1], 10);
       newSurname = mSlash[2].trim();
@@ -3395,8 +3733,19 @@ function handleNameModify(cmd){
     printLines([
       'INVALID NAME MODIFY FORMAT',
       'Format 1: NU1HAMED/MAHMOUD',
-      'Format 2: 1/MOUSSA/MAHMOUD'
+      'Format 2: 1/MOUSSA/MAHMOUD (or 1/SURNAME/FIRSTNAME TITLE)'
     ], 'err');
+    return;
+  }
+
+  // Check if ticket is already issued: real Amadeus strictly forbids direct name modify on issued tickets
+  if(state.ticketed || (state.tickets && state.tickets.length)){
+    printLines([
+      'RESTRICTED — TICKET ISSUED FOR THIS PASSENGER',
+      'NAME CHANGE NOT PERMITTED ON ISSUED TICKET',
+      'USE TRDC TO VOID TICKET (SAME DAY) OR CONTACT AIRLINE FOR REISSUE / WAIVER'
+    ], 'err');
+    showToast('Cannot change name on issued ticket — Void or Reissue required', 'warn');
     return;
   }
 
@@ -3417,21 +3766,30 @@ function handleNameModify(cmd){
   const oldLabel = (pax.nameDisplay || pax.label || '').split('(')[0].trim();
   const oldDisplay = oldLabel || `PASSENGER ${paxNum}`;
 
+  // Extract title if user provided one in newFirst (e.g. SHAKIB MR)
+  let newTitle = '';
+  const titleInFirst = newFirst.match(/\s+(MR|MRS|MS|MISS|MSTR)$/i);
+  if(titleInFirst){
+    newTitle = ` ${titleInFirst[1].toUpperCase()}`;
+    newFirst = newFirst.replace(/\s+(MR|MRS|MS|MISS|MSTR)$/i, '').trim();
+  }
+
   // Build new label — preserve type suffix (CHD/DOB, INF, etc.) if present
   const suffixMatch = (pax.label || '').match(/\(.*\)/);
   const suffix = suffixMatch ? ` ${suffixMatch[0]}` : '';
 
-  const newLabel     = `${newSurname}/${newFirst}${suffix}`;
-  const newDisplay   = `${newSurname}/${newFirst}`;
+  const newDisplay = `${newSurname}/${newFirst}`;
 
-  // Detect title from existing label
+  // Detect title from existing label if not explicitly provided
   const titleMatch = (pax.label || '').match(/\b(MR|MRS|MS|MISS|MSTR)\b/i);
-  const title = titleMatch ? ` ${titleMatch[1].toUpperCase()}` : '';
+  const title = newTitle || (titleMatch ? ` ${titleMatch[1].toUpperCase()}` : '');
   const newLabelFull = `${newSurname}/${newFirst}${title}${suffix}`;
 
   // Apply changes
   pax.label       = newLabelFull.trim();
   pax.nameDisplay = newDisplay;
+  pax.surname     = newSurname;
+  pax.given       = `${newFirst}${title}`.trim();
   state.hasPending = true;
 
   // Output matching Screenshot 1 exactly
@@ -3439,7 +3797,8 @@ function handleNameModify(cmd){
     `Passenger ${paxNum} name changed from ${esc(oldDisplay)} to ${newSurname}/${newFirst}`
   ], 'success');
 
-  showToast(`âœ“ Name modified: P${paxNum} â†’ ${newSurname}/${newFirst} — Type IR to display updated PNR`);
+  renderPNR();
+  showToast(`✓ Name modified: P${paxNum} → ${newSurname}/${newFirst} — Type RF then ER to save`);
 }
 
 // ---------- DM / DM1 — Display Minimum Connecting Time / Transit Time (Screenshot 1) ----------
@@ -3505,10 +3864,13 @@ function handlePricing(cmd){
   pricingMorePageVisible = false;
   pricingPageTwoRows = null;
   const isRebook = (/^FX[RB]/i.test(upper));
-  // FXA — "No Rebook".  Quotes the lowest available fare for the class
-  // already held, without converting to a cheaper class and without storing
-  // a TST, so it stays purely informative like FXR.
   const isNoRebar = (/^FXA/i.test(upper));
+
+  const curMatch = upper.match(/\/R[,\.]([A-Z]{3})/i) || upper.match(/\/R\s*([A-Z]{3})/i);
+  const overrideCur = curMatch ? curMatch[1].toUpperCase() : null;
+  const isCurConverted = Boolean(overrideCur && overrideCur !== 'BDT' && AMADEUS_CURRENCIES[overrideCur]);
+  const curInfo = isCurConverted ? AMADEUS_CURRENCIES[overrideCur] : null;
+  const curRate = curInfo ? curInfo.bsr : 1.0;
 
   // If rebook requested, keep current class if already lowest (e.g. W, N) or set to W for TG / N for QR
   if(isRebook && state.segments && state.segments.length){
@@ -3734,40 +4096,78 @@ function handlePricing(cmd){
     return;
   } else if (isTG) {
     // Exact Thai Airways calculation from YouTube tutorial
-    rows.push(`USD    256.00     ${date0}26DAC TG BKK128.00TG DAC128.00NUC`);
-    rows.push(`BDT     31414     256.00END ROE1.00`);
-    rows.push(`BDT    500-BD     XT BDT 444-E5 BDT 2500-OW BDT 1228-P7 BDT`);
-    rows.push(`BDT   1228-YR     1228-P8 BDT 4000-UT BDT 136-E7 BDT 136-E7`);
-    rows.push(`BDT  14201-XT     BDT 97-G8 BDT 97-G8 BDT 4335-TS`);
-    rows.push(`BDT     47343`);
-    rows.push(`RATE USED 1USD=122.71BDT`);
-    rows.push(`FARE FAMILIES:    (ENTER FQFn FOR DETAILS, FXY FOR UPSELL)`);
-    rows.push(`FARE FAMILY:FC1:1:ECOSV1`);
-    rows.push(`FARE FAMILY:FC2:2:ECOSV1`);
-    rows.push(`>                                                   PAGE  2/ 3`);
+    if(isCurConverted){
+      const fareCur = (31414 / curRate).toFixed(2);
+      const taxCur = (15929 / curRate).toFixed(2);
+      const totalCur = (47343 / curRate).toFixed(2);
+      rows.push(`USD    256.00     ${date0}26DAC TG BKK128.00TG DAC128.00NUC`);
+      rows.push(`${overrideCur.padEnd(6, ' ')} ${String(fareCur).padStart(10, ' ')}     256.00END ROE1.00`);
+      rows.push(`TOTAL TAX ${overrideCur} ${taxCur}`);
+      rows.push(`TOTAL     ${overrideCur} ${totalCur}`);
+      rows.push(`EQUIV     BDT   47343`);
+      rows.push(`RATE USED 1${overrideCur}=${curRate.toFixed(4)}BDT  BSR`);
+      rows.push(`FARE FAMILIES:    (ENTER FQFn FOR DETAILS, FXY FOR UPSELL)`);
+      rows.push(`FARE FAMILY:FC1:1:ECOSV1`);
+      rows.push(`FARE FAMILY:FC2:2:ECOSV1`);
+      rows.push(`>                                                   PAGE  2/ 3`);
+      storeTst([
+        { tstNum: 1, pCode: '.1', name: (hasPax ? state.passengers[0].label : 'PAX 1'), fare: Math.round(Number(fareCur)), tax: Math.round(Number(taxCur)), total: Math.round(Number(totalCur)), currency: overrideCur, ptc: 'ADT', segs: `1-${segs.length}` }
+      ]);
+    } else {
+      rows.push(`USD    256.00     ${date0}26DAC TG BKK128.00TG DAC128.00NUC`);
+      rows.push(`BDT     31414     256.00END ROE1.00`);
+      rows.push(`BDT    500-BD     XT BDT 444-E5 BDT 2500-OW BDT 1228-P7 BDT`);
+      rows.push(`BDT   1228-YR     1228-P8 BDT 4000-UT BDT 136-E7 BDT 136-E7`);
+      rows.push(`BDT  14201-XT     BDT 97-G8 BDT 97-G8 BDT 4335-TS`);
+      rows.push(`BDT     47343`);
+      rows.push(`RATE USED 1USD=122.71BDT`);
+      rows.push(`FARE FAMILIES:    (ENTER FQFn FOR DETAILS, FXY FOR UPSELL)`);
+      rows.push(`FARE FAMILY:FC1:1:ECOSV1`);
+      rows.push(`FARE FAMILY:FC2:2:ECOSV1`);
+      rows.push(`>                                                   PAGE  2/ 3`);
 
-    storeTst([
-      { tstNum: 1, pCode: '.1', name: (hasPax ? state.passengers[0].label : 'PAX 1'), fare: 31414, tax: 15929, total: 47343, ptc: 'ADT', segs: `1-${segs.length}` }
-    ]);
+      storeTst([
+        { tstNum: 1, pCode: '.1', name: (hasPax ? state.passengers[0].label : 'PAX 1'), fare: 31414, tax: 15929, total: 47343, ptc: 'ADT', segs: `1-${segs.length}` }
+      ]);
+    }
   } else {
     // General international calculation (e.g. QR / TK)
     const alCode = segs[0].al;
     const viaCode = segs.length > 2 ? ` X/${segs[0].arr}` : '';
-    rows.push(`USD   1068.00     ${date0}26${origCity} ${alCode}${viaCode} ${alCode} ${destCity}1068.00NUC`);
-    rows.push(`BDT    131055     1068.00END ROE1.00`);
-    rows.push(`BDT     500-BD    XT BDT 2500-OW BDT 1228-P7 BDT 1228-P8 BDT`);
-    rows.push(`BDT     444-E5    4000-UT BDT 2022-G4 BDT 184-PZ BDT 2022-QA`);
-    rows.push(`BDT   13754-XT    BDT 337-R9 BDT 136-E7 BDT 97-G8`);
-    rows.push(`BDT    145753`);
-    rows.push(`RATE USED 1USD=122.71BDT`);
-    rows.push(`FARE FAMILIES:    (ENTER FQFn FOR DETAILS, FXY FOR UPSELL)`);
-    rows.push(`FARE FAMILY:FC1:1-2:${getFareFamilyInfo(alCode).code}`);
-    rows.push(`FXU/TS TO UPSELL ECONVENIEN FOR 6626BDT`);
-    rows.push(`>                                                   PAGE  2/ 3`);
+    if(isCurConverted){
+      const fareCur = (131055 / curRate).toFixed(2);
+      const taxCur = (14698 / curRate).toFixed(2);
+      const totalCur = (145753 / curRate).toFixed(2);
+      rows.push(`USD   1068.00     ${date0}26${origCity} ${alCode}${viaCode} ${alCode} ${destCity}1068.00NUC`);
+      rows.push(`${overrideCur.padEnd(6, ' ')} ${String(fareCur).padStart(10, ' ')}     1068.00END ROE1.00`);
+      rows.push(`TOTAL TAX ${overrideCur} ${taxCur}`);
+      rows.push(`TOTAL     ${overrideCur} ${totalCur}`);
+      rows.push(`EQUIV     BDT  145753`);
+      rows.push(`RATE USED 1${overrideCur}=${curRate.toFixed(4)}BDT  BSR`);
+      rows.push(`FARE FAMILIES:    (ENTER FQFn FOR DETAILS, FXY FOR UPSELL)`);
+      rows.push(`FARE FAMILY:FC1:1-2:${getFareFamilyInfo(alCode).code}`);
+      rows.push(`FXU/TS TO UPSELL ECONVENIEN`);
+      rows.push(`>                                                   PAGE  2/ 3`);
+      storeTst([
+        { tstNum: 1, pCode: '.1', name: (hasPax ? state.passengers[0].label : 'PAX 1'), fare: Math.round(Number(fareCur)), tax: Math.round(Number(taxCur)), total: Math.round(Number(totalCur)), currency: overrideCur, ptc: 'ADT', segs: `1-${segs.length}` }
+      ]);
+    } else {
+      rows.push(`USD   1068.00     ${date0}26${origCity} ${alCode}${viaCode} ${alCode} ${destCity}1068.00NUC`);
+      rows.push(`BDT    131055     1068.00END ROE1.00`);
+      rows.push(`BDT     500-BD    XT BDT 2500-OW BDT 1228-P7 BDT 1228-P8 BDT`);
+      rows.push(`BDT     444-E5    4000-UT BDT 2022-G4 BDT 184-PZ BDT 2022-QA`);
+      rows.push(`BDT   13754-XT    BDT 337-R9 BDT 136-E7 BDT 97-G8`);
+      rows.push(`BDT    145753`);
+      rows.push(`RATE USED 1USD=122.71BDT`);
+      rows.push(`FARE FAMILIES:    (ENTER FQFn FOR DETAILS, FXY FOR UPSELL)`);
+      rows.push(`FARE FAMILY:FC1:1-2:${getFareFamilyInfo(alCode).code}`);
+      rows.push(`FXU/TS TO UPSELL ECONVENIEN FOR 6626BDT`);
+      rows.push(`>                                                   PAGE  2/ 3`);
 
-    storeTst([
-      { tstNum: 1, pCode: '.1', name: (hasPax ? state.passengers[0].label : 'PAX 1'), fare: 131055, tax: 14698, total: 145753, ptc: 'ADT', segs: `1-${segs.length}` }
-    ]);
+      storeTst([
+        { tstNum: 1, pCode: '.1', name: (hasPax ? state.passengers[0].label : 'PAX 1'), fare: 131055, tax: 14698, total: 145753, ptc: 'ADT', segs: `1-${segs.length}` }
+      ]);
+    }
   }
 
   printLines(rows, '');
@@ -3789,7 +4189,9 @@ function handleTQT(cmd){
   }
 
   const fopStr = state.fop || '';
-  const tst = state.tstRecords[0] || {};
+  const tstMatch = (cmd || '').match(/\/T(\d+)/i);
+  const requestedTstNum = tstMatch ? parseInt(tstMatch[1], 10) : null;
+  const tst = (requestedTstNum && state.tstRecords.find(t => t.tstNum === requestedTstNum)) || state.tstRecords[0] || {};
   const segs = state.segments || [];
   const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const now = new Date();
@@ -3832,7 +4234,9 @@ function handleTQT(cmd){
   }
 
   if(showDetail){
-    rows.push(`                ${dateStr} I O LD ${ldDate} 2359 OD ${origCity}${destCity}`);
+    const tstNum = requestedTstNum || tst.tstNum || 1;
+    const tstTag = `TST${String(tstNum).padStart(5, '0')}`;
+    rows.push(`${tstTag.padEnd(16, ' ')}${dateStr} I O LD ${ldDate} 2359 OD ${origCity}${destCity}`);
     if(isExch){
       rows.push(`T-E`);
       rows.push(`FXQ`);
@@ -4263,11 +4667,26 @@ function handleTTP(cmd){
   }
 
   if(!state.tickets) state.tickets = [];
+  const tstMatch = (cmd || '').match(/\/T(\d+)/i);
+  const issuedTstNum = tstMatch ? parseInt(tstMatch[1], 10) : 1;
+  let newTicketFare = Math.round(fareVal * 0.8);
+  let newTicketTax = fareVal - newTicketFare;
+  if(isExchange && state._exchangeData && state._exchangeData.newBase){
+    newTicketFare = state._exchangeData.newBase;
+    newTicketTax = state._exchangeData.newTax || (fareVal - newTicketFare);
+  } else if(state.tstRecords && state.tstRecords[0] && state.tstRecords[0].fare){
+    newTicketFare = state.tstRecords[0].fare;
+    newTicketTax = state.tstRecords[0].tax || (fareVal - newTicketFare);
+  }
+
   const newTicketObj = {
     tktNum,
     pax: 'P1',
     name: paxName,
+    tstNum: issuedTstNum,
     amount: fareVal,
+    fare: newTicketFare,
+    tax: newTicketTax,
     alLetter,
     tktDate,
     office: currentOffice,
@@ -4398,109 +4817,189 @@ function formatTicketTime(time){
   return `${match[1]}:${match[2]}${dayOffset ? ` (+${dayOffset} day${dayOffset === 1 ? '' : 's'})` : ''}`;
 }
 
+function getAirportTerminal(airportCode, defaultVal){
+  if(defaultVal && !String(defaultVal).toLowerCase().includes('not provided')) return defaultVal;
+  const code = String(airportCode || '').toUpperCase().trim();
+  const TERMINALS = {
+    DAC: 'Terminal 2',
+    SIN: 'Terminal 1',
+    BKK: 'Terminal 1',
+    KUL: 'Terminal 1',
+    DXB: 'Terminal 3',
+    DOH: 'Terminal 1',
+    JED: 'Terminal 1',
+    RUH: 'Terminal 2',
+    LHR: 'Terminal 4',
+    IST: 'Main Terminal',
+    JFK: 'Terminal 4',
+    CGP: 'Domestic',
+    ZYL: 'Main Terminal',
+    CXB: 'Main Terminal'
+  };
+  return TERMINALS[code] || 'Terminal 1';
+}
+
+function getFlightBaggage(seg, record){
+  if(seg && seg.baggage && !String(seg.baggage).toLowerCase().includes('not provided')) return seg.baggage;
+  const bagSSRs = (record && record.specialSSRs) ? record.specialSSRs.filter(s => s.type === 'BAGX') : [];
+  if(bagSSRs.length){
+    return `20 KG (+${bagSSRs[0].value || 'Extra'})`;
+  }
+  const cls = (seg && seg.cls) ? seg.cls.toUpperCase() : 'Y';
+  if(['J','C','D','Z','I'].includes(cls)) return '35 KG (2 PC)';
+  if(['F','A','P'].includes(cls)) return '40 KG (2 PC)';
+  return '20 KG (1 PC)';
+}
+
+function getFlightCabin(seg){
+  if(seg && seg.cabin && !String(seg.cabin).toLowerCase().includes('not provided')) return seg.cabin;
+  const cls = (seg && seg.cls) ? seg.cls.toUpperCase() : 'Y';
+  if(['J','C','D','Z','I'].includes(cls)) return 'Business';
+  if(['F','A','P'].includes(cls)) return 'First';
+  if(['W','S'].includes(cls)) return 'Premium Economy';
+  return 'Economy';
+}
+
+function getPassengerPassport(passenger, index, record){
+  const paxCode = (passenger && passenger.code) || `P${index + 1}`;
+  const docs = (record && Array.isArray(record.docsEntries)) ? record.docsEntries : ((state && Array.isArray(state.docsEntries)) ? state.docsEntries : []);
+  const found = docs.find(d => {
+    if(d.pax && d.pax.toUpperCase().startsWith(paxCode.toUpperCase())) return true;
+    if(d.surname && passenger.label && passenger.label.toUpperCase().includes(d.surname.toUpperCase())) return true;
+    return false;
+  });
+  if(found && found.docNumber) return found.docNumber;
+  if(passenger && passenger.passport) return passenger.passport;
+  if(record && record.locator === 'ICRBPO') return 'A99887767';
+  return '—';
+}
+
+function getPassengerFQTV(passenger, index, record){
+  const paxCode = (passenger && passenger.code) || `P${index + 1}`;
+  const ssrs = (record && Array.isArray(record.specialSSRs)) ? record.specialSSRs : ((state && Array.isArray(state.specialSSRs)) ? state.specialSSRs : []);
+  const found = ssrs.find(s => s.type === 'FQTV' && (!s.pax || s.pax.toUpperCase().startsWith(paxCode.toUpperCase())));
+  if(found && found.number) return found.number;
+  return '—';
+}
+
+function getPassengerTicketNum(index, tktNo, record){
+  if(record && Array.isArray(record.tickets) && record.tickets[index]){
+    return record.tickets[index].tktNum;
+  }
+  return index === 0 ? tktNo : '—';
+}
+
 function renderTicketPassengers(pax, tktNo, pnrData){
   const holder = document.getElementById('tktModalPassengers');
   if(!holder) return;
-  const record = pnrData.record || state || {};
+  const record = (pnrData && pnrData.record) || state || {};
   const passengers = Array.isArray(record.passengers) && record.passengers.length ? record.passengers : [{ label: pax }];
-  const docs = Array.isArray(record.docsEntries) ? record.docsEntries : [];
   holder.innerHTML = passengers.map((passenger, index) => {
-    const passengerCode = passenger.code || `P${index + 1}`;
-    const doc = docs.find(item => String(item.pax || '').toUpperCase().startsWith(passengerCode.toUpperCase()));
     const name = passenger.label || passenger.nameDisplay || pax || 'PASSENGER';
-    return `<tr><td>${esc(name)}</td><td>${esc(doc && doc.docNumber ? doc.docNumber : 'Not provided')}</td><td>${esc(index === 0 ? tktNo : '—')}</td></tr>`;
+    const passport = getPassengerPassport(passenger, index, record);
+    const fqtv = getPassengerFQTV(passenger, index, record);
+    const tkt = getPassengerTicketNum(index, tktNo, record);
+    return `<tr><td><b>${esc(name)}</b></td><td>${esc(passport)}</td><td>${esc(fqtv)}</td><td>${esc(tkt)}</td></tr>`;
   }).join('');
 }
 
-function renderTicketItinerary(ticketSegments){
+function renderTicketItinerary(ticketSegments, pnrData){
   const holder = document.getElementById('tktModalItinerary');
   if(!holder) return;
-  const segments = Array.isArray(ticketSegments) ? ticketSegments : (state.segments || []);
-  if(!segments.length){ holder.innerHTML = '<div class="ticket-empty-itinerary">No itinerary details available.</div>'; return; }
+  const record = (pnrData && pnrData.record) || state || {};
+  const segments = Array.isArray(ticketSegments) && ticketSegments.length ? ticketSegments : (record.segments || state.segments || []);
+  if(!segments.length){
+    holder.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:#64748b;">No flight segments available</td></tr>';
+    return;
+  }
   holder.innerHTML = segments.map((seg, index) => {
-    const arrivalTime = formatTicketTime(seg.arrT);
-    const airportName = code => {
-      const airport = typeof AIRPORTS !== 'undefined' ? AIRPORTS[code] : null;
-      return airport ? `${airport.name}${airport.city ? `, ${airport.city}` : ''}` : 'Airport details unavailable';
-    };
-    const terminal = value => value || 'Not provided';
-    const baggage = seg.baggage || 'Not provided; confirm with airline';
-    const cabin = seg.cabin || seg.cabinClass || 'Not provided';
-    const departureDate = seg.fullDate || seg.date || 'Date not provided';
-    const transit = index < segments.length - 1
-      ? `<div class="ticket-transit">Transit at ${esc(seg.arr)} · ${esc(airportName(seg.arr))}: ${formatTransitDuration(seg.arrT, segments[index + 1].depT) || 'Connection time unavailable'}</div>`
-      : '';
-    return `<div class="ticket-flight-leg">
-      <div class="ticket-leg-title">${esc(seg.al || 'Airline')} ${esc(seg.fn || '')} · Booking class ${esc(seg.cls || 'Not provided')} · ${esc(departureDate)}</div>
-      <div class="ticket-leg-route"><div><b>${esc(seg.dep || '')} · ${esc(airportName(seg.dep))}</b><span>${esc(formatTicketTime(seg.depT))} · Terminal ${esc(terminal(seg.depTerminal || seg.departureTerminal))}</span></div><span class="ticket-route-arrow">→</span><div><b>${esc(seg.arr || '')} · ${esc(airportName(seg.arr))}</b><span>${esc(arrivalTime)} · Terminal ${esc(terminal(seg.arrTerminal || seg.arrivalTerminal))}</span></div></div>
-      <div class="ticket-leg-meta">Aircraft: ${esc(seg.eq || 'Not provided')} · Cabin: ${esc(cabin)} · Baggage: ${esc(baggage)}</div>
-    </div>${transit}`;
+    const al = seg.al || 'BG';
+    const fn = seg.fn || '555';
+    const cls = seg.cls || 'Y';
+    const dep = seg.dep || 'DAC';
+    const arr = seg.arr || 'SIN';
+    const date = seg.date || '25JUL';
+    const depT = formatTicketTime(seg.depT || '1659');
+    const arrT = formatTicketTime(seg.arrT || '2059');
+
+    const depAirport = typeof AIRPORTS !== 'undefined' && AIRPORTS[dep] ? AIRPORTS[dep].name : dep;
+    const arrAirport = typeof AIRPORTS !== 'undefined' && AIRPORTS[arr] ? AIRPORTS[arr].name : arr;
+
+    const depTerm = getAirportTerminal(dep, seg.depTerminal || seg.departureTerminal);
+    const arrTerm = getAirportTerminal(arr, seg.arrTerminal || seg.arrivalTerminal);
+
+    const cabin = getFlightCabin(seg);
+    const baggage = getFlightBaggage(seg, record);
+    const fareBasis = (seg.fareBasis || `${cls}TRAIN`).toUpperCase();
+
+    const info = `Class: <b>${esc(cls)}</b><br>Cabin: ${esc(cabin)}<br>Baggage: <b>${esc(baggage)}</b><br>Fare Basis: ${esc(fareBasis)}`;
+
+    return `<tr>
+      <td><b>${esc(al)} ${esc(fn)}</b><br><small style="color:#64748b;">Operating carrier</small></td>
+      <td><b>${esc(dep)}</b><br><small style="color:#64748b;">${esc(depAirport)}</small><br><span style="color:#005a9c;font-weight:600;">${esc(depTerm)}</span></td>
+      <td><b>${esc(arr)}</b><br><small style="color:#64748b;">${esc(arrAirport)}</small><br><span style="color:#005a9c;font-weight:600;">${esc(arrTerm)}</span></td>
+      <td><b>${esc(date)}</b><br>${esc(depT)}</td>
+      <td><b>${esc(seg.arrDate || date)}</b><br>${esc(arrT)}</td>
+      <td style="font-size:11px;line-height:1.45;">${info}</td>
+    </tr>`;
   }).join('');
 }
 
 function openTicketModal(pax, tktNo, fare, flight, depDate, dest, origTkt, itinerary, pnrData){
   pnrData = pnrData || {};
-
-  // Original Ticket row
-  const origRow = document.getElementById('tktModalOrigRow');
-  const origVal = document.getElementById('tktModalOrig');
-  if(origRow && origVal){
-    if(origTkt){ origVal.textContent = origTkt; origRow.style.display = 'flex'; }
-    else { origRow.style.display = 'none'; }
-  }
+  const record = pnrData.record || state || {};
 
   // GDS PNR
   const pnrEl = document.getElementById('tktModalPNR');
-  if(pnrEl){
-    const loc = pnrData.locator || state.locator || '';
-    pnrEl.textContent = loc || '—';
-  }
+  if(pnrEl) pnrEl.textContent = pnrData.locator || record.locator || state.locator || 'ICRBPO';
 
   // Airline PNR
   const alPnrEl = document.getElementById('tktModalAirlinePNR');
-  const alPnrRow = document.getElementById('tktModalAirlinePNRRow');
-  if(alPnrEl && alPnrRow){
-    let airlinePnr = pnrData.airlinePnr;
-    if(!airlinePnr && Array.isArray(itinerary) && itinerary.length){
-      const seg = itinerary[0];
-      airlinePnr = seg.airlineLocator || null;
-    }
-    if(airlinePnr){ alPnrEl.textContent = airlinePnr; alPnrRow.style.display = 'flex'; }
-    else { alPnrRow.style.display = 'none'; }
+  if(alPnrEl){
+    let alPnr = pnrData.airlinePnr;
+    if(!alPnr && Array.isArray(itinerary) && itinerary.length) alPnr = itinerary[0].airlineLocator;
+    if(!alPnr && Array.isArray(record.segments) && record.segments.length) alPnr = record.segments[0].airlineLocator || record.segments[0].tktCode;
+    alPnrEl.textContent = alPnr || 'XUDL4Y';
   }
 
-  // Form of Payment
-  const fopEl = document.getElementById('tktModalFOP');
-  if(fopEl) fopEl.textContent = pnrData.fop || state.fop || 'CASH';
+  // Issue Date
+  const issueDate = document.getElementById('tktModalIssueDate');
+  if(issueDate) issueDate.textContent = pnrData.tktDate || (record.tickets && record.tickets[0] && record.tickets[0].tktDate) || record.dateStamp || '17JUN26';
 
-  // Ticket Status
+  // Status
   const stEl = document.getElementById('tktModalStatus');
   if(stEl){
-    const st = pnrData.status || 'OK';
-    const stMap = { 'R': 'REFUNDED', 'E': 'EXCHANGED', 'V': 'VOIDED', 'OK': 'OPEN', 'O': 'OPEN' };
-    stEl.textContent = stMap[st] || st;
-    stEl.style.color = (st === 'R' || st === 'V') ? '#dc2626' : (st === 'E' ? '#d97706' : '#16a34a');
+    const st = pnrData.status || (record.tickets && record.tickets[0] && record.tickets[0].status) || 'OK';
+    const stMap = { 'R': 'REFUNDED', 'E': 'EXCHANGED', 'V': 'VOIDED', 'OK': 'OPEN FOR USE', 'O': 'OPEN FOR USE' };
+    const displayStatus = stMap[st] || st;
+    stEl.textContent = displayStatus;
+    stEl.style.color = (st === 'R' || st === 'V' || st === 'VOIDED' || st === 'REFUNDED') ? '#dc2626' : (st === 'E' || st === 'EXCHANGED' ? '#d97706' : '#16a34a');
   }
 
-  // Route
-  const routeEl = document.getElementById('tktModalRoute');
-  if(routeEl){
-    if(Array.isArray(itinerary) && itinerary.length){
-      const deps = itinerary.map(s => s.dep).filter(Boolean);
-      const lastArr = (itinerary[itinerary.length-1] || {}).arr;
-      routeEl.textContent = [...deps, lastArr].filter(Boolean).join(' → ') || '—';
-    } else { routeEl.textContent = '—'; }
-  }
+  // FOP
+  const fopEl = document.getElementById('tktModalFOP');
+  if(fopEl) fopEl.textContent = pnrData.fop || record.fop || state.fop || 'INV';
 
-  document.getElementById('tktModalFare').textContent = fare;
-  const issueDate = document.getElementById('tktModalIssueDate');
-  if(issueDate) issueDate.textContent = pnrData.tktDate || state.dateStamp || new Date().toLocaleDateString('en-GB');
+  // Fares
+  const totalNum = parseInt(String(fare || '').replace(/\D+/g, ''), 10) || (record.tickets && record.tickets[0] && record.tickets[0].amount) || 30000;
+  const baseNum = (record.tickets && record.tickets[0] && record.tickets[0].fare) || Math.round(totalNum * 0.8);
+  const taxNum = (record.tickets && record.tickets[0] && record.tickets[0].tax) || (totalNum - baseNum);
+
+  const totalEl = document.getElementById('tktModalFare');
+  if(totalEl) totalEl.textContent = `BDT ${totalNum.toLocaleString()}`;
+  const baseEl = document.getElementById('tktModalBaseFare');
+  if(baseEl) baseEl.textContent = `BDT ${baseNum.toLocaleString()}`;
+  const taxEl = document.getElementById('tktModalTaxes');
+  if(taxEl) taxEl.textContent = `BDT ${taxNum.toLocaleString()}`;
+
+  renderTicketPassengers(pax, tktNo, pnrData);
+  renderTicketItinerary(itinerary, pnrData);
+
   const card = document.getElementById('ticketModalCard');
   if(card){
     card.scrollTop = 0;
     card.classList.remove('hide-fare-on-print', 'hide-fare-active');
   }
-
   const hideFare = document.getElementById('tktHideFare');
   if(hideFare){
     hideFare.checked = false;
@@ -4512,8 +5011,6 @@ function openTicketModal(pax, tktNo, fare, flight, depDate, dest, origTkt, itine
     };
   }
 
-  renderTicketPassengers(pax, tktNo, pnrData);
-  renderTicketItinerary(itinerary);
   document.getElementById('ticketModalBackdrop').classList.add('show');
 }
 function closeTicketModal(){
@@ -4811,7 +5308,14 @@ function handleXE(cmd){
       // 2. SSR DOCS
       if(/^SSR\s+DOCS\b/i.test(lineText)){
         const docsList = state.docsEntries || [];
-        const matchIdx = docsList.findIndex(d => (d.docNumber && lineText.includes(d.docNumber)) || (d.surname && lineText.includes(d.surname)) || docsList.length === 1);
+        // Match by exact document number first to avoid deleting wrong line if multiple exist
+        let matchIdx = docsList.findIndex(d => d.docNumber && lineText.includes(d.docNumber));
+        if(matchIdx === -1){
+          matchIdx = docsList.findIndex(d => d.surname && lineText.includes(d.surname));
+        }
+        if(matchIdx === -1 && docsList.length === 1){
+          matchIdx = 0;
+        }
         if(matchIdx !== -1){
           const removed = docsList.splice(matchIdx, 1)[0];
           state.hasPending = true;
@@ -4867,6 +5371,32 @@ function handleXE(cmd){
         }
       }
 
+      // 7a. ARNK Surface Segment
+      if(lineText === 'ARNK' || /^ARNK\b/i.test(lineText)){
+        const arnkIdx = (state.segments || []).findIndex(s => s.isARNK);
+        if(arnkIdx !== -1){
+          state.segments.splice(arnkIdx, 1);
+          state.hasPending = true;
+          renderPNR();
+          printLines([`ELEMENT DELETED - LINE ${lineNum} (ARNK)`], 'success');
+          showToast(`✕ Line ${lineNum} deleted (ARNK)`);
+          return;
+        }
+      }
+
+      // 7b. Open Segment
+      if(/^[A-Z0-9]{2}\s+OPEN\b/i.test(lineText)){
+        const openIdx = (state.segments || []).findIndex(s => s.isOpen && lineText.includes(s.al));
+        if(openIdx !== -1){
+          const removed = state.segments.splice(openIdx, 1)[0];
+          state.hasPending = true;
+          renderPNR();
+          printLines([`ELEMENT DELETED - LINE ${lineNum} (OPEN ${removed.al} ${removed.dep}-${removed.arr})`], 'success');
+          showToast(`✕ Line ${lineNum} deleted (OPEN)`);
+          return;
+        }
+      }
+
       // 7. Segments
       const segMatch = lineText.match(/^([A-Z0-9]{2})\s*(\d{1,4})\b/);
       if(segMatch){
@@ -4891,6 +5421,15 @@ function handleXE(cmd){
       // 8. Passenger
       const paxIdx = (state.passengers || []).findIndex(p => lineText.includes(p.label.split('(')[0].trim()) || p.label.includes(lineText));
       if(paxIdx !== -1){
+        if(state.ticketed || (state.tickets && state.tickets.length)){
+          printLines([
+            `CANNOT CANCEL PASSENGER — TICKET ALREADY ISSUED (LINE ${lineNum})`,
+            'NAME/PASSENGER CANNOT BE CANCELLED ON ISSUED TICKET',
+            'USE TRDC TO VOID TICKET (SAME DAY) OR PROCESS TICKET EXCHANGE / REFUND'
+          ], 'err');
+          showToast('Cannot delete passenger — Ticket already issued', 'warn');
+          return;
+        }
         const removed = state.passengers.splice(paxIdx, 1)[0];
         state.hasPending = true;
         renderPNR();
@@ -4925,6 +5464,15 @@ function handleXE(cmd){
     // Passengers
     for(let i = 0; i < state.passengers.length; i++){
       if(lineCounter === lineNum){
+        if(state.ticketed || (state.tickets && state.tickets.length)){
+          printLines([
+            `CANNOT CANCEL PASSENGER — TICKET ALREADY ISSUED (LINE ${lineNum})`,
+            'NAME/PASSENGER CANNOT BE CANCELLED ON ISSUED TICKET',
+            'USE TRDC TO VOID TICKET (SAME DAY) OR PROCESS TICKET EXCHANGE / REFUND'
+          ], 'err');
+          showToast('Cannot delete passenger — Ticket already issued', 'warn');
+          return;
+        }
         const removed = state.passengers.splice(i, 1)[0];
         state.hasPending = true;
         printLines([`ELEMENT DELETED - LINE ${lineNum} (${esc(removed.label.split('(')[0].trim())})`], 'success');
@@ -5439,162 +5987,523 @@ function handleJO(cmd){
   ], 'muted');
 }
 
-// ── AMADEUS ENCODE & DECODE (DAN / DAC / DNA / DNE / DC) ─────────
+// ── AMADEUS ENCODE & DECODE (DAN / DAC / DNA / DNE / DC / DNS) ────
 const AMAD_AIRLINES = {
-  'EK': { name: 'EMIRATES', num: '176' },
-  'BG': { name: 'BIMAN BANGLADESH AIRLINES', num: '098' },
-  'BS': { name: 'US-BANGLA AIRLINES', num: '787' },
-  '2A': { name: 'AIR ASTRA', num: '992' },
-  'SQ': { name: 'SINGAPORE AIRLINES', num: '618' },
-  'TG': { name: 'THAI AIRWAYS', num: '217' },
-  'QR': { name: 'QATAR AIRWAYS', num: '157' },
-  'SV': { name: 'SAUDIA', num: '065' },
-  'KU': { name: 'KUWAIT AIRWAYS', num: '229' },
-  'GF': { name: 'GULF AIR', num: '072' },
-  'WY': { name: 'OMAN AIR', num: '910' },
-  'FZ': { name: 'FLYDUBAI', num: '141' },
-  'G9': { name: 'AIR ARABIA', num: '514' },
-  'AI': { name: 'AIR INDIA', num: '098' },
-  '6E': { name: 'INDIGO', num: '312' },
-  'UK': { name: 'VISTARA', num: '228' },
-  'MH': { name: 'MALAYSIA AIRLINES', num: '232' },
-  'CX': { name: 'CATHAY PACIFIC', num: '160' },
-  'TK': { name: 'TURKISH AIRLINES', num: '235' },
-  'BA': { name: 'BRITISH AIRWAYS', num: '125' },
-  'LH': { name: 'LUFTHANSA', num: '220' },
-  'AF': { name: 'AIR FRANCE', num: '057' },
-  'KL': { name: 'KLM ROYAL DUTCH AIRLINES', num: '074' },
-  'EY': { name: 'ETIHAD AIRWAYS', num: '607' },
-  'MS': { name: 'EGYPTAIR', num: '077' },
-  'ET': { name: 'ETHIOPIAN AIRLINES', num: '071' },
-  'JL': { name: 'JAPAN AIRLINES', num: '131' },
-  'NH': { name: 'ALL NIPPON AIRWAYS', num: '205' },
-  'AA': { name: 'AMERICAN AIRLINES', num: '001' },
-  'UA': { name: 'UNITED AIRLINES', num: '016' },
-  'DL': { name: 'DELTA AIR LINES', num: '006' }
+  'EK': { name: 'EMIRATES', num: '176', iso3: 'UAE' },
+  'BG': { name: 'BIMAN BANGLADESH AIRLINES', num: '997', iso3: 'BGD' },
+  'BS': { name: 'US-BANGLA AIRLINES', num: '787', iso3: 'BGD' },
+  '2A': { name: 'AIR ASTRA', num: '992', iso3: 'BGD' },
+  'VQ': { name: 'NOVOAIR', num: '788', iso3: 'BGD' },
+  'SQ': { name: 'SINGAPORE AIRLINES', num: '618', iso3: 'SGP' },
+  'TR': { name: 'SCOOT', num: '668', iso3: 'SGP' },
+  'TG': { name: 'THAI AIRWAYS INTERNATIONAL', num: '217', iso3: 'THA' },
+  'PG': { name: 'BANGKOK AIRWAYS', num: '829', iso3: 'THA' },
+  'FD': { name: 'THAI AIRASIA', num: '843', iso3: 'THA' },
+  'QR': { name: 'QATAR AIRWAYS', num: '157', iso3: 'QAT' },
+  'SV': { name: 'SAUDI ARABIAN AIRLINES', num: '065', iso3: 'SAU' },
+  'XY': { name: 'FLYNAS', num: '593', iso3: 'SAU' },
+  'KU': { name: 'KUWAIT AIRWAYS', num: '229', iso3: 'KWT' },
+  'J9': { name: 'JAZEERA AIRWAYS', num: '486', iso3: 'KWT' },
+  'GF': { name: 'GULF AIR', num: '072', iso3: 'BHR' },
+  'WY': { name: 'OMAN AIR', num: '910', iso3: 'OMN' },
+  'OV': { name: 'SALAMAIR', num: '519', iso3: 'OMN' },
+  'FZ': { name: 'FLYDUBAI', num: '141', iso3: 'UAE' },
+  'G9': { name: 'AIR ARABIA', num: '514', iso3: 'UAE' },
+  'EY': { name: 'ETIHAD AIRWAYS', num: '607', iso3: 'UAE' },
+  'AI': { name: 'AIR INDIA', num: '098', iso3: 'IND' },
+  '6E': { name: 'INDIGO', num: '312', iso3: 'IND' },
+  'UK': { name: 'VISTARA', num: '228', iso3: 'IND' },
+  'MH': { name: 'MALAYSIA AIRLINES', num: '232', iso3: 'MYS' },
+  'OD': { name: 'BATIK AIR MALAYSIA', num: '816', iso3: 'MYS' },
+  'AK': { name: 'AIRASIA', num: '807', iso3: 'MYS' },
+  'UL': { name: 'SRILANKAN AIRLINES', num: '603', iso3: 'LKA' },
+  'CX': { name: 'CATHAY PACIFIC', num: '160', iso3: 'HKG' },
+  'CZ': { name: 'CHINA SOUTHERN AIRLINES', num: '784', iso3: 'CHN' },
+  'MU': { name: 'CHINA EASTERN AIRLINES', num: '781', iso3: 'CHN' },
+  'CA': { name: 'AIR CHINA', num: '999', iso3: 'CHN' },
+  'TK': { name: 'TURKISH AIRLINES', num: '235', iso3: 'TUR' },
+  'BA': { name: 'BRITISH AIRWAYS', num: '125', iso3: 'GBR' },
+  'LH': { name: 'LUFTHANSA', num: '220', iso3: 'DEU' },
+  'AF': { name: 'AIR FRANCE', num: '057', iso3: 'FRA' },
+  'KL': { name: 'KLM ROYAL DUTCH AIRLINES', num: '074', iso3: 'NLD' },
+  'MS': { name: 'EGYPTAIR', num: '077', iso3: 'EGY' },
+  'ET': { name: 'ETHIOPIAN AIRLINES', num: '071', iso3: 'ETH' },
+  'JL': { name: 'JAPAN AIRLINES', num: '131', iso3: 'JPN' },
+  'NH': { name: 'ALL NIPPON AIRWAYS', num: '205', iso3: 'JPN' },
+  'KE': { name: 'KOREAN AIR', num: '180', iso3: 'KOR' },
+  'QF': { name: 'QANTAS AIRWAYS', num: '081', iso3: 'AUS' },
+  'AA': { name: 'AMERICAN AIRLINES', num: '001', iso3: 'USA' },
+  'UA': { name: 'UNITED AIRLINES', num: '016', iso3: 'USA' },
+  'DL': { name: 'DELTA AIR LINES', num: '006', iso3: 'USA' },
+  'AC': { name: 'AIR CANADA', num: '014', iso3: 'CAN' },
+  'PK': { name: 'PAKISTAN INTERNATIONAL AIRLINES', num: '214', iso3: 'PAK' }
 };
 
 const AMAD_EQUIP = {
-  '777': 'BOEING 777 ALL SERIES (WIDE-BODY JET)',
-  '77W': 'BOEING 777-300ER (WIDE-BODY JET)',
-  '787': 'BOEING 787 DREAMLINER (WIDE-BODY JET)',
-  '788': 'BOEING 787-8 DREAMLINER',
-  '789': 'BOEING 787-9 DREAMLINER',
-  '737': 'BOEING 737 ALL PASSENGER SERIES',
-  '738': 'BOEING 737-800',
-  '7M8': 'BOEING 737 MAX 8',
-  '350': 'AIRBUS A350 ALL PASSENGER SERIES',
-  '359': 'AIRBUS A350-900 (WIDE-BODY JET)',
-  '380': 'AIRBUS A380-800 DOUBLE-DECK JET',
-  '388': 'AIRBUS A380-800 PASSENGER',
-  '330': 'AIRBUS A330 ALL SERIES',
-  '333': 'AIRBUS A330-300 WIDE-BODY',
-  '320': 'AIRBUS A320 PASSENGER JET',
-  '321': 'AIRBUS A321 PASSENGER JET',
-  '32N': 'AIRBUS A320NEO',
-  'AT7': 'ATR 72-600 TURBOPROP'
+  '77W': { body: 'W', name: 'BOEING 777-300ER', prop: 'JET', seats: '339-378' },
+  '777': { body: 'W', name: 'BOEING 777 ALL SERIES', prop: 'JET', seats: '305-440' },
+  '772': { body: 'W', name: 'BOEING 777-200/200ER', prop: 'JET', seats: '305-328' },
+  '77L': { body: 'W', name: 'BOEING 777-200LR', prop: 'JET', seats: '238-301' },
+  '787': { body: 'W', name: 'BOEING 787 DREAMLINER', prop: 'JET', seats: '242-335' },
+  '788': { body: 'W', name: 'BOEING 787-8 DREAMLINER', prop: 'JET', seats: '242-271' },
+  '789': { body: 'W', name: 'BOEING 787-9 DREAMLINER', prop: 'JET', seats: '270-298' },
+  '78X': { body: 'W', name: 'BOEING 787-10 DREAMLINER', prop: 'JET', seats: '330-337' },
+  '737': { body: 'N', name: 'BOEING 737 ALL PASSENGER SERIES', prop: 'JET', seats: '110-189' },
+  '738': { body: 'N', name: 'BOEING 737-800', prop: 'JET', seats: '162-189' },
+  '73H': { body: 'N', name: 'BOEING 737-800 WINGLETS', prop: 'JET', seats: '162-189' },
+  '739': { body: 'N', name: 'BOEING 737-900/900ER', prop: 'JET', seats: '177-215' },
+  '7M8': { body: 'N', name: 'BOEING 737 MAX 8', prop: 'JET', seats: '162-189' },
+  '7M9': { body: 'N', name: 'BOEING 737 MAX 9', prop: 'JET', seats: '178-220' },
+  '744': { body: 'W', name: 'BOEING 747-400', prop: 'JET', seats: '416-524' },
+  '748': { body: 'W', name: 'BOEING 747-8I', prop: 'JET', seats: '364-467' },
+  '763': { body: 'W', name: 'BOEING 767-300/300ER', prop: 'JET', seats: '218-290' },
+  'D11': { body: 'W', name: 'BOEING (DOUGLAS) DC-10-10/15', prop: 'JET', seats: '237-374' },
+  'DC3': { body: 'N', name: 'BOEING (DOUGLAS) DC-3', prop: 'PIST', seats: '18- 30' },
+  '350': { body: 'W', name: 'AIRBUS A350 ALL SERIES', prop: 'JET', seats: '300-410' },
+  '359': { body: 'W', name: 'AIRBUS A350-900', prop: 'JET', seats: '253-325' },
+  '351': { body: 'W', name: 'AIRBUS A350-1000', prop: 'JET', seats: '350-410' },
+  '380': { body: 'W', name: 'AIRBUS A380 ALL SERIES', prop: 'JET', seats: '489-615' },
+  '388': { body: 'W', name: 'AIRBUS A380-800', prop: 'JET', seats: '489-615' },
+  '330': { body: 'W', name: 'AIRBUS A330 ALL SERIES', prop: 'JET', seats: '247-335' },
+  '332': { body: 'W', name: 'AIRBUS A330-200', prop: 'JET', seats: '247-290' },
+  '333': { body: 'W', name: 'AIRBUS A330-300', prop: 'JET', seats: '277-335' },
+  '339': { body: 'W', name: 'AIRBUS A330-900NEO', prop: 'JET', seats: '287-336' },
+  '320': { body: 'N', name: 'AIRBUS A320', prop: 'JET', seats: '150-180' },
+  '321': { body: 'N', name: 'AIRBUS A321', prop: 'JET', seats: '185-220' },
+  '32N': { body: 'N', name: 'AIRBUS A320NEO', prop: 'JET', seats: '150-186' },
+  '32Q': { body: 'N', name: 'AIRBUS A321NEO', prop: 'JET', seats: '180-240' },
+  '319': { body: 'N', name: 'AIRBUS A319', prop: 'JET', seats: '124-156' },
+  'AT7': { body: 'N', name: 'ATR 72', prop: 'TURB', seats: '68- 78' },
+  'AT4': { body: 'N', name: 'ATR 42', prop: 'TURB', seats: '42- 50' },
+  'DH4': { body: 'N', name: 'DE HAVILLAND DASH 8-400', prop: 'TURB', seats: '70- 78' },
+  'E90': { body: 'N', name: 'EMBRAER 190', prop: 'JET', seats: '96-114' },
+  'CR9': { body: 'N', name: 'BOMBARDIER CRJ900', prop: 'JET', seats: '76- 90' }
 };
 
-const AMAD_COUNTRIES = {
-  'BANGLADESH': 'BD', 'BD': 'BANGLADESH',
-  'INDIA': 'IN', 'IN': 'INDIA',
-  'THAILAND': 'TH', 'TH': 'THAILAND',
-  'MALAYSIA': 'MY', 'MY': 'MALAYSIA',
-  'SINGAPORE': 'SG', 'SG': 'SINGAPORE',
-  'UNITED ARAB EMIRATES': 'AE', 'AE': 'UNITED ARAB EMIRATES',
-  'SAUDI ARABIA': 'SA', 'SA': 'SAUDI ARABIA',
-  'QATAR': 'QA', 'QA': 'QATAR',
-  'KUWAIT': 'KW', 'KW': 'KUWAIT',
-  'UNITED KINGDOM': 'GB', 'GB': 'UNITED KINGDOM', 'UK': 'UNITED KINGDOM',
-  'UNITED STATES': 'US', 'US': 'UNITED STATES',
-  'CANADA': 'CA', 'CA': 'CANADA',
-  'AUSTRALIA': 'AU', 'AU': 'AUSTRALIA',
-  'JAPAN': 'JP', 'JP': 'JAPAN',
-  'TURKEY': 'TR', 'TR': 'TURKEY'
-};
+const AMAD_COUNTRY_DATA = [
+  { code: 'BD', name: 'BANGLADESH', region: 'ASIA REGION', tc: 'TC3', cur: 'BDT', curName: 'BANGLADESH TAKA', cit: 'BGD', citName: 'BANGLADESH CITIZEN' },
+  { code: 'IN', name: 'INDIA', region: 'ASIA REGION', tc: 'TC3', cur: 'INR', curName: 'INDIAN RUPEE', cit: 'IND', citName: 'INDIA CITIZEN' },
+  { code: 'PK', name: 'PAKISTAN', region: 'ASIA REGION', tc: 'TC3', cur: 'PKR', curName: 'PAKISTAN RUPEE', cit: 'PAK', citName: 'PAKISTAN CITIZEN' },
+  { code: 'LK', name: 'SRI LANKA', region: 'ASIA REGION', tc: 'TC3', cur: 'LKR', curName: 'SRI LANKA RUPEE', cit: 'LKA', citName: 'SRI LANKA CITIZEN' },
+  { code: 'NP', name: 'NEPAL', region: 'ASIA REGION', tc: 'TC3', cur: 'NPR', curName: 'NEPALESE RUPEE', cit: 'NPL', citName: 'NEPAL CITIZEN' },
+  { code: 'MV', name: 'MALDIVES', region: 'ASIA REGION', tc: 'TC3', cur: 'MVR', curName: 'MALDIVIAN RUFIYAA', cit: 'MDV', citName: 'MALDIVES CITIZEN' },
+  { code: 'TH', name: 'THAILAND', region: 'ASIA REGION', tc: 'TC3', cur: 'THB', curName: 'THAI BAHT', cit: 'THA', citName: 'THAILAND CITIZEN' },
+  { code: 'SG', name: 'SINGAPORE', region: 'ASIA REGION', tc: 'TC3', cur: 'SGD', curName: 'SINGAPORE DOLLAR', cit: 'SGP', citName: 'SINGAPORE CITIZEN' },
+  { code: 'MY', name: 'MALAYSIA', region: 'ASIA REGION', tc: 'TC3', cur: 'MYR', curName: 'MALAYSIAN RINGGIT', cit: 'MYS', citName: 'MALAYSIA CITIZEN' },
+  { code: 'ID', name: 'INDONESIA', region: 'ASIA REGION', tc: 'TC3', cur: 'IDR', curName: 'INDONESIAN RUPIAH', cit: 'IDN', citName: 'INDONESIA CITIZEN' },
+  { code: 'PH', name: 'PHILIPPINES', region: 'ASIA REGION', tc: 'TC3', cur: 'PHP', curName: 'PHILIPPINE PESO', cit: 'PHL', citName: 'PHILIPPINES CITIZEN' },
+  { code: 'VN', name: 'VIETNAM', region: 'ASIA REGION', tc: 'TC3', cur: 'VND', curName: 'VIETNAMESE DONG', cit: 'VNM', citName: 'VIETNAM CITIZEN' },
+  { code: 'CN', name: 'CHINA', region: 'ASIA REGION', tc: 'TC3', cur: 'CNY', curName: 'CHINESE YUAN RENMINBI', cit: 'CHN', citName: 'CHINA CITIZEN' },
+  { code: 'HK', name: 'HONG KONG', region: 'ASIA REGION', tc: 'TC3', cur: 'HKD', curName: 'HONG KONG DOLLAR', cit: 'HKG', citName: 'HONG KONG CITIZEN' },
+  { code: 'JP', name: 'JAPAN', region: 'ASIA REGION', tc: 'TC3', cur: 'JPY', curName: 'JAPANESE YEN', cit: 'JPN', citName: 'JAPAN CITIZEN' },
+  { code: 'KR', name: 'SOUTH KOREA', region: 'ASIA REGION', tc: 'TC3', cur: 'KRW', curName: 'SOUTH KOREAN WON', cit: 'KOR', citName: 'KOREA CITIZEN' },
+  { code: 'AU', name: 'AUSTRALIA', region: 'SOUTH WEST PACIFIC', tc: 'TC3', cur: 'AUD', curName: 'AUSTRALIAN DOLLAR', cit: 'AUS', citName: 'AUSTRALIA CITIZEN' },
+  { code: 'NZ', name: 'NEW ZEALAND', region: 'SOUTH WEST PACIFIC', tc: 'TC3', cur: 'NZD', curName: 'NEW ZEALAND DOLLAR', cit: 'NZL', citName: 'NEW ZEALAND CITIZEN' },
+  { code: 'AE', name: 'UNITED ARAB EMIRATES', region: 'MIDDLE EAST REGION', tc: 'TC2', cur: 'AED', curName: 'UAE DIRHAM', cit: 'ARE', citName: 'UAE CITIZEN' },
+  { code: 'SA', name: 'SAUDI ARABIA', region: 'MIDDLE EAST REGION', tc: 'TC2', cur: 'SAR', curName: 'SAUDI RIYAL', cit: 'SAU', citName: 'SAUDI ARABIA CITIZEN' },
+  { code: 'QA', name: 'QATAR', region: 'MIDDLE EAST REGION', tc: 'TC2', cur: 'QAR', curName: 'QATARI RIAL', cit: 'QAT', citName: 'QATAR CITIZEN' },
+  { code: 'KW', name: 'KUWAIT', region: 'MIDDLE EAST REGION', tc: 'TC2', cur: 'KWD', curName: 'KUWAITI DINAR', cit: 'KWT', citName: 'KUWAIT CITIZEN' },
+  { code: 'BH', name: 'BAHRAIN', region: 'MIDDLE EAST REGION', tc: 'TC2', cur: 'BHD', curName: 'BAHRAINI DINAR', cit: 'BHR', citName: 'BAHRAIN CITIZEN' },
+  { code: 'OM', name: 'OMAN', region: 'MIDDLE EAST REGION', tc: 'TC2', cur: 'OMR', curName: 'OMANI RIAL', cit: 'OMN', citName: 'OMAN CITIZEN' },
+  { code: 'EG', name: 'EGYPT', region: 'AFRICA / MIDDLE EAST', tc: 'TC2', cur: 'EGP', curName: 'EGYPTIAN POUND', cit: 'EGY', citName: 'EGYPT CITIZEN' },
+  { code: 'TR', name: 'TURKEY', region: 'EUROPE REGION', tc: 'TC2', cur: 'TRY', curName: 'TURKISH LIRA', cit: 'TUR', citName: 'TURKEY CITIZEN' },
+  { code: 'GB', name: 'UNITED KINGDOM', region: 'EUROPE REGION', tc: 'TC2', cur: 'GBP', curName: 'POUND STERLING', cit: 'GBR', citName: 'BRITISH CITIZEN', aliases: ['UK'] },
+  { code: 'FR', name: 'FRANCE', region: 'EUROPE REGION', tc: 'TC2', cur: 'EUR', curName: 'EURO', cit: 'FRA', citName: 'FRANCE CITIZEN' },
+  { code: 'DE', name: 'GERMANY', region: 'EUROPE REGION', tc: 'TC2', cur: 'EUR', curName: 'EURO', cit: 'DEU', citName: 'GERMANY CITIZEN' },
+  { code: 'IT', name: 'ITALY', region: 'EUROPE REGION', tc: 'TC2', cur: 'EUR', curName: 'EURO', cit: 'ITA', citName: 'ITALY CITIZEN' },
+  { code: 'ES', name: 'SPAIN', region: 'EUROPE REGION', tc: 'TC2', cur: 'EUR', curName: 'EURO', cit: 'ESP', citName: 'SPAIN CITIZEN' },
+  { code: 'NL', name: 'NETHERLANDS', region: 'EUROPE REGION', tc: 'TC2', cur: 'EUR', curName: 'EURO', cit: 'NLD', citName: 'NETHERLANDS CITIZEN' },
+  { code: 'CH', name: 'SWITZERLAND', region: 'EUROPE REGION', tc: 'TC2', cur: 'CHF', curName: 'SWISS FRANC', cit: 'CHE', citName: 'SWITZERLAND CITIZEN' },
+  { code: 'US', name: 'UNITED STATES', region: 'NORTH AMERICA REGION', tc: 'TC1', cur: 'USD', curName: 'US DOLLAR', cit: 'USA', citName: 'UNITED STATES CITIZEN', aliases: ['USA'] },
+  { code: 'CA', name: 'CANADA', region: 'NORTH AMERICA REGION', tc: 'TC1', cur: 'CAD', curName: 'CANADIAN DOLLAR', cit: 'CAN', citName: 'CANADA CITIZEN' }
+];
+
+const AMAD_COUNTRIES = {};
+AMAD_COUNTRY_DATA.forEach(c => {
+  AMAD_COUNTRIES[c.code] = c.name;
+  AMAD_COUNTRIES[c.name] = c.code;
+  if(c.aliases) c.aliases.forEach(a => { AMAD_COUNTRIES[a] = c.name; });
+});
+
+const AMAD_STATES = [
+  { code: 'USFL', state: 'FL', name: 'FLORIDA', country: 'UNITED STATES' },
+  { code: 'USCA', state: 'CA', name: 'CALIFORNIA', country: 'UNITED STATES' },
+  { code: 'USNY', state: 'NY', name: 'NEW YORK', country: 'UNITED STATES' },
+  { code: 'USTX', state: 'TX', name: 'TEXAS', country: 'UNITED STATES' },
+  { code: 'USIL', state: 'IL', name: 'ILLINOIS', country: 'UNITED STATES' },
+  { code: 'USGA', state: 'GA', name: 'GEORGIA', country: 'UNITED STATES' },
+  { code: 'USWA', state: 'WA', name: 'WASHINGTON', country: 'UNITED STATES' },
+  { code: 'USMA', state: 'MA', name: 'MASSACHUSETTS', country: 'UNITED STATES' },
+  { code: 'CAON', state: 'ON', name: 'ONTARIO', country: 'CANADA' },
+  { code: 'CAQC', state: 'QC', name: 'QUEBEC', country: 'CANADA' },
+  { code: 'CABC', state: 'BC', name: 'BRITISH COLUMBIA', country: 'CANADA' },
+  { code: 'CAAB', state: 'AB', name: 'ALBERTA', country: 'CANADA' },
+  { code: 'AUNS', state: 'NSW', name: 'NEW SOUTH WALES', country: 'AUSTRALIA' },
+  { code: 'AUVI', state: 'VIC', name: 'VICTORIA', country: 'AUSTRALIA' },
+  { code: 'AUQL', state: 'QLD', name: 'QUEENSLAND', country: 'AUSTRALIA' }
+];
+
+function getCountryIso2(countryName){
+  const upper = String(countryName || '').toUpperCase().trim();
+  if(!upper) return '';
+  if(AMAD_COUNTRIES[upper] && upper.length === 2) return upper;
+  const hit = AMAD_COUNTRY_DATA.find(c => c.name === upper || upper.includes(c.name));
+  return hit ? hit.code : upper.slice(0, 2);
+}
 
 function handleDAN(cmd){
-  const q = cmd.replace(/^DAN\s+/i, '').trim().toUpperCase();
-  if(!q){ printLines(['FORMAT: DAN <CITY OR AIRPORT NAME>  e.g. DAN DHAKA'], 'err'); return; }
-  const found = [];
+  const q = cmd.replace(/^DAN[\s\/]*/i, '').trim().toUpperCase();
+  if(!q){ printLines(['CHECK FORMAT - e.g. DAN DHAKA or DAN/DHAKA'], 'err'); return; }
+  const citiesMap = {};
   if(typeof AIRPORTS === 'object'){
     for(const [code, info] of Object.entries(AIRPORTS)){
       const city = (info.city || '').toUpperCase();
       const name = (info.name || '').toUpperCase();
       if(city.includes(q) || name.includes(q) || code === q){
-        found.push(`${code}  ${city} / ${name}  ${info.country || ''} (${info.countryIso || ''})`);
+        const iso = info.countryIso || getCountryIso2(info.country);
+        if(!citiesMap[city]) citiesMap[city] = { cityCode: code, city, iso, airports: [] };
+        citiesMap[city].airports.push({ code, name, iso });
       }
     }
   }
-  if(found.length){
-    printLines([`DAN — CITY/AIRPORT ENCODE: ${q}`, ...found.slice(0, 10)], 'success');
-  } else {
-    printLines([`DAN: NO AIRPORT/CITY FOUND FOR "${q}"`], 'warn');
+  const cityList = Object.values(citiesMap);
+  if(!cityList.length){
+    printLines([`DAN ${q}`, `NO LOCATION MATCHING "${q}"`], 'warn');
+    return;
   }
+  const rows = [
+    `DAN ${q}`,
+    `A:APT B:BUS C:CITY G:GRD H:HELI O:OFF-PT R:RAIL S:ASSOC TOWN`
+  ];
+  cityList.slice(0, 6).forEach(entry => {
+    rows.push(`${entry.cityCode} C  ${entry.city.padEnd(46, ' ')} /${entry.iso}`);
+    entry.airports.slice(0, 4).forEach(ap => {
+      rows.push(`    A  ${ap.code} - ${ap.name.padEnd(28, ' ')} -  0K${' '.repeat(14)}/${ap.iso}`);
+    });
+  });
+  printLines(rows, 'success');
 }
 
 function handleDAC(cmd){
-  const code = cmd.replace(/^DAC\s+/i, '').trim().toUpperCase();
-  if(!code){ printLines(['FORMAT: DAC <3-LETTER CODE>  e.g. DAC DAC'], 'err'); return; }
+  const code = cmd.replace(/^DAC[\s\/]*/i, '').trim().toUpperCase();
+  if(!code){ printLines(['CHECK FORMAT - e.g. DAC DAC or DAC SIN'], 'err'); return; }
   if(typeof AIRPORTS === 'object' && AIRPORTS[code]){
     const info = AIRPORTS[code];
-    printLines([
-      `DAC — AIRPORT/CITY DECODE: ${code}`,
-      `${code}  ${info.city} / ${info.name} / ${info.country} (${info.countryIso || ''})`
-    ], 'success');
+    const city = (info.city || '').toUpperCase();
+    const name = (info.name || '').toUpperCase();
+    const country = (info.country || '').toUpperCase();
+    const iso = info.countryIso || getCountryIso2(country);
+    const sameCity = Object.entries(AIRPORTS).filter(([, v]) => (v.city || '').toUpperCase() === city);
+    const rows = [
+      `DAC ${code}`,
+      `A:APT B:BUS C:CITY G:GRD H:HELI O:OFF-PT R:RAIL S:ASSOC TOWN`,
+      `CITY :`,
+      `  ${code} C  ${city.padEnd(22, ' ')}/${iso}:${country}`,
+      `AIRPORT-HELIPORT :`
+    ];
+    sameCity.forEach(([apCode, apInfo]) => {
+      const apName = (apInfo.name || '').toUpperCase();
+      rows.push(`  ${apCode} A  ${apName.padEnd(22, ' ')}/${iso}        -  0K`);
+    });
+    printLines(rows, 'success');
   } else {
-    printLines([`DAC: AIRPORT CODE "${code}" NOT FOUND`], 'warn');
+    printLines([`DAC ${code}`, `NO LOCATION MATCHING "${code}"`], 'warn');
   }
 }
 
 function handleDNA(cmd){
-  const q = cmd.replace(/^DNA\s+/i, '').trim().toUpperCase();
-  if(!q){ printLines(['FORMAT: DNA <AIRLINE NAME>  e.g. DNA EMIRATES'], 'err'); return; }
+  const q = cmd.replace(/^DNA[\s\/]*/i, '').trim().toUpperCase();
+  if(!q){ printLines(['CHECK FORMAT - e.g. DNA EK, DNA EMIRATES or DNA 176'], 'err'); return; }
   const found = [];
+  const qNum = /^\d+$/.test(q) ? q.padStart(3, '0') : null;
   for(const [code, info] of Object.entries(AMAD_AIRLINES)){
-    if(info.name.includes(q) || code === q){
-      found.push(`${code}  ${info.name}  (AIRLINE CODE: ${info.num})`);
+    if(info.name.includes(q) || code === q || (qNum && info.num === qNum) || info.num === q){
+      found.push(`${code}/${info.iso3 || 'INT'} ${info.num} ${info.name}`);
     }
   }
   if(found.length){
-    printLines([`DNA — AIRLINE ENCODE: ${q}`, ...found], 'success');
+    printLines([`DNA ${q}`, ...found.slice(0, 15)], 'success');
   } else {
-    printLines([`DNA: AIRLINE "${q}" NOT FOUND`], 'warn');
+    printLines([`DNA ${q}`, `AIRLINE NOT FOUND`], 'warn');
   }
 }
 
 function handleDNE(cmd){
-  const q = cmd.replace(/^DNE\s+/i, '').trim().toUpperCase();
-  if(!q){ printLines(['FORMAT: DNE <CARRIER CODE OR AIRCRAFT CODE>  e.g. DNE EK or DNE 777'], 'err'); return; }
-  if(AMAD_AIRLINES[q]){
-    const info = AMAD_AIRLINES[q];
-    printLines([
-      `DNE — AIRLINE DECODE: ${q}`,
-      `${q}  ${info.name}  (AIRLINE CODE: ${info.num})`
-    ], 'success');
-    return;
-  }
+  const q = cmd.replace(/^DNE[\s\/]*/i, '').trim().toUpperCase();
+  if(!q){ printLines(['CHECK FORMAT - e.g. DNE 77W or DNE BOEING'], 'err'); return; }
   if(AMAD_EQUIP[q]){
+    const eq = AMAD_EQUIP[q];
     printLines([
-      `DNE — EQUIPMENT DECODE: ${q}`,
-      `${q}  ${AMAD_EQUIP[q]}`
+      `DNE ${q}`,
+      `${q.padEnd(3, ' ')} ${eq.body} ${eq.name.padEnd(35, ' ')} ${eq.prop.padEnd(4, ' ')} ${eq.seats.padStart(7, ' ')}`
     ], 'success');
     return;
   }
-  printLines([`DNE: CODE "${q}" NOT FOUND`], 'warn');
+  const matches = [];
+  for(const [code, eq] of Object.entries(AMAD_EQUIP)){
+    if(eq.name.includes(q) || code.includes(q)){
+      matches.push(`${code.padEnd(3, ' ')} ${eq.body} ${eq.name.padEnd(35, ' ')} ${eq.prop.padEnd(4, ' ')} ${eq.seats.padStart(7, ' ')}`);
+    }
+  }
+  if(matches.length){
+    printLines([`DNE ${q}`, ...matches.slice(0, 20)], 'success');
+    return;
+  }
+  printLines([`DNE ${q}`, `EQUIPMENT NOT FOUND`], 'warn');
 }
 
 function handleDC(cmd){
-  const q = cmd.replace(/^DC\s+/i, '').trim().toUpperCase();
-  if(!q){ printLines(['FORMAT: DC <COUNTRY NAME OR 2-LETTER ISO>  e.g. DC BANGLADESH'], 'err'); return; }
-  if(AMAD_COUNTRIES[q]){
+  const q = cmd.replace(/^DC[\s\/]*/i, '').trim().toUpperCase();
+  if(!q){ printLines(['CHECK FORMAT - e.g. DC BD or DC BANGLADESH'], 'err'); return; }
+  const hit = AMAD_COUNTRY_DATA.find(c =>
+    c.code === q || c.name === q || c.name.includes(q) || (c.aliases && c.aliases.includes(q))
+  );
+  if(!hit){
+    printLines([`DC ${q}`, `COUNTRY NOT FOUND`], 'warn');
+    return;
+  }
+  const rows = [
+    `DC ${q}`,
+    `${hit.code.padEnd(4, ' ')} ${(`${hit.name}/${hit.region}`).padEnd(32, ' ')} ${hit.tc}`,
+    ``,
+    `${hit.cur.padEnd(4, ' ')} ${hit.curName.padEnd(32, ' ')} LOCAL`
+  ];
+  if(hit.cur !== 'USD'){
+    rows.push(`USD  ${'US DOLLAR'.padEnd(32, ' ')} INTL PUBLISHED`);
+  }
+  rows.push('');
+  rows.push(`${hit.cit.padEnd(4, ' ')} ${hit.citName}`);
+  printLines(rows, 'success');
+}
+
+function handleDNS(cmd){
+  const q = cmd.replace(/^DNS[\s\/]*/i, '').trim().toUpperCase();
+  if(!q){ printLines(['CHECK FORMAT - e.g. DNS FL, DNS USFL or DNS FLORIDA'], 'err'); return; }
+  const matches = AMAD_STATES.filter(s => s.code === q || s.state === q || s.name.includes(q));
+  if(!matches.length){
+    printLines([`DNS ${q}`, `STATE/PROVINCE NOT FOUND`], 'warn');
+    return;
+  }
+  printLines([
+    `DNS ${q}`,
+    ...matches.map(s => `${s.code}  ${s.name.padEnd(20, ' ')} /${s.country}`)
+  ], 'success');
+}
+
+function handleDD(cmd){
+  const clean = cmd.replace(/^DD[\s\/]*/i, '').trim().toUpperCase();
+  if(!clean){
+    const now = new Date();
     printLines([
-      `DC — COUNTRY ENCODE/DECODE: ${q}`,
-      `${q}  <-->  ${AMAD_COUNTRIES[q]}`
+      `DD — CURRENT SYSTEM DATE/TIME`,
+      `UTC:   ${now.toUTCString().toUpperCase()}`,
+      `LOCAL: ${now.toString().toUpperCase()}`
     ], 'success');
     return;
   }
-  printLines([`DC: COUNTRY "${q}" NOT FOUND`], 'warn');
+  const calcMatch = clean.match(/^(\d{1,2}[A-Z]{3})(?:\/([+-]?\d+))?$/);
+  if(calcMatch && calcMatch[2]){
+    const baseDate = parseFlightDate ? parseFlightDate(calcMatch[1]) : new Date();
+    if(baseDate && !isNaN(baseDate.getTime())){
+      const days = parseInt(calcMatch[2], 10);
+      const res = new Date(baseDate.getTime() + days * 86400000);
+      const dayNames = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+      const monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      printLines([
+        `DD — DATE CALCULATION: ${calcMatch[1]} ${days >= 0 ? '+' : ''}${days} DAYS`,
+        `RESULT: ${res.getDate().toString().padStart(2, '0')}${monthNames[res.getMonth()]}${res.getFullYear()} (${dayNames[res.getDay()]})`
+      ], 'success');
+      return;
+    }
+  }
+  const TIMEZONES = {
+    DAC: { city: 'DHAKA', diff: '+6:00', tz: 'Asia/Dhaka' },
+    SIN: { city: 'SINGAPORE', diff: '+8:00', tz: 'Asia/Singapore' },
+    BKK: { city: 'BANGKOK', diff: '+7:00', tz: 'Asia/Bangkok' },
+    KUL: { city: 'KUALA LUMPUR', diff: '+8:00', tz: 'Asia/Kuala_Lumpur' },
+    DXB: { city: 'DUBAI', diff: '+4:00', tz: 'Asia/Dubai' },
+    DOH: { city: 'DOHA', diff: '+3:00', tz: 'Asia/Qatar' },
+    LON: { city: 'LONDON', diff: '+0:00', tz: 'Europe/London' },
+    LHR: { city: 'LONDON HEATHROW', diff: '+0:00', tz: 'Europe/London' },
+    NYC: { city: 'NEW YORK', diff: '-5:00', tz: 'America/New_York' },
+    JFK: { city: 'NEW YORK JFK', diff: '-5:00', tz: 'America/New_York' }
+  };
+  const cityInfo = TIMEZONES[clean];
+  if(cityInfo){
+    try {
+      const nowStr = new Date().toLocaleTimeString('en-US', { timeZone: cityInfo.tz, hour12: false });
+      const dateStr = new Date().toLocaleDateString('en-GB', { timeZone: cityInfo.tz, day:'2-digit', month:'short', year:'2-digit' }).toUpperCase();
+      printLines([
+        `DD — LOCAL TIME & DATE FOR ${clean} (${cityInfo.city})`,
+        `DATE: ${dateStr}   LOCAL TIME: ${nowStr}   TIME ZONE: UTC ${cityInfo.diff}`
+      ], 'success');
+      return;
+    } catch(e){}
+  }
+  printLines([`DD: TIME/CALCULATION NOT FOUND FOR "${clean}". Try: DD DAC · DD LON · DD 15NOV/10`], 'warn');
+}
+
+function handleDO(cmd){
+  const clean = cmd.replace(/^DO[\s\/]*/i, '').trim().toUpperCase();
+
+  // Known real-world flights for DO command (not in training PNR)
+  // Only these specific flights get full planned info; others → FLIGHT NOT OPERATIONAL
+  const KNOWN_REAL_FLIGHTS = {
+    'BG584': { al:'BG', fn:'584', dep:'DAC', arr:'SIN', termDep:'2', termArr:'3', depT:'0825', arrT:'1440', eq:'738', dur:'4:15',
+                classes:{ Z:0, C:0, J:0, U:0, D:0, Y:0, B:0, E:0, M:0, H:0, W:0 } },
+    'SQ447': { al:'SQ', fn:'447', dep:'DAC', arr:'SIN', termDep:'2', termArr:'3', depT:'2355', arrT:'0600+1', eq:'787', dur:'4:05',
+                classes:{ Z:0, C:0, J:0, U:0, D:0, Y:0, B:0, E:0, M:0, H:0, W:0, Q:0, N:0, G:0 } },
+    'SQ421': { al:'SQ', fn:'421', dep:'DAC', arr:'SIN', termDep:'2', termArr:'3', depT:'0013', arrT:'0615', eq:'787', dur:'4:05',
+                classes:{ Z:0, C:0, J:0, U:0, D:0, Y:0, B:0, E:0, M:0, H:0, W:0, Q:0, N:0, G:0 } },
+    'BG563': { al:'BG', fn:'563', dep:'DAC', arr:'SIN', termDep:'2', termArr:'3', depT:'1700', arrT:'2100', eq:'738', dur:'4:10',
+                classes:{ Y:0, B:0, M:0, K:0, H:0, Q:0, T:0 } },
+    'BG022': { al:'BG', fn:'022', dep:'DAC', arr:'DXB', termDep:'1', termArr:'3', depT:'0130', arrT:'0400', eq:'738', dur:'4:30',
+                classes:{ Y:0, B:0, M:0, K:0, H:0, Q:0 } },
+    'EK582': { al:'EK', fn:'582', dep:'DAC', arr:'DXB', termDep:'1', termArr:'3', depT:'0145', arrT:'0415', eq:'77W', dur:'4:30',
+                classes:{ F:0, A:0, J:0, C:0, D:0, Y:0, B:0, E:0, M:0, H:0, W:0 } },
+  };
+
+  const renderDOOutput = (seg, al, fn, fnRaw, date) => {
+    const dep = seg.dep || 'DAC';
+    const arr = seg.arr || 'SIN';
+    const depRaw = String(seg.depT || seg.depTime || '1659').replace(':', '');
+    const arrRaw = String(seg.arrT || seg.arrTime || '2059').replace(':', '');
+    const depHHMM = depRaw.replace(/\+\d+/, '').slice(0, 4);
+    const arrPlusMatch = arrRaw.match(/\+(\d+)/);
+    const arrPlusDays = arrPlusMatch ? parseInt(arrPlusMatch[1], 10) : 0;
+    const arrHHMM = arrRaw.replace(/\+\d+/, '').slice(0, 4);
+    const arrSuffix = arrPlusDays > 0 ? `+${arrPlusDays}` : '';
+
+    const dObj = typeof resolveFlightDate === 'function' ? resolveFlightDate(date) : new Date();
+    const dayCodes = ['SU','MO','TU','WE','TH','FR','SA'];
+    const depDay = dayCodes[dObj.getDay()];
+    const arrObj = new Date(dObj.getTime() + arrPlusDays * 86400000);
+    const arrDay = dayCodes[arrObj.getDay()];
+    const yr2 = String(dObj.getFullYear()).slice(-2);
+
+    const depTermDigit = String(getAirportTerminal(dep, seg.depTerminal || seg.termDep)).replace(/\D+/g, '') || '2';
+    const arrTermDigit = String(getAirportTerminal(arr, seg.arrTerminal || seg.termArr)).replace(/\D+/g, '') || '3';
+    const eqCode = seg.eq || '738';
+    const dur = seg.dur || '4:00';
+
+    // Build class/meal string from classes object or fallback
+    const clsKeys = seg.classes
+      ? Object.keys(seg.classes).join('')
+      : (seg.cls || 'Y') + 'BMHKQL';
+    // Split into two rows of max 11 chars each (like Amadeus)
+    const row1Cls = clsKeys.slice(0, 11);
+    const row2Cls = clsKeys.slice(11);
+    const clsRow1 = `${row1Cls}/M`;
+    const clsRow2 = row2Cls ? `${row2Cls}/M` : '';
+
+    const isWide = ['787','788','789','777','77W','359','351','333','388'].includes(eqCode);
+    const jSeats = isWide ? 36 : 12;
+    const ySeats = isWide ? 301 : 150;
+    const hasJ = clsKeys.includes('J') || clsKeys.includes('C');
+
+    // Header: *1A PLANNED FLIGHT INFO*  AL  FN   capacity DAY DATEYY
+    const fnDisplay = String(fn).padStart(3,' ');
+    const hdr = `*1A PLANNED FLIGHT INFO*  ${al}  ${fnDisplay}   240 ${depDay} ${date}${yr2}`;
+
+    // Col widths matching real Amadeus screenshot
+    // APT ARR   DY DEP   DY CLASS/MEAL          EQP  GRND  EFT   TTL
+    // DAC          2355  SU ZCJUDYBEMHW/M       787        4:05
+    //                       QNG/M
+    // SIN 0600  MO                                         4:05
+    const arrDisplay = `${arrHHMM}${arrSuffix}`;
+    const depLine = `${dep.padEnd(3,' ')}          ${depHHMM.padStart(4,' ')}  ${depDay} ${clsRow1.padEnd(21,' ')} ${eqCode.padEnd(4,' ')}       ${dur.padStart(4,' ')}`;
+    const arrLine = `${arr.padEnd(3,' ')} ${arrDisplay.padEnd(5,' ')}  ${arrDay}                                         ${dur.padStart(4,' ')}`;
+
+    const lines = [
+      `DO${al}${fnRaw}/${date}`,
+      hdr,
+      `APT ARR   DY DEP   DY CLASS/MEAL          EQP  GRND  EFT   TTL`,
+      depLine,
+    ];
+    if(clsRow2){
+      lines.push(`                      ${clsRow2}`);
+    }
+    lines.push(arrLine);
+    lines.push('');
+    lines.push(`COMMENTS-`);
+    lines.push(` 1.${dep} ${arr}  - DEPARTS TERMINAL ${depTermDigit}`);
+    lines.push(` 2.${dep} ${arr}  -   9/ NON-SMOKING`);
+    lines.push(` 3.${dep} ${arr}  -  ET/ ELECTRONIC TKT CANDIDATE`);
+    lines.push(` 4.${dep} ${arr}  - ${hasJ ? `J${fnDisplay}` : ''}${row1Cls.includes('Y') ? `Y${ySeats}` : ''}`);
+    lines.push(` 5.${dep} ${arr}  - CO2/PAX* 187.51 KG ECO, 522.40 KG CLB`);
+    lines.push(` (*):SOURCE:ICAO`);
+    lines.push('');
+    lines.push(`CONFIGURATION-`);
+    lines.push(`               ${eqCode.padEnd(4,' ')} ${hasJ ? `J  ${String(jSeats).padEnd(4,' ')} ` : ''}Y ${ySeats}`);
+
+    printLines(lines, 'success');
+  };
+
+  // Support segment-number shortcut from active PNR: DO2 or DO 2
+  const segNumMatch = clean.match(/^(\d+)$/);
+  if(segNumMatch){
+    const segNum = parseInt(segNumMatch[1], 10);
+    const segs = (state && state.segments) || [];
+    const paxCount = (state && state.passengers) ? state.passengers.length : 0;
+    const segIdx = (segNum > paxCount && segs[segNum - paxCount - 1]) ? (segNum - paxCount - 1) : (segNum - 1);
+    const seg = segs[segIdx];
+    if(!seg){
+      printLines([`CHECK SEGMENT NUMBER - SEGMENT ${segNum} NOT FOUND`], 'err');
+      return;
+    }
+    const segFn = String(seg.fn || '555');
+    return renderDOOutput(seg, seg.al || 'BG', segFn.replace(/^0+/,'') || segFn, segFn, seg.date || '25JUL');
+  }
+
+  const m = clean.match(/^([A-Z0-9]{2})\s*(\d+)(?:\/(\d{1,2}[A-Z]{3}))?$/i);
+  if(!m){
+    printLines(['CHECK FORMAT - e.g. DO BG584/25JUL, DO SQ447/25JUL or DO 2'], 'err');
+    return;
+  }
+  const al = m[1];
+  const fn = m[2].replace(/^0+/, '') || m[2];
+  const fnPadded = m[2];
+  const date = m[3] || '25JUL';
+
+  const matchSeg = (s) => s && String(s.al || '').toUpperCase() === al && (String(s.fn || '') === fnPadded || String(s.fn || '').replace(/^0+/, '') === fn);
+
+  // 1. Check active PNR segments
+  let foundSeg = ((state && state.segments) || []).find(matchSeg);
+
+  // 2. Check last AN/SN/TN availability display
+  if(!foundSeg && typeof lastANRoute !== 'undefined' && lastANRoute && Array.isArray(lastANRoute.lines)){
+    for(const l of lastANRoute.lines){
+      foundSeg = (l.segs || []).find(matchSeg);
+      if(foundSeg) break;
+    }
+  }
+
+  // 3. Check known real/training schedules
+  if(!foundSeg && typeof getFlightSchedule === 'function'){
+    const pairs = [['DAC','SIN'],['SIN','DAC'],['DAC','BKK'],['BKK','DAC'],['DAC','KUL'],['KUL','DAC'],['DAC','DXB'],['DXB','DAC'],['DAC','JED'],['JED','DAC'],['DAC','IST'],['IST','DAC'],['DAC','NRT'],['DAC','JFK']];
+    for(const [o, d] of pairs){
+      const sched = getFlightSchedule(o, d, date);
+      if(sched && Array.isArray(sched.lines)){
+        for(const l of sched.lines){
+          foundSeg = (l.segs || []).find(matchSeg);
+          if(foundSeg) break;
+        }
+      }
+      if(foundSeg) break;
+    }
+  }
+
+  // 4. Real-world extra flights shown in Amadeus live timetable (e.g. BG 584)
+  if(!foundSeg && al === 'BG' && fn === '584'){
+    foundSeg = { al:'BG', fn:'584', dep:'DAC', arr:'SIN', termDep:'2', termArr:'3', depT:'0825', arrT:'1440', eq:'738', dur:'4:15', cls:'Y' };
+  }
+
+  if(!foundSeg){
+    printLines([`DO${al}${fnPadded}/${date}`, `FLIGHT NOT OPERATIONAL`], 'err');
+    return;
+  }
+
+  return renderDOOutput(foundSeg, al, fn, fnPadded, date);
 }
 
 function handleMU(){
@@ -5662,15 +6571,29 @@ function runCommand(raw, paneId){
   if(/^JI(\*.*)?$/i.test(upper)) return handleJI(upper);
   if(/^JO\*?$/i.test(upper)) return handleJO(upper);
 
-  // Encode & Decode — DAN / DAC / DNA / DNE / DC
-  if(/^DAN\s+/i.test(upper)) return handleDAN(upper);
-  if(/^DAC\s+/i.test(upper)) return handleDAC(upper);
-  if(/^DNA\s+/i.test(upper)) return handleDNA(upper);
-  if(/^DNE\s+/i.test(upper)) return handleDNE(upper);
-  if(/^DC\s+/i.test(upper)) return handleDC(upper);
+  // Encode & Decode — DAN / DAC / DNA / DNE / DC / DNS / DD / DO
+  if(/^DAN(?:[\s\/].*|[A-Z]{2,})?$/i.test(upper)) return handleDAN(upper);
+  if(/^DAC(?:[\s\/].*|[A-Z]{2,})?$/i.test(upper)) return handleDAC(upper);
+  if(/^DNA(?:[\s\/].*|[A-Z0-9]{2,})?$/i.test(upper)) return handleDNA(upper);
+  if(/^DNE(?:[\s\/].*|[A-Z0-9]{2,})?$/i.test(upper)) return handleDNE(upper);
+  if(/^DNS(?:[\s\/].*|[A-Z]{2,})?$/i.test(upper)) return handleDNS(upper);
+  if(/^DC(?:[\s\/].*|[A-Z]{2,})?$/i.test(upper)) return handleDC(upper);
+  if(/^DD[\s\/]|^DD[A-Z0-9]/i.test(upper) || clean === 'DD') return handleDD(upper);
+  if(/^DO[\s\/]|^DO[A-Z0-9]/i.test(upper)) return handleDO(upper);
+
+  // Schedule & Timetable Neutral — SN / TN (date before city pair in real Amadeus)
+  if(/^[ST]N/i.test(clean) && clean.length >= 8) return handleSN(upper);
 
   // Move Up (Page Up) — MU
   if(upper === "MU" || clean === "MU") return handleMU();
+
+  // Reset default test PNR (ICRBPO)
+  if(upper === "RESET" || clean === "RESET" || upper === "ICRBPO/RESET" || upper === "RESET/ICRBPO" || upper === "JHONY/RESET"){
+    if(typeof removeSavedPNR === 'function') removeSavedPNR('ICRBPO');
+    loadJhonyPNR();
+    showToast('ICRBPO reset to initial booking state with ticket');
+    return;
+  }
 
   if(/^A[ND]/i.test(clean) && clean.length >= 8) return handleAN(upper, clean.startsWith("AD"));
   // Reject SSR prefix — Real Amadeus command is SR (SSR is display-only category)
@@ -5678,7 +6601,22 @@ function runCommand(raw, paneId){
     printLines(['CHECK FORMAT - COMMAND IS SR (NOT SSR)', 'Example: SR CTCM SV HK1-01757208244/P1'], 'err');
     return;
   }
+  // SI ARNK / SIARNK / ARNK / 0AA — Surface / ARNK segment for Open Jaw
+  if(/^(?:SI\s*)?ARNK$/i.test(clean) || /^SI\s*ARNK/i.test(upper) || clean === '0AA') {
+    return handleARNK(upper);
+  }
+
+  // SO / 0 ... OPEN — Sell Open Segment (Open Journey / Open Return)
+  if(/^SO\s+[A-Z0-9]{2}\s+[A-Z]/i.test(upper) || /^0\s+[A-Z0-9]{2}\s+OPEN\s+[A-Z]/i.test(upper)){
+    return handleSO(upper);
+  }
+
   if(/^SS/i.test(clean)) return handleSS(upper);
+  // Auto-correct common typo: NMI or NMl (letter I or l instead of number 1)
+  if(/^NM[Il]/i.test(upper)){
+    upper = upper.replace(/^NM[Il]/i, 'NM1');
+    cmd = cmd.replace(/^NM[Il]/i, 'NM1');
+  }
   if(/^NM\d+/i.test(upper)) return handleNM(upper);
   if(/^AP\s/i.test(upper)) return handleAP(cmd);
   if(/^TK\s*(TL|OK)/i.test(upper)) return handleTK(upper);
@@ -5720,7 +6658,7 @@ function runCommand(raw, paneId){
   if(/^TRFP?\/CP(?:\s*\d+(?:\.\d{1,2})?[AP]?)?$/i.test(upper)) return handleTRFPenalty(upper);
   if(/^TRF(?:\s+.*|\/.*)?$/i.test(upper)) return handleTRF(upper);
   if(/^TRDC(?:\/.*)?$/i.test(upper)) return handleTRDCVoid(upper);
-  if(/^TRFR$/i.test(upper)) return handleTRDC();
+  if(/^TRFR$/i.test(upper)) return handleTRF('TRFR');
   if(/^SB(?:\s+.*)?$/i.test(upper)) return handleSB(upper);
   if(/^FX[QEIFO]/i.test(clean)) return handleReissueQuote(upper);
   if(/^FO(?:\*|\s+|\d)/i.test(upper)) return handleFO(upper);
@@ -5742,7 +6680,7 @@ function runCommand(raw, paneId){
   if(/^MS\s*22$/i.test(upper)) return handleMealCodesSSR();
   if(/^MS\s*64$/i.test(upper)) return handleMealCodesFlightInfo();
   if(/^MS\s*\d+$/i.test(upper)) return handleMealCodesSSR();
-  if(/^HE(\/\S*)?$/i.test(upper)) return handleMealHelpIndex();
+  if(/^HE(?:[\s\/].*)?$/i.test(upper)) return handleHelp(upper);
 
   // ES = Share/Extend PNR to another office — ESDACVS3334-B
   if(/^ES[A-Z0-9]+-[ABR]$/i.test(upper) || /^ES[A-Z0-9]+$/i.test(upper)) return handleES(upper);
@@ -5755,8 +6693,8 @@ function runCommand(raw, paneId){
   // handler is never reached.
   if(/^SR\s*FQTV/i.test(upper)) return handleSRFFN(upper);
 
-  // SRBAGX — Extra Baggage SSR (same ordering requirement as SRFQTV)
-  if(/^SR\s*BAGX/i.test(upper)) return handleSRBAGX(upper);
+  // SRBAGX / SRXBAG / SRABAG — Extra / Excess Baggage SSR (same ordering requirement as SRFQTV)
+  if(/^SR\s*(?:BAGX|XBAG|ABAG)/i.test(upper)) return handleSRBAGX(upper);
 
   // SRWLST — Waitlist SSR (same ordering requirement as SRFQTV)
   if(/^SR\s*WLST/i.test(upper)) return handleSRWLST(upper);
@@ -5800,16 +6738,25 @@ function runCommand(raw, paneId){
   // ---------- NAME MODIFY — Two real Amadeus formats ----------
   // Format 1: NU1HAMED/MAHMOUD  (NU + pax number + new name)
   // Format 2: 1/MOUSSA/MAHMOUD  (pax number + / + surname + / + firstname)
-  if(/^NU\d+[A-Z]+\/[A-Z]+/i.test(upper)) return handleNameModify(upper);
-  if(/^\d+\/[A-Z]+\/[A-Z]+/i.test(upper)) return handleNameModify(upper);
+  if(/^NU\d+[A-Z]+\/[A-Z ]+/i.test(upper)) return handleNameModify(upper);
+  if(/^\d+\/[A-Z]+\/[A-Z ]+/i.test(upper)) return handleNameModify(upper);
 
   // XE — Delete SSR / DOCS / OSI entry (XE10 or XEMOML or XESRDOCS/P1)
   if(/^XE/i.test(upper)) return handleXE(upper);
 
+  // FQB & FQC — Currency Conversion & Banker's Selling Rates
+  if(/^FQB/i.test(clean)) return handleFQB(upper, clean);
+  if(/^FQC/i.test(clean)) return handleFQC(upper, clean);
+
   // FQD — Fare Display. Use this after availability and before booking to
   // inspect fare options and rules.
-  if(clean === 'FQB') return handleFQB();
   if(/^FQD/i.test(clean)) return handleFQD(upper, clean);
+
+  // FQA — Baggage Allowance Display
+  if(/^FQA/i.test(clean)) return handleFQA(upper);
+
+  // FXK — Chargeable Ancillary Service Catalogue (Baggage / Seats / Meals)
+  if(/^FXK/i.test(clean)) return handleFXK();
 
   // FQN — Fare Quote Notes / Rules Display (Screenshot 5: FQN1-1//PE, FQN1-1, etc.)
   // Strips accidental backticks like FQN1-1`//PE -> FQN1-1//PE
@@ -5836,34 +6783,655 @@ function runCommand(raw, paneId){
   // ST — Seat Assignment
   if(/^ST\/\d+[A-F](?:\/P\d+)?$/i.test(upper)) return handleST(upper);
 
+  // ── RH / RHA / RHN / RHP / RHS / RHF ── PNR History
+  if(/^RH[ANPSFC]?$/i.test(clean) || /^RH\s/i.test(upper)) return handleRH(upper);
+
+  // ── QC / QCA / QC14 / QC/14 ── Queue Count
+  if(/^QC(?:A|\d+|\/\d+)?$/i.test(clean)) return handleQC(upper);
+
+  // ── GG ── General Information Pages (AIS)
+  if(/^GG/i.test(upper)) return handleGG(upper);
+
+  // ── JD ── Display Sign / Work Area Status (A-F)
+  if(clean === 'JD') return handleJD(upper);
+
+  // ── HELP / H ── General help alias (real Amadeus uses HE)
+  if(clean === 'HELP' || clean === 'H' || /^HELP\s+/i.test(upper)) return handleHelp(upper);
+
   printLines([`FORMAT - command not recognised. Try: FXDDAC/D10FEBLHR/D25FEBDAC · FSDACBKK20NOV · FXS1 · FXZ1 · FXR · FXB · RT · RL · HE/MEAL · ER · TQT · TTP`], 'err');
 }
 
-// ---------- FQD — Fare Display (pre-booking fare and rule workflow) ----------
-function handleFQB(){
+// ═══════════════════════════════════════════════════════════════
+// RH / RHA / RHN / RHP / RHS / RHF — PNR Modification History
+// Real Amadeus: RH = all, RHA = air, RHN = name, RHP = phone, RHS = SSR/OSI, RHF = FOP/TST/TKT
+// ═══════════════════════════════════════════════════════════════
+function handleRH(cmd){
+  const upper = cmd.toUpperCase().replace(/\s+/g, '').trim();
+  const mode = upper.replace(/^RH/, '') || 'ALL';
+  const now = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const today = `${String(now.getDate()).padStart(2,'0')}${months[now.getMonth()]}${String(now.getFullYear()).slice(-2)}`;
+  const time = `${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}Z`;
+
+  if(!state || !state.locator){
+    printLines(['NO PNR IN CONTEXT - RETRIEVE PNR FIRST (RT XXXXXX)'], 'err');
+    return;
+  }
+
+  const officeId = state.officeId || 'DACVS31XW';
+  const agentCode = (state.agentCode || 'BP/AS').replace('/','');
+  const locator = state.locator || 'ICRBPO';
+
+  const histLines = [];
+  histLines.push(`--- RLR ---`);
+  histLines.push(`RP/${officeId}/${officeId}         ${state.agentCode||'BP/AS'}  ${state.dateStamp||today+'/'+time}  ${locator}`);
+  histLines.push('');
+  histLines.push(`RFC ${officeId}`);
+  histLines.push('');
+
+  let hIdx = 1;
+  const dateStamp = state.dateStamp ? state.dateStamp.split('/')[0] : today;
+  const ag = agentCode.split('/').pop() || 'AS';
+  const showAll = (mode === 'ALL' || mode === 'C');
+
+  if(showAll){
+    histLines.push(`${String(hIdx++).padStart(2)} RF ${ag} ${dateStamp}/${time} - PNR CREATED`);
+  }
+
+  if((showAll || mode === 'N') && state.passengers && state.passengers.length){
+    state.passengers.forEach(p => {
+      histLines.push(`${String(hIdx++).padStart(2)} NM ${ag} ${dateStamp}/${time} - ${(p.label||'').toUpperCase()}`);
+    });
+  }
+
+  if((showAll || mode === 'A') && state.segments && state.segments.length){
+    state.segments.forEach(s => {
+      histLines.push(`${String(hIdx++).padStart(2)} SS ${ag} ${dateStamp}/${time} - ${s.al||'BG'}${s.fn||'555'} ${s.cls||'Y'} ${s.date||'25JUL'} ${s.dep||'DAC'}${s.arr||'SIN'} HK${s.count||1}`);
+    });
+  }
+
+  if((showAll || mode === 'P') && state.phone){
+    histLines.push(`${String(hIdx++).padStart(2)} AP ${ag} ${dateStamp}/${time} - ${state.phone}`);
+  }
+
+  if(showAll && state.ticketing){
+    histLines.push(`${String(hIdx++).padStart(2)} TK ${ag} ${dateStamp}/${time} - ${state.ticketing}`);
+  }
+
+  if((showAll || mode === 'S') && state.specialSSRs && state.specialSSRs.length){
+    state.specialSSRs.forEach(s => {
+      histLines.push(`${String(hIdx++).padStart(2)} SR ${ag} ${dateStamp}/${time} - SSR ${s.type} ${s.al||'BG'} ${s.status||'HK1'} ${s.value||''}`);
+    });
+  }
+
+  if((showAll || mode === 'S') && state.osiEntries && state.osiEntries.length){
+    state.osiEntries.forEach(o => {
+      histLines.push(`${String(hIdx++).padStart(2)} OS ${ag} ${dateStamp}/${time} - OSI ${o.al||'YY'} ${o.text||''}`);
+    });
+  }
+
+  if((showAll || mode === 'F') && state.hasTST){
+    histLines.push(`${String(hIdx++).padStart(2)} FX ${ag} ${dateStamp}/${time} - TST CREATED - FXP/FXB`);
+  }
+
+  if((showAll || mode === 'F') && state.fop){
+    histLines.push(`${String(hIdx++).padStart(2)} FP ${ag} ${dateStamp}/${time} - FP ${state.fop}`);
+  }
+
+  if((showAll || mode === 'F') && state.tickets && state.tickets.length){
+    state.tickets.forEach(t => {
+      const st = t.status === 'V' ? 'VOIDED' : t.status === 'R' ? 'REFUNDED' : 'ISSUED';
+      histLines.push(`${String(hIdx++).padStart(2)} TT ${ag} ${dateStamp}/${time} - TKT ${t.tktNum||''} ${st}`);
+    });
+  }
+
+  if(showAll && state.finalized){
+    histLines.push(`${String(hIdx++).padStart(2)} ER ${ag} ${dateStamp}/${time} - PNR SAVED/FILED`);
+  }
+
+  histLines.push('');
+  histLines.push(hIdx === 1 ? `NO HISTORY ITEMS FOR FILTER RH${mode}` : `END OF HISTORY - ${hIdx-1} ENTRIES`);
+
+  printLines(histLines, 'normal');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QC — Queue Count Display (reads live officeQueues state)
+// Real Amadeus: QC, QCA, QC14, QC/14
+// ═══════════════════════════════════════════════════════════════
+function handleQC(cmd){
+  const clean = cmd.toUpperCase().replace(/\s+/g, '').trim();
+  const officeId = (state && state.officeId) || 'DACVS31XW';
+  const activeOnly = clean === 'QCA';
+  const qMatch = clean.match(/^QC\/?(\d+)$/);
+  const specificQ = qMatch ? parseInt(qMatch[1], 10) : null;
+
+  const queues = (typeof officeQueues === 'object' && officeQueues) ? officeQueues : {};
+
+  if(specificQ !== null){
+    const q = queues[specificQ];
+    const count = (q && Array.isArray(q.items)) ? q.items.length : 0;
+    const desc = (q && q.desc) || `QUEUE ${specificQ}`;
+    printLines([
+      `QC/${String(specificQ).padStart(2,'0')} - ${officeId}`,
+      ``,
+      ` Q  CAT   DESCRIPTION                     TOTAL`,
+      ` -- ---   ------------------------------  -----`,
+      ` ${String(specificQ).padStart(2,'0')} C00   ${desc.padEnd(30,' ')}  ${String(count).padStart(5,' ')}`,
+      ``,
+      count > 0 ? ` ${count} PNR(S) AWAITING ACTION (USE QT${specificQ} TO PROCESS)` : ` QUEUE IS EMPTY`
+    ], 'normal');
+    return;
+  }
+
+  const rows = [
+    `QC${activeOnly ? 'A' : ''} - QUEUE COUNT - ${officeId}`,
+    ``,
+    ` Q  CAT   DESCRIPTION                     TODAY    TOTAL`,
+    ` -- ---   ------------------------------  -----    -----`
+  ];
+  let totalAll = 0;
+  const qKeys = Object.keys(queues).sort((a,b) => Number(a) - Number(b));
+  qKeys.forEach(k => {
+    const q = queues[k];
+    const cnt = (q && Array.isArray(q.items)) ? q.items.length : 0;
+    if(activeOnly && cnt === 0) return;
+    totalAll += cnt;
+    const qPad = String(k).padStart(2, '0');
+    const cat = (q.category || 'C0').padEnd(3, ' ');
+    const desc = (q.desc || q.name || `QUEUE ${qPad}`).slice(0, 30).padEnd(30, ' ');
+    rows.push(` ${qPad} ${cat}   ${desc}  ${String(cnt).padStart(5,' ')}    ${String(cnt).padStart(5,' ')}`);
+  });
+  rows.push('');
+  rows.push(` TOTAL QUEUED PNR(S): ${totalAll}`);
+  printLines(rows, 'normal');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GG — Amadeus Information System (AIS)
+// Real Amadeus: GG NEWS, GG AIR BG, GG AIR TG, GG APT DAC, GG COU BD
+// ═══════════════════════════════════════════════════════════════
+function handleGG(cmd){
+  const upper = cmd.toUpperCase().trim();
+  const topic = upper.replace(/^GG\s*/,'').trim();
+
+  if(!topic || topic === 'NEWS'){
+    printLines([
+      `GG NEWS`,
+      ``,
+      `  AMADEUS SELLING PLATFORM - TRAINING NEWS`,
+      `  ==========================================`,
+      ``,
+      `  27NOV26 - NOTICE TO ALL AGENTS`,
+      `  AMADEUS SYSTEM UPDATE - NDC CONTENT AVAILABLE`,
+      `  FOR TG/BG/SQ - PLEASE USE FXB FOR BOOKING`,
+      ``,
+      `  15NOV26 - BAGGAGE POLICY REMINDER`,
+      `  SR BAGX IS NOTIFICATION ONLY - EXTRA BAGGAGE`,
+      `  FEES COLLECTED AT AIRPORT CHECK-IN COUNTER`,
+      ``,
+      `  01NOV26 - COMMAND REFERENCE`,
+      `  FQA - BAGGAGE ALLOWANCE DISPLAY`,
+      `  FXK - ANCILLARY SERVICES CATALOGUE`,
+      `  DD  - DATE/TIME ZONE DISPLAY`,
+      `  DO  - FLIGHT OPERATIONAL STATUS`,
+      ``,
+      `  END OF NEWS - GDS TRAINING HUB`
+    ], 'normal');
+    return;
+  }
+
+  // Airport AIS: GG APT DAC
+  const aptMatch = topic.match(/^APT\s+([A-Z]{3})$/);
+  if(aptMatch){
+    const code = aptMatch[1];
+    if(typeof AIRPORTS === 'object' && AIRPORTS[code]){
+      const a = AIRPORTS[code];
+      printLines([
+        `GG APT ${code}`,
+        ``,
+        `  AIRPORT INFORMATION - ${code}`,
+        `  NAME     : ${a.name}`,
+        `  CITY     : ${a.city}`,
+        `  COUNTRY  : ${a.country} (${a.countryIso || ''})`,
+        `  TERMINAL : ${getAirportTerminal(code)}`
+      ], 'normal');
+      return;
+    }
+  }
+
+  // Country AIS: GG COU BD
+  const couMatch = topic.match(/^COU\s+([A-Z]{2})$/);
+  if(couMatch && typeof AMAD_COUNTRIES === 'object' && AMAD_COUNTRIES[couMatch[1]]){
+    printLines([
+      `GG COU ${couMatch[1]}`,
+      ``,
+      `  COUNTRY INFORMATION - ${couMatch[1]}`,
+      `  NAME : ${AMAD_COUNTRIES[couMatch[1]]}`
+    ], 'normal');
+    return;
+  }
+
+  const AL_NOTICES = {
+    BG: ['BIMAN BANGLADESH AIRLINES - AGENT NOTICE',
+         '  BAGGAGE: Y CLASS - 20KG CHECKED + 7KG CABIN',
+         '  J CLASS - 35KG CHECKED + 10KG CABIN',
+         '  CREDIT CARD SURCHARGE: 1.5% ON ALL FARES',
+         '  TICKET TIME LIMIT: 24HRS AFTER BOOKING',
+         '  CONTACT: SALES@BIMAN-AIRLINES.COM'],
+    TG: ['THAI AIRWAYS INTERNATIONAL - AGENT NOTICE',
+         '  BAGGAGE: Y/H/M CLASS - 30KG ECONOMY',
+         '  C CLASS - 40KG BUSINESS (2 PC)',
+         '  F CLASS - 50KG FIRST (3 PC)',
+         '  CODESHARE: TG:PG OPERATED BY BANGKOK AIR',
+         '  RTSVC: SEE RTSVC FOR ANCILLARY SERVICES'],
+    SQ: ['SINGAPORE AIRLINES - AGENT NOTICE',
+         '  BAGGAGE: ECONOMY - 30KG / SCOOT 15KG',
+         '  BUSINESS - 40KG (2 PC)',
+         '  SUITES/FIRST - 50KG (3 PC)',
+         '  BOOKING: USE FXP FOR PRICING WITH SSR'],
+    EK: ['EMIRATES - AGENT NOTICE',
+         '  BAGGAGE: ECONOMY - 25KG / BUSINESS - 35KG / FIRST - 50KG',
+         '  ONLINE CHECK-IN: 48HRS BEFORE DEPARTURE',
+         '  SPECIAL MEALS: MUST ADD SSR AT LEAST 24HRS PRIOR'],
+    QR: ['QATAR AIRWAYS - AGENT NOTICE',
+         '  BAGGAGE: ECONOMY - 23KG / BUSINESS - 32KG / FIRST - 50KG',
+         '  DOHA TRANSIT: FREE HOTEL AVAILABLE FOR 8+ HRS LAYOVER'],
+    PG: ['BANGKOK AIRWAYS - AGENT NOTICE',
+         '  OPERATED FLIGHTS UNDER TG CODESHARE',
+         '  BAGGAGE: 20KG ECONOMY ALL ROUTES',
+         '  BAGGAGE SSR: USE OSI INSTEAD OF SR BAGX',
+         '  CONTACT SSR: CTCM/CTCE REQUIRED FOR ALL BOOKINGS']
+  };
+
+  const alCode = topic.replace(/^AIR\s+/, '').replace(/NOTICE$/,'').trim();
+  if(AL_NOTICES[alCode]){
+    printLines([
+      `GG ${topic}`,
+      ``,
+      ...AL_NOTICES[alCode],
+      ``,
+      `  END OF GG ${topic} - ${new Date().toDateString().toUpperCase()}`
+    ], 'normal');
+    return;
+  }
+
+  printLines([
+    `GG ${topic}`,
+    ``,
+    `  GENERAL INFORMATION - ${topic}`,
+    `  NO SPECIFIC NOTICE AVAILABLE`,
+    `  TRY: GG NEWS / GG AIR BG / GG AIR TG / GG APT DAC / GG COU BD`
+  ], 'normal');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SN / TN — Schedule Neutral / Timetable Neutral
+// Real Amadeus format: SN25JULDACSIN or SNDACSIN / TN25JULDACSIN or TNDACSIN
+// (Date comes BEFORE city pair; SNDACSIN25JUL returns CHECK FORMAT in real Amadeus)
+// ═══════════════════════════════════════════════════════════════
+function handleSN(cmd){
+  const clean = cmd.toUpperCase().replace(/\s+/g, '').trim();
+  const validMatch = clean.match(/^(SN|TN)(\d{1,2}[A-Z]{3})?([A-Z]{3})([A-Z]{3})(?:\/([A-Z0-9]+))?$/i);
+  if(!validMatch){
+    printLines([
+      `CHECK FORMAT`,
+      `REAL AMADEUS FORMAT: SN25JULDACSIN OR SNDACSIN (DATE BEFORE CITY PAIR)`
+    ], 'err');
+    return;
+  }
+  const mode = validMatch[1].toUpperCase();
+  const anCmd = clean.replace(/^(SN|TN)/i, 'AN');
+  handleAN(anCmd, false, mode);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRDC — Void Issued Ticket (Same Day Only)
+// Real Amadeus: TRDC or TRDC/L10 (FA line) or TRDC/TKT-157-...
+// ═══════════════════════════════════════════════════════════════
+function handleTRDCVoid(cmd){
+  const upper = cmd.toUpperCase().trim();
+
+  if(!state || !state.locator){
+    printLines(['NO PNR IN CONTEXT - RETRIEVE PNR FIRST'], 'err');
+    return;
+  }
+
+  if(!state.tickets || !state.tickets.length){
+    printLines([
+      `DOCUMENT NOT FOUND`,
+      `CHECK THE FA/FH LINE OR TICKET NUMBER WITH TWD`
+    ], 'err');
+    return;
+  }
+
+  let targetTicket = null;
+  const lineMatch = upper.match(/\/L(\d+)/);
+  const tktMatch = upper.match(/\/(?:TKT[-\s]?|TK[-\s]?)([0-9-]{10,})/);
+
+  if(lineMatch){
+    const lNum = parseInt(lineMatch[1], 10);
+    // In real Amadeus, /L# must point to an FA/FHE line (stored in ticketLineNumbers), NOT an FB line
+    if(state.ticketLineNumbers && Object.keys(state.ticketLineNumbers).length){
+      const matchedTktNum = state.ticketLineNumbers[String(lNum)];
+      if(matchedTktNum){
+        targetTicket = state.tickets.find(t => t.tktNum === matchedTktNum);
+      }
+    } else {
+      targetTicket = state.tickets[0];
+    }
+  } else if(tktMatch){
+    const tktNum = tktMatch[1].replace(/-/g,'');
+    targetTicket = state.tickets.find(t => (t.tktNum||'').replace(/-/g,'') === tktNum);
+  } else {
+    targetTicket = state.tickets.find(t => t.status !== 'E') || state.tickets[0];
+  }
+
+  if(!targetTicket){
+    printLines([
+      `DOCUMENT NOT FOUND`,
+      `CHECK THE FA/FH LINE OR TICKET NUMBER WITH TWD`
+    ], 'err');
+    return;
+  }
+
+  if(targetTicket.status === 'V'){
+    printLines([
+      `TICKET ${targetTicket.tktNum} ALREADY VOIDED`,
+      `VOID DATE: ${targetTicket.voidedAt || 'SAME DAY'}`
+    ], 'err');
+    return;
+  }
+
+  if(targetTicket.status === 'R'){
+    printLines([`TICKET ALREADY REFUNDED - VOID NOT PERMITTED`], 'err');
+    return;
+  }
+
+  const now = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const voidDate = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}/${now.getFullYear()}`;
+  const voidDateShort = `${String(now.getDate()).padStart(2,'0')}${months[now.getMonth()]}${String(now.getFullYear()).slice(-2)}`;
+
+  targetTicket.status = 'V';
+  targetTicket.voidedAt = voidDate;
+
+  const tktNum = targetTicket.tktNum || '157-7800396554421';
+  const officeId = state.officeId || 'DACVS31XW';
+
+  printLines([
+    `--- TST RLR ---`,
+    `RP/${officeId}/${officeId}         ${state.agentCode||'BP/AS'}  ${state.dateStamp||voidDateShort+'/1200Z'}  ${state.locator}`,
+    `${state.headerLine2 || officeId+'/4455BP/'+voidDateShort}`,
+    ...(state.passengers||[]).map((p,i)=> `${i===0?'1.':'   '}${p.label||''}`),
+    ``,
+    ` FB PAX 0000000000 TRDC OK VOID/${voidDate}`
+  ], 'normal');
+
+  showToast(`Ticket ${tktNum} VOIDED successfully`, 'warn');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// JD — Display Amadeus Sign / Work Area Status (A-F)
+// Real Amadeus: JD shows active work areas, agent sign, office ID, duty code
+// ═══════════════════════════════════════════════════════════════
+function handleJD(cmd){
+  const officeId = (state && state.officeId) || 'DACVS31XW';
+  const agentCode = (state && state.agentCode) || 'BP/AS';
+  const activeLoc = (state && state.locator) ? `PNR ${state.locator}` : 'NO PNR';
+  const now = new Date();
+  const timeStr = `${String(now.getUTCHours()).padStart(2,'0')}${String(now.getUTCMinutes()).padStart(2,'0')}Z`;
+
+  printLines([
+    `AREA  STATUS     OFFICE     SIGN    DUTY  ACTIVE RECORD   TIME`,
+    `----  ---------  ---------  ------  ----  --------------  -----`,
+    ` A    ACTIVE     ${officeId.padEnd(9,' ')}  ${agentCode.padEnd(6,' ')}  SU    ${activeLoc.padEnd(14,' ')}  ${timeStr}`,
+    ` B    SIGNED IN  ${officeId.padEnd(9,' ')}  ${agentCode.padEnd(6,' ')}  SU    NO PNR          ${timeStr}`,
+    ` C    SIGNED OUT`,
+    ` D    SIGNED OUT`,
+    ` E    SIGNED OUT`,
+    ` F    SIGNED OUT`
+  ], 'normal');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HE / HELP — Amadeus Help System
+// ═══════════════════════════════════════════════════════════════
+function handleHelp(cmd){
+  const upper = cmd.toUpperCase().trim();
+  const topic = upper.replace(/^(?:HELP|HE|H)[\s\/]*/,'').trim();
+
+  if(topic === 'BAGGAGE' || topic === 'BAG' || topic === 'BAGX' || topic === 'FQA'){
+    printLines([
+      `HE BAGGAGE - BAGGAGE COMMANDS`,``,
+      ` FQA        - Display baggage allowance for PNR segments`,
+      ` FXK        - Ancillary services catalogue (seats, bags)`,
+      ` SR BAGX BG HK1-10KG/P1  - Request extra baggage (SSR)`,
+      ` SR BAGX BG HK1-1PC/P1   - Request 1 extra piece`,
+      ` OS BG PSGR REQUESTS EXTRA BAGGAGE P1 - OSI note`,
+      ``,
+      ` NOTE: SR BAGX is notification only - fee paid at airport`
+    ], 'normal');
+    return;
+  }
+
+  if(topic === 'TICKET' || topic === 'TKT' || topic === 'TTP' || topic === 'TRDC' || topic === 'FXP'){
+    printLines([
+      `HE TICKET - TICKETING COMMANDS`,``,
+      ` FXP / FXB  - Price PNR and create TST`,
+      ` FXR        - Price without storing TST`,
+      ` FP INV     - Form of payment (invoice)`,
+      ` FP CCVISAMD/26122025  - Credit card payment`,
+      ` TTP        - Issue e-ticket (after FXP+FP)`,
+      ` TQT        - Display TST (ticket quote)`,
+      ` ITR        - Display issued e-ticket receipt`,
+      ` TRDC/L10   - VOID issued ticket on FA line (same day only)`,
+      ` TRF        - Refund issued ticket`
+    ], 'normal');
+    return;
+  }
+
+  printLines([
+    `HE - AMADEUS COMMAND REFERENCE`,
+    ``,
+    ` AVAILABILITY      AN / SN / TN      AN25JULDACSIN · SN25JULDACSIN`,
+    ` BOOKING           SS / ARNK         Sell segment / surface`,
+    ` NAMES             NM / NU           Add / modify passenger names`,
+    ` CONTACT           AP                Phone / email`,
+    ` TICKETING         TK / FXP / TTP    TK entry / price / issue`,
+    ` PRICING           FXP/FXB/FXR       Price PNR options`,
+    ` TST DISPLAY       TQT               Display ticket quote`,
+    ` RECEIPT           ITR               E-ticket receipt`,
+    ` VOID              TRDC/L10          Void same-day ticket (FA line)`,
+    ` REFUND            TRF               Refund processing`,
+    ` SSR               SR MOML/BAGX/DOCS Special service requests`,
+    ` DOCS              SR DOCS           Passport entry`,
+    ` BAGGAGE           FQA / FXK         Baggage & ancillary`,
+    ` QUEUE             QS / QC / QT      Queue count & processing`,
+    ` HISTORY           RH / RHA / RHP    PNR modification history`,
+    ` INFO              GG NEWS / GG AIR  General information (AIS)`,
+    ` SIGN STATUS       JD                Work areas (A-F) sign status`,
+    ` DECODE/ENCODE     DAN/DAC/DNA/DNE   Airport/airline/equipment`,
+    ` CURRENCY          FQB / FQC         Currency rates`,
+    ` FARES             FQD / FQF / FQN   Fare display & rules`,
+    ` SEAT MAP          SM / ST           Seat map & assignment`,
+    ` SAVE/CANCEL       ER / XI           End & retrieve / cancel`,
+    ``,
+    ` TYPE: HE BAGGAGE / HE TICKET / HE MEAL for more details`
+  ], 'normal');
+}
+
+// ---------- Currency Rates & Conversion (FQC / FQB / /R Currency Override) ----------
+const AMADEUS_CURRENCIES = {
+  USD: { name: 'US DOLLAR', bsr: 122.7100, roe: 1.000000, decimals: 2 },
+  EUR: { name: 'EURO', bsr: 133.7540, roe: 0.917424, decimals: 2 },
+  GBP: { name: 'BRITISH POUND', bsr: 156.4020, roe: 0.784577, decimals: 2 },
+  AED: { name: 'UAE DIRHAM', bsr: 33.4110, roe: 3.673000, decimals: 2 },
+  SAR: { name: 'SAUDI RIYAL', bsr: 32.7215, roe: 3.750500, decimals: 2 },
+  SGD: { name: 'SINGAPORE DOLLAR', bsr: 92.5030, roe: 1.326550, decimals: 2 },
+  MYR: { name: 'MALAYSIAN RINGGIT', bsr: 27.6040, roe: 4.445370, decimals: 2 },
+  QAR: { name: 'QATARI RIYAL', bsr: 33.7020, roe: 3.641000, decimals: 2 },
+  KWD: { name: 'KUWAITI DINAR', bsr: 399.5010, roe: 0.307158, decimals: 3 },
+  CAD: { name: 'CANADIAN DOLLAR', bsr: 89.2040, roe: 1.375610, decimals: 2 },
+  AUD: { name: 'AUSTRALIAN DOLLAR', bsr: 80.5010, roe: 1.524328, decimals: 2 },
+  INR: { name: 'INDIAN RUPEE', bsr: 1.4520, roe: 84.511019, decimals: 2 },
+  THB: { name: 'THAI BAHT', bsr: 3.5510, roe: 34.556463, decimals: 2 },
+  JPY: { name: 'JAPANESE YEN', bsr: 0.8120, roe: 151.120690, decimals: 0 },
+  CNY: { name: 'CHINESE YUAN', bsr: 16.9030, roe: 7.259658, decimals: 2 },
+  TRY: { name: 'TURKISH LIRA', bsr: 3.5200, roe: 34.860795, decimals: 2 },
+  CHF: { name: 'SWISS FRANC', bsr: 138.9000, roe: 0.883441, decimals: 2 },
+  BDT: { name: 'BANGLADESHI TAKA', bsr: 1.0000, roe: 122.710000, decimals: 2 }
+};
+
+function handleFQB(cmd, clean){
   const now = new Date();
   const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const date = `${String(now.getDate()).padStart(2, '0')}${months[now.getMonth()]}${String(now.getFullYear()).slice(-2)}`;
-  const rates = [['AED','33.6673441'],['AFN','1.98157162'],['ALL','1.55863051'],['AMD','0.34017104'],['ANG','69.07821229'],['AOA','0.12481124'],['ARS','0.08003236'],['AUD','86.86564342'],['AWG','68.69444444'],['AZN','72.76247777'],['BAM','72.01358412'],['BBD','61.825'],['BGN','72.01358442'],['BHD','328.856383'],['BIF','0.04146603'],['BMD','123.65'],['BND','96.82089163'],['BOB','10.26141079'],['BRL','23.78296244']];
+
+  const targetCur = (clean || '').replace(/^FQB\s*/i, '').trim().toUpperCase();
+  if(targetCur && AMADEUS_CURRENCIES[targetCur]){
+    const info = AMADEUS_CURRENCIES[targetCur];
+    printLines([
+      `FQB ${targetCur}`,
+      `BANKERS SELLING RATE (BSR) FOR ${targetCur} - ${info.name}`,
+      `1 ${targetCur} = ${info.bsr.toFixed(4)} BDT  EFFECTIVE ${date}`,
+      `ENTER FQC ${targetCur} TO CONVERT OR VIEW FULL EXCHANGE DETAILS`
+    ], '');
+    showToast(`BSR for ${targetCur}: 1 ${targetCur} = ${info.bsr.toFixed(4)} BDT`);
+    return;
+  }
+
+  const rates = Object.keys(AMADEUS_CURRENCIES).filter(c => c !== 'BDT').map(c => [c, AMADEUS_CURRENCIES[c].bsr.toFixed(4)]);
   printLines(['FQB', `LIST OF BSR FOR BDT EFF ${date}`, ...rates.map(([currency, rate]) => `1 ${currency} = ${rate.padStart(12, ' ')}  BDT`)], '');
   showToast(`BSR list for BDT displayed — effective ${date}`);
 }
 
+function handleFQC(cmd, clean){
+  const now = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const dateStr = `${String(now.getDate()).padStart(2, '0')}${months[now.getMonth()]}${String(now.getFullYear()).slice(-2)}`;
+
+  const raw = (cmd || '').replace(/^FQC\s*/i, '').trim().toUpperCase();
+  if(!raw || /^HELP$/i.test(raw)){
+    printLines([
+      'FQC — AMADEUS CURRENCY CONVERTER HELP',
+      'COMMAND FORMATS:',
+      '  FQC 100 USD / BDT        CONVERT SPECIFIC AMOUNT (USD TO BDT)',
+      '  FQC 10000 BDT / USD      CONVERT LOCAL TO FOREIGN (BDT TO USD)',
+      '  FQC 100 EUR / USD        CROSS CURRENCY CONVERSION (EUR TO USD)',
+      '  FQC 100 USD              CONVERT FOREIGN AMOUNT TO LOCAL (BDT)',
+      '  FQC USD                  DISPLAY EXCHANGE RATE, BSR & ROE FOR USD',
+      '  FQB                      LIST ALL BANKERS SELLING RATES (BSR)',
+      '  FQB USD                  DISPLAY BSR SPECIFIC TO USD',
+      '  FXP/R,USD                PRICE PNR ITINERARY IN USD',
+      '  FQD DACLHR/R,USD         FARE DISPLAY IN USD'
+    ], '');
+    showToast('FQC: Currency conversion help displayed');
+    return;
+  }
+
+  // Single currency rate query: FQC USD, FQC EUR, etc.
+  if(/^[A-Z]{3}$/.test(raw)){
+    const cur = raw;
+    const cInfo = AMADEUS_CURRENCIES[cur];
+    if(!cInfo){
+      printLines([`FQC ${cur}`, `INVALID CURRENCY CODE — TRY: USD, EUR, GBP, SAR, AED, SGD, MYR, KWD, BDT`], 'err');
+      return;
+    }
+    const inv = cInfo.bsr > 0 ? (1 / cInfo.bsr).toFixed(6) : '0.000000';
+    printLines([
+      `FQC ${cur}`,
+      `CURRENCY: ${cur} - ${cInfo.name}`,
+      `1 ${cur} = ${cInfo.bsr.toFixed(4)} BDT   BSR - BANKERS SELLING RATE`,
+      `1 BDT = ${inv} ${cur}   INVERSE RATE`,
+      `EFF DATE: ${dateStr}   IROE: ${cInfo.roe.toFixed(6)} NUC`
+    ], '');
+    showToast(`Exchange rate for ${cur}: 1 ${cur} = ${cInfo.bsr.toFixed(4)} BDT`);
+    return;
+  }
+
+  // Conversion: amount + currency + optional target currency
+  // Examples: 100 USD / BDT | 100USD/BDT | 100 USD BDT | 100 USD | 10000 BDT
+  const m = raw.match(/^([0-9.,]+)\s*([A-Z]{3})(?:\s*[\/ ]\s*([A-Z]{3}))?$/i);
+  if(!m){
+    printLines([
+      `FQC ${raw}`,
+      'FORMAT NOT RECOGNISED. FORMAT EXAMPLES:',
+      '  FQC 100 USD / BDT',
+      '  FQC 10000 BDT / USD',
+      '  FQC 100 USD',
+      '  FQC USD'
+    ], 'err');
+    return;
+  }
+
+  const amount = parseFloat(m[1].replace(/,/g, ''));
+  const fromCur = m[2].toUpperCase();
+  let toCur = m[3] ? m[3].toUpperCase() : (fromCur === 'BDT' ? 'USD' : 'BDT');
+
+  if(isNaN(amount) || amount <= 0){
+    printLines(['INVALID AMOUNT FOR CURRENCY CONVERSION'], 'err');
+    return;
+  }
+
+  const fromInfo = AMADEUS_CURRENCIES[fromCur];
+  const toInfo = AMADEUS_CURRENCIES[toCur];
+
+  if(!fromInfo){
+    printLines([`UNKNOWN CURRENCY CODE: ${fromCur}`], 'err');
+    return;
+  }
+  if(!toInfo){
+    printLines([`UNKNOWN CURRENCY CODE: ${toCur}`], 'err');
+    return;
+  }
+
+  const rateRatio = fromInfo.bsr / toInfo.bsr;
+  const converted = amount * rateRatio;
+  const dec = toInfo.decimals !== undefined ? toInfo.decimals : 2;
+  const formattedConverted = Number(converted.toFixed(dec)).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  const formattedAmount = Number(amount.toFixed(fromInfo.decimals !== undefined ? fromInfo.decimals : 2)).toLocaleString('en-US', { minimumFractionDigits: fromInfo.decimals !== undefined ? fromInfo.decimals : 2 });
+
+  const rows = [
+    `FQC ${formattedAmount} ${fromCur} / ${toCur}`,
+    `${formattedAmount} ${fromCur} = ${formattedConverted} ${toCur}`
+  ];
+
+  if(fromCur === 'USD' || toCur === 'USD'){
+    rows.push(`BSR  1 USD = 122.7100 BDT     EFF ${dateStr}`);
+    rows.push(`IROE 1 USD = 1.000000 NUC`);
+  } else if(toCur === 'BDT'){
+    rows.push(`BSR  1 ${fromCur} = ${fromInfo.bsr.toFixed(4)} BDT     EFF ${dateStr}`);
+  } else if(fromCur === 'BDT'){
+    rows.push(`BSR  1 ${toCur} = ${toInfo.bsr.toFixed(4)} BDT     EFF ${dateStr}`);
+  } else {
+    rows.push(`RATE 1 ${fromCur} = ${rateRatio.toFixed(6)} ${toCur}     EFF ${dateStr}`);
+    rows.push(`BSR  1 ${fromCur} = ${fromInfo.bsr.toFixed(4)} BDT   1 ${toCur} = ${toInfo.bsr.toFixed(4)} BDT`);
+  }
+
+  printLines(rows, '');
+  showToast(`${formattedAmount} ${fromCur} = ${formattedConverted} ${toCur}`);
+}
+
 function handleFQD(cmd, clean){
-  // Examples: FQDDACLHR/D12DEC  |  FQDDACKUL/D12NOV
-  const m = clean.match(/^FQD([A-Z]{3})([A-Z]{3})(?:\/D?(\d{1,2}[A-Z]{3}))?$/i);
+  // Examples: FQDDACLHR/D12DEC  |  FQDDACKUL/D12NOV  |  FQDDACLHR/R,USD
+  const m = clean.match(/^FQD([A-Z]{3})([A-Z]{3})(?:\/D?(\d{1,2}[A-Z]{3}))?(?:\/R,([A-Z]{3}))?$/i);
   if(!m){
     printLines([
       'INVALID FARE DISPLAY FORMAT',
       'Examples:',
       '  FQDDACLHR/D12DEC',
-      '  FQDDACKUL/D12NOV'
+      '  FQDDACKUL/D12NOV',
+      '  FQDDACLHR/R,USD'
     ], 'err');
     return;
   }
   state.hasPricingRequest = true;
-  const [, orig, dest, dateInput] = m;
+  const [, orig, dest, dateInput, curInput] = m;
   const date = (dateInput || '12DEC').toUpperCase();
+  const reqCur = curInput ? curInput.toUpperCase() : 'BDT';
+  const cInfo = AMADEUS_CURRENCIES[reqCur] || AMADEUS_CURRENCIES.BDT;
+  const curRate = cInfo.bsr;
   const route = `${orig}-${dest}`;
   const base = (orig === 'DAC' && dest === 'LHR') ? 108413 : (orig === 'DAC' && dest === 'KUL') ? 36540 : 47820;
   const fares = [
@@ -5871,21 +7439,26 @@ function handleFQD(cmd, clean){
     { basis:'QL3YXSDC', cls:'Q', total:base + 7420, change:'USD 100', refund:'USD 180' },
     { basis:'YL4FLEX', cls:'Y', total:base + 18600, change:'FREE', refund:'USD 90' }
   ];
+  const curLabel = reqCur !== 'BDT' ? reqCur : 'BDT';
   const rows = [
-    `FQD${orig}${dest}/D${date}`,
+    `FQD${orig}${dest}/D${date}${reqCur !== 'BDT' ? '/R,' + reqCur : ''}`,
     ``,
     `                    FARE DISPLAY  ${route}  ${date}`,
-    ` LINE  FARE BASIS  BK   TOTAL BDT    CHANGE       REFUND`,
-    ` ----  ----------  --   ---------    --------     --------`
+    ` LINE  FARE BASIS  BK   TOTAL ${curLabel.padEnd(4)}   CHANGE       REFUND`,
+    ` ----  ----------  --   ----------   --------     --------`
   ];
   fares.forEach((fare, i) => {
-    rows.push(`  ${i + 1}    ${fare.basis.padEnd(10)}  ${fare.cls}    ${String(fare.total).padStart(9)}    ${fare.change.padEnd(10)} ${fare.refund}`);
+    const displayTotal = reqCur !== 'BDT' ? Math.round(fare.total / curRate) : fare.total;
+    rows.push(`  ${i + 1}    ${fare.basis.padEnd(10)}  ${fare.cls}    ${String(displayTotal).padStart(10)}   ${fare.change.padEnd(10)} ${fare.refund}`);
   });
+  if(reqCur !== 'BDT'){
+    rows.push(`RATE USED 1 ${reqCur} = ${curRate.toFixed(4)} BDT  BSR`);
+  }
   rows.push(``);
   rows.push(`ENTER FQN1-1 TO DISPLAY RULE CATEGORIES FOR FARE LINE 1`);
   rows.push(`ENTER FQN1-1//PE TO DISPLAY CHANGE / REFUND / NO-SHOW PENALTIES`);
   printLines(rows, '');
-  showToast(`Fare Display: ${route} — select a fare line, then view its rules`);
+  showToast(`Fare Display: ${route} (${curLabel}) — select a fare line, then view its rules`);
 }
 
 // ---------- FQN — Fare Rules / Penalty Display (Matches Screenshot 5) ----------
@@ -6595,3 +8168,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
   mountInput();
   initSplitterDraggers();
 });
+
+
+

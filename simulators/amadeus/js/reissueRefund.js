@@ -18,24 +18,33 @@ function handleTRDCVoid(cmd){
     return;
   }
 
-  const ticketMatch = cmd.match(/\/TK-?([0-9-]+)/i);
+  // Support: TRDC/TK-157-7800396554421, TRDC/157-7800396554421, TRDC/L6, TRDC
+  const ticketMatch = cmd.match(/\/(?:TK-?)?([0-9]{3}-?[0-9]{10,13})\b/i);
   const lineMatch = cmd.match(/\/L(\d+)\b/i);
-  if(!ticketMatch && !lineMatch){
-    printLines([
-      'SELECT FA OR FH LINE NUMBER',
-      'ENTER TRDC/L1 FOR THE FIRST TICKET IN THIS SIMULATOR',
-      'OR ENTER TRDC/TK-157-7800396554421 FOR A SPECIFIC TICKET'
-    ], 'err');
-    return;
-  }
 
-  let ticket;
+  let ticket = null;
   if(ticketMatch){
     const wanted = ticketMatch[1].replace(/-/g, '');
     ticket = tickets.find(t => String(t.tktNum || '').replace(/-/g, '') === wanted);
+  } else if(lineMatch){
+    const lineNo = lineMatch[1];
+    ticket = getTicketByLine(lineNo);
+    if(!ticket){
+      const idx = parseInt(lineNo, 10) - 1;
+      if(idx >= 0 && idx < tickets.length){
+        ticket = tickets[idx];
+      }
+    }
+  } else if(tickets.length === 1){
+    // Bare TRDC with a single active ticket in the PNR
+    ticket = tickets[0];
   } else {
-    // In the simulator L1, L2, etc. select the corresponding FA/FH ticket.
-    ticket = tickets[parseInt(lineMatch[1], 10) - 1];
+    printLines([
+      'SELECT FA OR FH LINE NUMBER',
+      'ENTER TRDC/L6 (OR THE RELEVANT FA LINE NUMBER FROM PNR)',
+      'OR ENTER TRDC/TK-157-7800396554421 FOR A SPECIFIC TICKET'
+    ], 'err');
+    return;
   }
   if(!ticket){
     printLines(['DOCUMENT NOT FOUND', 'CHECK THE FA/FH LINE OR TICKET NUMBER WITH TWD'], 'err');
@@ -383,53 +392,37 @@ function handleTWD(cmd){
     statusText = 'VOID';
   }
 
-  const baseFare = Math.round((ticket.amount || 30000) * 0.8);
-  const tax = (ticket.amount || 30000) - baseFare;
+  const baseFare = Number.isFinite(ticket.fare) ? Number(ticket.fare) : Math.round((ticket.amount || 30000) * 0.8);
+  const tax = Number.isFinite(ticket.tax) ? Number(ticket.tax) : ((ticket.amount || 30000) - baseFare);
   const fop = (matchedPNR && matchedPNR.fop) || state.fop || 'CASH';
 
   const ticketDigits = String(tktNum || '').replace(/\D/g, '');
   const issueDate = String(dt || '').toUpperCase();
+  const cleanPax = paxName.toUpperCase().replace(/\s*\(.*?\)/, '').trim();
+
   const rows = [
-    `TKT-${ticketDigits.padEnd(15, ' ')} RCI-            1A  LOC-${locator}`,
+    `TKT-${ticketDigits.padEnd(16, ' ')} RCI-            1A  LOC-${locator}`,
     `OD-${dep}${(segments[segments.length - 1] || {}).arr || arr}  SI-    FCPI-0  POI-${dep}  DOI-${issueDate}  IOI-${office}`,
-    `PAX ${paxName.toUpperCase().padEnd(31, ' ')} ADT        ST`,
-    ``,
-    `    CPNS  C  ORG DST  CXR FLT  CL DATE      FARE BASIS       NVB       NVA       BAGS  ST`
+    ` 1.${cleanPax.padEnd(28, ' ')} ADT        ST`
   ];
 
   segments.forEach((seg, index) => {
     const coupon = String(index + 1);
-    const al = seg.al || ticket.alLetter || "BG";
-    const fn = String(seg.fn || ticket.flightNum || "555");
-    const cls = seg.cls || "Y";
-    const segDate = seg.date || issueDate || "25JUL";
-    const origin = seg.dep || dep;
-    const destination = seg.arr || arr;
-    const fareBasis = `${cls}${String(seg.fn || "").slice(-2) || "55"}`;
-    const baggage = seg.baggage || "25K";
+    const al = (seg.al || ticket.alLetter || "BG").padEnd(2, ' ');
+    const fn = String(seg.fn || ticket.flightNum || "555").padStart(4, ' ');
+    const cls = (seg.cls || "Y").slice(0, 1);
+    const segDate = (seg.date || issueDate || "25JUL").padEnd(5, ' ');
+    const segTime = (seg.depT || "1659").padEnd(4, ' ');
+    const origin = (seg.dep || dep).padEnd(3, ' ');
+    const destination = (seg.arr || arr).padEnd(3, ' ');
+    const fareBasis = (seg.fareBasis || `${cls}${String(seg.fn || "").slice(-2) || "55"}`).padEnd(10, ' ').slice(0, 10);
     const storedCouponStatus = (ticket.couponStatuses || [])[index] || seg.couponStatus || "O";
     const couponLetter = ticket.status === "R" ? (String(storedCouponStatus).toUpperCase() === "F" ? "F" : "R") : ticket.status === "E" ? (String(storedCouponStatus).toUpperCase() === "F" ? "F" : "E") : ticket.status === "V" ? "V" : String(storedCouponStatus).toUpperCase();
-    const couponStatus = ticket.status === "R" && couponLetter !== "F" ? "RFND" : ticket.status === "E" && couponLetter !== "F" ? "EXCH" : ticket.status === "V" ? "VOID" : couponLetter === "F" ? "FLOWN" : "OPEN";
-    const nvb = seg.nvb || segDate;
-    const nva = seg.nva || segDate;
+    const badge = `<span style="background:#1769c2;color:#fff;font-weight:bold;padding:0 3px;border-radius:2px;">${couponLetter}</span>`;
 
-    const chars = new Array(92).fill(" ");
-    const cpnStr = coupon.padStart(2, " ");
-    for(let i = 0; i < cpnStr.length; i++) chars[5 + i] = cpnStr[i];
-    chars[10] = couponLetter;
-    for(let i = 0; i < origin.slice(0, 3).length; i++) chars[13 + i] = origin[i];
-    for(let i = 0; i < destination.slice(0, 3).length; i++) chars[17 + i] = destination[i];
-    for(let i = 0; i < al.slice(0, 2).length; i++) chars[22 + i] = al[i];
-    const fnStr = fn.padStart(4, " ");
-    for(let i = 0; i < fnStr.length; i++) chars[26 + i] = fnStr[i];
-    chars[31] = cls.slice(0, 1);
-    for(let i = 0; i < segDate.slice(0, 7).length; i++) chars[34 + i] = segDate[i];
-    for(let i = 0; i < fareBasis.slice(0, 15).length; i++) chars[44 + i] = fareBasis[i];
-    for(let i = 0; i < nvb.slice(0, 7).length; i++) chars[61 + i] = nvb[i];
-    for(let i = 0; i < nva.slice(0, 7).length; i++) chars[71 + i] = nva[i];
-    for(let i = 0; i < baggage.slice(0, 4).length; i++) chars[81 + i] = baggage[i];
-    for(let i = 0; i < couponStatus.slice(0, 4).length; i++) chars[87 + i] = couponStatus[i];
-    rows.push(chars.join("").trimEnd());
+    const cpnPrefix = ` ${coupon} ${couponLetter}${origin} ${al} ${fn} ${cls} ${segDate}${segTime} OK ${fareBasis}`;
+    rows.push(`${cpnPrefix.padEnd(43, ' ')}${badge}`);
+    rows.push(`   ${destination}`);
   });
 
   if(ticket.status === 'E' && ticket.exchangedFor){
