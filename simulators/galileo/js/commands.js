@@ -1015,8 +1015,67 @@
         return this.error(`AIRLINE CODE OR NAME '${query}' NOT FOUND`);
       }
 
-      // ── COUNTRY DECODE / ENCODE: GC-BD, GC-BANGLADESH, .CD BD, .CE BANGLADESH ──
-      const gcMatch = cmd.match(/^(?:GC|\.CD|\.CE)[- *]?([A-Z]+)$/);
+      // Galileo encode/decode: city, country, airline and aircraft equipment.
+      const currencyCountries = window.GalileoCurrencyTableData || [];
+      const countryAliases = { BANGLADESH: "BD", UAE: "AE", "UNITED ARAB EMIRATES": "AE", UK: "GB", "UNITED KINGDOM": "GB", USA: "US", "UNITED STATES": "US" };
+      const countryCodeFor = name => countryAliases[name.toUpperCase()] || (currencyCountries.find(row => row.name === name.toUpperCase()) || {}).country || "";
+      const cityDecode = cmd.match(/^\.CD\s+([A-Z]{3})$/);
+      if (cityDecode) {
+        const airport = GalileoAirports.decode(cityDecode[1]);
+        if (!airport) return this.error("CITY/AIRPORT CODE NOT FOUND");
+        return { lines: [`${airport.code.padEnd(8)} ${airport.city.toUpperCase().padEnd(28)} ${airport.country.toUpperCase()}`], kind: "decode" };
+      }
+      const cityEncode = cmd.match(/^\.CE\s+(.+)$/);
+      if (cityEncode) {
+        const query = cityEncode[1].trim();
+        const airports = GalileoAirports.encode(query);
+        if (!airports.length) return this.error("CITY/AIRPORT NAME NOT FOUND");
+        return { lines: [`ENCODING CITIES /${query}`, ...airports.slice(0, 12).map(([code, airport]) => `${code.padEnd(8)} ${airport.city.toUpperCase().padEnd(28)} ${countryCodeFor(airport.country)}`)], kind: "encode" };
+      }
+      const countryDecode = cmd.match(/^\.LD\s+([A-Z]{2})$/);
+      if (countryDecode) {
+        const row = currencyCountries.find(country => country.country === countryDecode[1]);
+        if (!row) return this.error("COUNTRY CODE NOT FOUND");
+        return { lines: [`${row.country.padEnd(9)} ${row.name}`], kind: "decode" };
+      }
+      const countryEncode = cmd.match(/^\.LE\s+(.+)$/);
+      if (countryEncode) {
+        const query = countryEncode[1].trim();
+        const rows = currencyCountries.filter(country => country.name.includes(query)).slice(0, 12);
+        if (!rows.length) return this.error("COUNTRY NAME NOT FOUND");
+        return { lines: [`ENCODE COUNTRIES/${query}`, ...rows.map(row => `${row.country.padEnd(9)} ${row.name}`)], kind: "encode" };
+      }
+      const airlineCountryCodes = { BANGLADESH: "BGD", INDIA: "IND", CANADA: "CAN", FRANCE: "FRA", MALAYSIA: "MYS", MOROCCO: "MAR", "UNITED KINGDOM": "GBR", BRUNEI: "BRN", "HONG KONG": "HKG", CHINA: "CHN", "UNITED ARAB EMIRATES": "UAE", THAILAND: "THA", BAHRAIN: "BHR", NEPAL: "NPL", NETHERLANDS: "NLD", KUWAIT: "KWT", GERMANY: "DEU", EGYPT: "EGY", OMAN: "OMN", QATAR: "QAT", SINGAPORE: "SGP", "SAUDI ARABIA": "SAU", TURKEY: "TUR", "SRI LANKA": "LKA", GLOBAL: "GLB" };
+      const airlineLine = airline => `${airline.code.padEnd(3)} ${(airlineCountryCodes[airline.country] || airline.country).padEnd(4)} ${String(airline.num).padEnd(4)} ${airline.name.padEnd(34)} GS`;
+      const airlineDecode = cmd.match(/^\.AD\s+([A-Z0-9*]+)$/);
+      if (airlineDecode) {
+        const airline = GalileoAirports.findAirline(airlineDecode[1].replace(/^\*/, ""));
+        if (!airline) return this.error("AIRLINE CODE NOT FOUND");
+        return { lines: [airlineLine(airline)], kind: "decode" };
+      }
+      const airlineEncode = cmd.match(/^\.AE\s+(.+)$/);
+      if (airlineEncode) {
+        const query = airlineEncode[1].trim();
+        const airline = GalileoAirports.findAirline(query);
+        if (!airline) return this.error("AIRLINE NAME NOT FOUND");
+        return { lines: [`ENCODE AIRLINES /${query}`, airlineLine(airline)], kind: "encode" };
+      }
+      const equipmentCatalog = [["AI4", "T", "AIRBUS ATLAS"], ["221", "J", "AIRBUS A220-100 PASSENGER"], ["223", "J", "AIRBUS A220-300 PASSENGER"], ["ABM", "J", "AIRBUS A300CB MIXED CONFIGURATION"], ["313", "J", "AIRBUS A310 (SHARKLETS)"], ["32F", "J", "AIRBUS A320 FREIGHTER"], ["32B", "J", "AIRBUS A321 (SHARKLETS)"], ["33F", "J", "AIRBUS A330 FREIGHTER"], ["339", "J", "AIRBUS A330-900 NEO"], ["33B", "J", "AIRBUS BELUGA XL"], ["NDH", "H", "AIRBUS HELICOPTERS A365C/A365N DAUPHIN2"], ["MBH", "H", "AIRBUS HELICOPTERS BO 105"], ["320", "J", "AIRBUS INDUSTRIE A320-100/200"]];
+      const equipmentDecode = cmd.match(/^\.ED\s+([A-Z0-9]{2,3})$/);
+      if (equipmentDecode) {
+        const equipment = equipmentCatalog.find(row => row[0] === equipmentDecode[1]);
+        if (!equipment) return this.error("EQUIPMENT CODE NOT FOUND");
+        return { lines: [`${equipment[0]} ${equipment[1]}  ${equipment[2]}`], kind: "decode" };
+      }
+      const equipmentEncode = cmd.match(/^\.EE\s+(.+)$/);
+      if (equipmentEncode) {
+        const query = equipmentEncode[1].trim();
+        const matches = equipmentCatalog.filter(row => row[2].includes(query));
+        if (!matches.length) return this.error("EQUIPMENT NAME NOT FOUND");
+        return { lines: [`ENCODE AIRCRAFT /${query}`, ...matches.map(row => `${row[0]} ${row[1]}  ${row[2]}`)], kind: "encode" };
+      }
+
+      const gcMatch = cmd.match(/^GC[- *]?([A-Z]+)$/);
       if (gcMatch) {
         const query = gcMatch[1];
         const cty = GalileoAirports.findCountry(query);
@@ -1038,6 +1097,71 @@
       // ── CURRENCY CONVERSION: FZUSD125BDT or FZSUSD125PKR ──
       // FZ  = basic conversion  (FZ[from][amount][to])
       // FZS = BSP rate display  (FZS[from][amount][to]) — same calc, different label
+      // Currency table: FBT*, FBT*BD (country), and FBT*USD (currency).
+      const currencyTableRows = (window.GalileoCurrencyTableData || []).map(row => [
+        row.name, row.country, row.currency, row.currencyName, row.decimals
+      ]);
+      const fbtMatch = cmd.match(/^FBT\*(?:(\w{2})|(\w{3}))?$/);
+      if (fbtMatch) {
+        const countryFilter = fbtMatch[1];
+        const currencyFilter = fbtMatch[2];
+        const rows = currencyTableRows.filter(row =>
+          (!countryFilter || row[1] === countryFilter) &&
+          (!currencyFilter || row[2] === currencyFilter))
+          .sort((a, b) => a[0].localeCompare(b[0]));
+        if (!rows.length) return this.error(`NO CURRENCY TABLE ENTRY FOUND FOR ${countryFilter || currencyFilter}`);
+        const fmt = ([name, country, currency, currencyName, decimals]) =>
+          `${name.padEnd(32)} ${country.padStart(3)} ${currency.padStart(5)} ${currencyName.padEnd(14)} ${decimals.padStart(3)}`;
+        return {
+          lines: [
+            "COUNTRY                         CTRY  CURR  CURRENCY          DEC",
+            "NAME                            CODE  CODE  NAME              PL",
+            "-------------------------------- ---- ----- ---------------- ---",
+            ...rows.map(fmt),
+            ">"
+          ],
+          kind: "currency-table"
+        };
+      }
+
+      // IATA currency rate displays: FZI/ALL and FZIHKD.
+      // Reference data transcribed from the user's original Galileo screenshots.
+      const currencyRateRows = [
+        ["AED", "AE", "**", "UP", "10", "3.67331", "1NOV26", "30NOV26", "WORLDWIDE"],
+        ["ARS", "AR", "**", "OF", "1.0", "1540.0", "1NOV26", "30NOV26", "DOMESTIC"],
+        ["AUD", "AU", "**", "UP", "1.0", "1.436465", "1NOV26", "30NOV26", "AU -A1"],
+        ["AUD", "AU", "**", "UP", "0.01", "1.436465", "1NOV26", "30NOV26", "DOMESTIC"],
+        ["AUD", "AU", "**", "UP", "1.0", "1.436465", "1NOV26", "30NOV26", "WORLDWIDE"],
+        ["AUD", "BN", "**", "UP", "1.0", "1.436465", "1NOV26", "30NOV26", "BN -Z320"],
+        ["AUD", "CC", "**", "UP", "1.0", "1.436465", "1NOV26", "30NOV26", "WORLDWIDE"],
+        ["AUD", "CX", "**", "UP", "1.0", "1.436465", "1NOV26", "30NOV26", "WORLDWIDE"],
+        ["AUD", "HK", "**", "UP", "1.0", "1.436465", "1NOV26", "30NOV26", "HK -Z320"],
+        ["HKD", "HK", "**", "UP", "10", "7.847747", "1NOV26", "30NOV26", "HK -A1"],
+        ["HKD", "HK", "**", "UP", "10", "7.847747", "1NOV26", "30NOV26", "WORLDWIDE"]
+      ];
+      const fziMatch = cmd.match(/^FZI(?:\/?([A-Z]{3}))?$/);
+      if (fziMatch) {
+        const requestedCurrency = fziMatch[1] === "ALL" ? null : fziMatch[1];
+        const rows = requestedCurrency
+          ? currencyRateRows.filter(([currency]) => currency === requestedCurrency)
+          : currencyRateRows;
+        if (!rows.length) return this.error(`NO TRAINING IATA RATE FOUND FOR ${requestedCurrency}`);
+        const formatRateRow = ([currency, country, cx, rule, unit, rate, effective, discontinue, region]) =>
+          `${currency.padEnd(4)} ${country.padEnd(4)} ${cx.padEnd(3)} ${rule.padEnd(5)} ${unit.padStart(5)} ${rate.padStart(10)} ${effective.padStart(12)} ${discontinue.padStart(10)} ${region.padStart(12)}`;
+        return {
+          lines: [
+            `>${cmd}`,
+            "RATES LAST UPDATED 14NOV26  1:37AM",
+            "                 ROUNDING  RATE OF       EFF     DISC    REGION",
+            "CUR  CTRY CX RULE   UNIT  EXCHANGE      DATE    DATE      EQU",
+            ...rows.map(formatRateRow),
+            ...(requestedCurrency ? ["FND"] : []),
+            ">"
+          ],
+          kind: "currency-rates"
+        };
+      }
+
       const fzsMatch = cmd.match(/^FZS([A-Z]{3})(\d+(?:\.\d+)?)([A-Z]{3})$/);
       const fzMatch  = !fzsMatch && cmd.match(/^FZ([A-Z]{3})(\d+(?:\.\d+)?)([A-Z]{3})$/);
       if (fzsMatch || fzMatch) {
@@ -1046,11 +1170,24 @@
         const from   = m[1];
         const amount = Number(m[2]);
         const to     = m[3];
-        const rate   = trainingFxRate(from, to);
+        const rate   = isBSP && from === "USD" && to === "BDT" ? 123.75 : trainingFxRate(from, to);
         if (!rate) return this.error(
           `TRAINING FX RATE NOT STORED FOR ${from}/${to} - TRY FZUSD125BDT OR FZSUSD125PKR`);
         const converted = Math.round(amount * rate * 100) / 100;
         const dispRate  = rate < 1 ? rate.toFixed(6) : rate.toFixed(2);
+        if (isBSP) {
+          return {
+            lines: [
+              `>${cmd}`,
+              "RATES LAST UPDATED 27NOV 16:00 PM",
+              `EQU ${to}${Math.round(converted)}`,
+              `BANK SELLING RATE  1${from} EQUALS  ${dispRate}     ${to}`,
+              ">"
+            ],
+            kind: "fx-convert",
+            amount: Math.round(converted)
+          };
+        }
         return {
           lines: [
             isBSP ? "FZS - CURRENCY CONVERSION (BSP RATE)" : "FZ - CURRENCY CONVERSION",
